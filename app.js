@@ -10,10 +10,10 @@ import {
   extension,
   filename,
   validateBackup,
-} from "./core.js?v=10";
-import { prayerText } from "./texts.js?v=10";
-import { allRecordings, saveMany } from "./storage.js?v=10";
-import { Player, assemble } from "./audio.js?v=10";
+} from "./core.js?v=11";
+import { prayerText } from "./texts.js?v=11";
+import { allRecordings, saveMany } from "./storage.js?v=11";
+import { Player, assemble } from "./audio.js?v=11";
 const $ = (id) => document.getElementById(id);
 const defaults = {
   version: "current",
@@ -58,12 +58,18 @@ const notice = (message) => {
     .map($)
     .find((dialog) => dialog.open);
   if (dialog) {
-    let feedback = dialog.querySelector(".feedback");
+    const surface =
+      dialog.id === "prayer-dialog"
+        ? $("recording-view").hidden
+          ? $("reading-view")
+          : $("recording-view")
+        : dialog;
+    let feedback = surface.querySelector(".feedback");
     if (!feedback) {
       feedback = document.createElement("p");
       feedback.className = "feedback";
       feedback.setAttribute("role", "status");
-      dialog.append(feedback);
+      surface.append(feedback);
     }
     feedback.textContent = message;
   }
@@ -169,6 +175,12 @@ const player = new Player((state, index, total) => {
   $("pause").disabled = state !== "playing";
   $("resume").disabled = state !== "paused";
   $("individual-stop").hidden = state === "stopped";
+  $("play-label").textContent =
+    state === "playing"
+      ? "Playing"
+      : state === "paused"
+        ? "Paused"
+        : "Play saved";
   const item = sessionItems[index];
   if (state === "completed") {
     $("play-status").textContent = "Prayer complete. Peace be with you.";
@@ -217,6 +229,14 @@ function refreshPrayer() {
     ? text.note.split(" Reproduced under")[0].split(" Ecumenical wording")[0]
     : "";
   $("copyright-notice").hidden = !text.note.includes("©");
+  $("reading-credit").textContent = !text.note.includes("©")
+    ? ""
+    : active.version === "current"
+      ? "The Apostles’ Creed from The Roman Missal © 2010 ICEL. All rights reserved."
+      : `English translation of ${p.name}, © 1998 English Language Liturgical Consultation (ELLC), used by permission.`;
+  $("reading-credit").hidden = !text.note.includes("©");
+  $("recording-title").textContent = p.name;
+  $("recording-prayer-text").textContent = text.text;
   $("prayer-text").textContent = text.text;
   $("record-state").textContent = currentRecord() ? "Saved on this device" : "";
   $("record-label").textContent = currentRecord() ? "Re-record" : "Record";
@@ -236,6 +256,9 @@ function openPrayer(id) {
   player.stop();
   active = { id, version: settings.version };
   refreshPrayer();
+  $("reading-view").hidden = false;
+  $("recording-view").hidden = true;
+  $("prayer-dialog").setAttribute("aria-labelledby", "prayer-title");
   $("prayer-dialog").showModal();
   $("prayer-dialog").scrollTop = 0;
   $("prayer-title").focus({ preventScroll: true });
@@ -253,8 +276,26 @@ function closePrayer() {
 $("prayer-close").onclick = closePrayer;
 $("prayer-dialog").addEventListener("cancel", (e) => {
   e.preventDefault();
-  closePrayer();
+  if (!$("recording-view").hidden) backFromRecording();
+  else closePrayer();
 });
+function showReadingView() {
+  $("notice").textContent = "";
+  $("draft-audio").pause();
+  $("recording-view").hidden = true;
+  $("reading-view").hidden = false;
+  $("prayer-dialog").setAttribute("aria-labelledby", "prayer-title");
+  $("prayer-dialog").scrollTop = 0;
+  $("prayer-title").focus({ preventScroll: true });
+}
+function backFromRecording() {
+  if (activeRecording() || busy)
+    return notice("Stop the recording before returning to the prayer.");
+  if (draft)
+    return notice("Save or discard this take before returning to the prayer.");
+  showReadingView();
+}
+$("recording-close").onclick = backFromRecording;
 $("record").onclick = run(async () => {
   if (draft) return notice("Save or discard this take before recording again.");
   if (busy || activeRecording()) return;
@@ -262,6 +303,14 @@ $("record").onclick = run(async () => {
     throw Error(
       "Recording is unavailable. Use updated Safari or Chrome over HTTPS.",
     );
+  $("recording-view")
+    .querySelectorAll(".feedback")
+    .forEach((node) => node.remove());
+  $("reading-view").hidden = true;
+  $("recording-view").hidden = false;
+  $("prayer-dialog").setAttribute("aria-labelledby", "recording-title");
+  $("prayer-dialog").scrollTop = 0;
+  $("recording-title").focus({ preventScroll: true });
   starting = true;
   $("record").disabled = true;
   player.stop();
@@ -367,6 +416,7 @@ $("save-recording").onclick = run(async () => {
     invalidateExport();
     refreshPrayer();
     notice("Recording saved on this device.");
+    showReadingView();
   } catch {
     throw Error(
       "Could not save. Your previous recording is safe. Free some device storage, then retry, or download this take from its audio controls.",
@@ -381,6 +431,7 @@ $("discard").onclick = () => {
   if (busy) return;
   clearDraft();
   refreshPrayer();
+  showReadingView();
 };
 $("draft-audio").onplay = () => player.stop();
 function selectedItems() {

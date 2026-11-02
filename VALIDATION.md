@@ -71,3 +71,7 @@ General background is light lavender (#f3edf9); regular buttons are deeper laven
 ## Navigation and compact layout
 
 The former top-right close buttons are now plain `<` back controls at the upper left of the prayer, Rosary and Settings views, retaining their existing close/back behavior. The main title is centered independently of the cross and gear. Main prayer/Rosary buttons occupy 75% of their previous content width. Source/wording details are removed from the prayer screen; required text attribution is retained only as a concise footer on that recording view, and full source information remains in Settings. Download actions are labeled “↓ Save.” Explanatory text after the Rosary buttons is removed; recording instructions stay on the recording page.
+
+## Separate recording view
+
+The reading view has no instructional/review paragraphs after Record/Play. Record opens a separate in-dialog recording view with the prayer text, recording status, Stop, draft review/save/discard, instructions and detailed text attribution. Save or Discard returns to reading. The back button prevents abandoning an active/unsaved take. Concise required licensed-text attribution sits before controls on applicable reading views; it is not an instructional footer. Browser recording flows verify view transitions, clean reading text, retained draft safety, returning after save, playback and version separation.

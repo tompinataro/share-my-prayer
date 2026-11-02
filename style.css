@@ -873,3 +873,18 @@ header > .cross {
   background: transparent;
   color: var(--accent);
 }
+
+#recording-prayer-text {
+  text-align: center;
+  margin: 20px 0 28px;
+}
+#reading-credit {
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+#recording-view {
+  padding-bottom: 52px;
+}

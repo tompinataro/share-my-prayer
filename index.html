@@ -12,7 +12,7 @@
       content="A rosary in your own voice. Record prayers privately on your device, listen, and share with love."
     />
     <title>Share My Prayer</title>
-    <link rel="stylesheet" href="./style.css?v=10" />
+    <link rel="stylesheet" href="./style.css?v=11" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
@@ -88,45 +88,62 @@
       </section>
     </dialog>
     <dialog id="prayer-dialog" aria-labelledby="prayer-title">
-      <div class="dialog-top prayer-heading">
-        <h2 id="prayer-title" tabindex="-1"></h2>
-        <button id="prayer-close" class="back-button" aria-label="Back">
-          &lt;
-        </button>
-      </div>
-      <p id="prayer-text" class="prayer-text"></p>
-      <div class="prayer-tools">
-        <div id="record-state" role="status"></div>
-        <div class="record-controls">
-          <button id="record" class="icon-control">
-            <span class="circle red" aria-hidden="true">●</span
-            ><span id="record-label">Record</span></button
-          ><button id="record-stop" class="danger" hidden>
-            ■ Stop recording</button
-          ><button id="individual-play" class="icon-control">
-            <span class="circle green" aria-hidden="true">▶</span
-            ><span>Play saved</span></button
-          ><button id="individual-stop" hidden>■ Stop audio</button>
+      <section id="reading-view">
+        <div class="dialog-top prayer-heading">
+          <h2 id="prayer-title" tabindex="-1"></h2>
+          <button id="prayer-close" class="back-button" aria-label="Back">
+            &lt;
+          </button>
         </div>
+        <p id="prayer-text" class="prayer-text"></p>
+        <p id="reading-credit" class="small" hidden></p>
+        <div class="prayer-tools">
+          <div class="record-controls">
+            <button id="record" class="icon-control">
+              <span class="circle red" aria-hidden="true">●</span
+              ><span id="record-label">Record</span>
+            </button>
+            <button id="individual-play" class="icon-control">
+              <span class="circle green" aria-hidden="true">▶</span
+              ><span id="play-label">Play saved</span>
+            </button>
+            <button id="individual-stop" hidden>■ Stop audio</button>
+          </div>
+          <div class="export-buttons">
+            <button id="individual-download">↓ Save</button
+            ><button id="individual-share">↗ Share</button>
+          </div>
+        </div>
+      </section>
+      <section id="recording-view" hidden>
+        <div class="dialog-top prayer-heading">
+          <h2 id="recording-title" tabindex="-1"></h2>
+          <button
+            id="recording-close"
+            class="back-button"
+            aria-label="Back to prayer"
+          >
+            &lt;
+          </button>
+        </div>
+        <p id="recording-prayer-text" class="prayer-text"></p>
+        <div id="record-state" role="status"></div>
+        <button id="record-stop" class="danger" hidden>■ Stop recording</button>
         <div id="draft" hidden>
           <p>
             Review your new recording. Your previous recording stays saved until
             you choose Save.
           </p>
-          <audio id="draft-audio" controls></audio
-          ><button id="save-recording" class="primary">Save recording</button
+          <audio id="draft-audio" controls></audio>
+          <button id="save-recording" class="primary">Save recording</button
           ><button id="discard">Discard take</button>
         </div>
-        <div class="export-buttons">
-          <button id="individual-download">↓ Save</button
-          ><button id="individual-share">↗ Share</button>
-        </div>
-        <p id="copyright-notice" class="small" hidden></p>
-        <p class="small">
-          Tap Record, read the prayer, then stop and save. Keep this page open
-          and your phone unlocked while recording.
+        <p id="recording-help" class="small">
+          Read the prayer aloud, then tap Stop. Review your recording and save
+          it. Keep this page open and your phone unlocked while recording.
         </p>
-      </div>
+        <p id="copyright-notice" class="small" hidden></p>
+      </section>
     </dialog>
     <dialog id="settings-dialog" aria-label="Settings">
       <div class="dialog-top">
@@ -266,6 +283,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=10"></script>
+    <script type="module" src="./app.js?v=11"></script>
   </body>
 </html>

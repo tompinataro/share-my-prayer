@@ -64,6 +64,9 @@ async function syntheticMicrophone(page) {
 }
 async function recordTake(page) {
   await page.locator("#record").click();
+  await expect(page.locator("#recording-view")).toBeVisible();
+  await expect(page.locator("#reading-view")).toBeHidden();
+  await expect(page.locator("#recording-help")).toBeVisible();
   await expect(page.locator("#record-stop")).toBeVisible();
   await page.locator("#record-stop").click();
   await expect(page.locator("#draft")).toBeVisible();
@@ -147,8 +150,22 @@ test("record, save, reload, replay and separate versions; draft preserves previo
   await syntheticMicrophone(page);
   await page.goto("/");
   await page.locator('#prayers [data-prayer="hail"]').click();
+  await expect(page.locator("#reading-view")).toBeVisible();
+  await expect(page.locator("#reading-view")).not.toContainText(
+    "Keep this page open",
+  );
+  await expect(page.locator("#reading-view")).not.toContainText(
+    "Review your new recording",
+  );
   await recordTake(page);
+  const { default: AxeBuilder } = await import("@axe-core/playwright");
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.screenshot({
+    path: `test-results/${test.info().project.name}-recording-view.png`,
+  });
   await page.locator("#save-recording").click();
+  await expect(page.locator("#reading-view")).toBeVisible();
+  await expect(page.locator("#recording-view")).toBeHidden();
   await expect(page.locator("#record-state")).toContainText("Saved");
   await page.reload();
   await page.locator('#prayers [data-prayer="hail"]').click();
@@ -259,6 +276,9 @@ test("real MediaRecorder saves microphone take", async ({
   await page.goto("/");
   await page.locator('#prayers [data-prayer="father"]').click();
   await page.locator("#record").click();
+  await expect(page.locator("#record-state")).toContainText("Recording");
+  await page.locator("#recording-close").click();
+  await expect(page.locator("#recording-view")).toBeVisible();
   await expect(page.locator("#record-state")).toContainText("Recording");
   await page.locator("#prayer-dialog").evaluate((dialog) => {
     dialog.scrollTop = 0;
@@ -510,6 +530,7 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
   await expect(page.locator("#prayer-dialog .feedback")).toContainText(
     "website settings",
   );
+  await page.locator("#recording-close").click();
   await page.locator("#prayer-close").click();
   const { default: AxeBuilder } = await import("@axe-core/playwright");
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);

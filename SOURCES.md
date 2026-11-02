@@ -1,6 +1,6 @@
 # Prayer texts and sources
 
-Reviewed November 2, 2026. Current Catholic is the default; Contemporary English is the other selectable option. Every prayer opens to its complete text. Source information is available in Settings. The reading view suppresses source/wording controls; concise required copyright acknowledgments remain at the bottom of the recording page.
+Reviewed November 2, 2026. Current Catholic is the default; Contemporary English is the other selectable option. Every prayer opens to its complete text. Source information is available in Settings. The reading view suppresses source/wording controls; concise required copyright credits appear before the reading controls for applicable licensed prayers, with detailed acknowledgment in the separate recording view.
 
 ## Current Catholic
 
