@@ -49,19 +49,23 @@ async function seed(page) {
   await page.reload();
   await expect(page.locator("#saved-count")).toContainText("28 / 28");
 }
-test("responsive layout, 20 mysteries, missing direct links, settings and safe text", async ({
+test("responsive layout, mystery selection, settings and quiet reading view", async ({
   page,
 }) => {
   await page.goto("/");
   await expect(page.locator("h1")).toContainText("Share My Prayer");
   await expect(page.locator("#start")).toBeDisabled();
-  await expect(page.locator("#missing button")).toHaveCount(5);
-  await page.locator("#rosary-open").click();
-  await page.locator("#missing button").first().click();
-  await expect(page.locator("#prayer-title")).toHaveText("The Annunciation");
-  await page.locator("#prayer-close").click();
-  await page.locator("#rosary-close").click();
+  await expect(page.locator("#missing")).toHaveCount(0);
   await page.locator("#settings-open").click();
+  await page.locator("#mysteries-details summary").click();
+  await expect(page.locator("#mystery-list button")).toHaveCount(20);
+  await page.locator('#mystery-list [data-prayer="Joyful-0"]').click();
+  await expect(page.locator("#prayer-title")).toHaveText("The Annunciation");
+  await expect(page.locator("#record-state")).toBeHidden();
+  await expect(page.locator("#prayer-dialog")).not.toContainText(
+    /missing recording/i,
+  );
+  await page.locator("#prayer-close").click();
   await page.locator("#wording").selectOption("contemporary");
   await page.locator("#subtitle").check();
   await page.locator("#sender").fill("Tom");
@@ -73,21 +77,19 @@ test("responsive layout, 20 mysteries, missing direct links, settings and safe t
   await expect(page.locator("#prayer-text")).toContainText(
     "Save us from the time of trial",
   );
-  await expect(page.locator("#text-note")).toContainText("ELLC");
+  await expect(page.locator("#record-state")).toBeHidden();
   await page.locator("#prayer-close").click();
-  await expect(page.locator("#mystery-list button")).toHaveCount(20);
   await page.locator("#rosary-open").click();
   for (const set of ["Joyful", "Luminous", "Sorrowful", "Glorious"]) {
     await page.locator("#set").selectOption(set);
     await expect(page.locator("#decade option")).toHaveCount(5);
     await page.locator("#decade").selectOption("4");
-    await expect(page.locator("#missing button").first()).toContainText(
-      await page
-        .locator("#decade option:checked")
-        .textContent()
-        .then((s) => s.slice(3)),
-    );
+    await expect(page.locator("#decade")).toHaveValue("4");
+    await expect(page.locator("#session-summary")).toContainText("One decade");
   }
+  await expect(page.locator("#rosary-dialog")).not.toContainText(
+    /missing recording|record .* missing/i,
+  );
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -129,7 +131,7 @@ test("import, save, reload, replay and separate versions; draft preserves previo
   await page.locator("#wording").selectOption("contemporary");
   await page.locator("#settings-done").click();
   await page.locator('#prayers [data-prayer="hail"]').click();
-  await expect(page.locator("#record-state")).toContainText("Missing");
+  await expect(page.locator("#record-state")).toBeHidden();
 });
 test("sequence export is real combined WAV; share fallback; backup restore", async ({
   page,
@@ -345,7 +347,7 @@ test("repository subpath and accessible page/modal", async ({ page }) => {
     await route.fulfill({ response });
   });
   await page.goto("/share-my-prayer/");
-  await expect(page.locator("#missing button")).toHaveCount(5);
+  await expect(page.locator("#missing")).toHaveCount(0);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.locator('#prayers [data-prayer="father"]').click();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
@@ -478,7 +480,7 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.locator("#settings-done").click();
   await page.locator("#rosary-open").click();
-  await expect(page.locator("#missing")).toBeVisible();
+  await expect(page.locator("#session-summary")).toBeVisible();
   await page.locator("#rosary-close").click();
   expect(
     await page.evaluate(

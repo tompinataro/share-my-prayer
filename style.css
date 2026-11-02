@@ -785,3 +785,7 @@ h1.brand {
 #prayer-title:focus {
   outline: none;
 }
+
+#record-state:empty {
+  display: none;
+}

@@ -12,7 +12,7 @@
       content="A rosary in your own voice. Record prayers privately on your device, listen, and share with love."
     />
     <title>Share My Prayer</title>
-    <link rel="stylesheet" href="./style.css?v=5" />
+    <link rel="stylesheet" href="./style.css?v=6" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
@@ -63,7 +63,6 @@
           <span>○ · ○ · ○ · ○ · ○ · ○ · ○ · ○ · ○ · ○</span><b>✝</b>
         </div>
         <div id="session-summary"></div>
-        <div id="missing" class="missing"></div>
         <button id="start" class="primary full">▶ Begin prayer</button>
         <div id="transport" class="transport" hidden>
           <button id="pause">Ⅱ Pause</button
@@ -98,7 +97,7 @@
       </div>
       <p id="prayer-text" class="prayer-text"></p>
       <div class="prayer-tools">
-        <div id="record-state" role="status">Missing recording</div>
+        <div id="record-state" role="status"></div>
         <div class="record-controls">
           <button id="record" class="icon-control">
             <span class="circle red" aria-hidden="true">●</span
@@ -281,6 +280,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=5"></script>
+    <script type="module" src="./app.js?v=6"></script>
   </body>
 </html>

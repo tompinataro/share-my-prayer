@@ -10,10 +10,10 @@ import {
   extension,
   filename,
   validateBackup,
-} from "./core.js?v=5";
-import { prayerText } from "./texts.js?v=5";
-import { allRecordings, saveMany } from "./storage.js?v=5";
-import { Player, assemble } from "./audio.js?v=5";
+} from "./core.js?v=6";
+import { prayerText } from "./texts.js?v=6";
+import { allRecordings, saveMany } from "./storage.js?v=6";
+import { Player, assemble } from "./audio.js?v=6";
 const $ = (id) => document.getElementById(id);
 const defaults = {
   version: "current",
@@ -160,21 +160,6 @@ function update() {
     missing = required(settings).filter((id) => !get(id));
   $("session-summary").textContent =
     `${settings.mode === "whole" ? "Five decades" : "One decade"} · ${seq.length} prayer steps · ${versions[settings.version]}`;
-  $("missing").replaceChildren();
-  if (missing.length) {
-    const p = document.createElement("strong");
-    p.textContent = `Record ${missing.length} missing ${missing.length === 1 ? "prayer" : "prayers"} to begin`;
-    const ul = document.createElement("ul");
-    for (const id of missing) {
-      const li = document.createElement("li"),
-        b = document.createElement("button");
-      b.textContent = title(id);
-      b.onclick = () => openPrayer(id);
-      li.append(b);
-      ul.append(li);
-    }
-    $("missing").append(p, ul);
-  }
   $("start").disabled = missing.length > 0 || busy || activeRecording();
   $("export").disabled = missing.length > 0 || busy || activeRecording();
   $("share-session").disabled = $("export").disabled;
@@ -204,7 +189,7 @@ const player = new Player((state, index, total) => {
           ? "Playback paused"
           : currentRecord()
             ? "Saved on this device"
-            : "Missing recording";
+            : "";
 }, fail);
 function clearDraft() {
   if (draftURL) URL.revokeObjectURL(draftURL);
@@ -234,9 +219,7 @@ function refreshPrayer() {
   $("copyright-notice").hidden = !text.note.includes("©");
   $("text-source").href = text.url;
   $("prayer-text").textContent = text.text;
-  $("record-state").textContent = currentRecord()
-    ? "Saved on this device"
-    : "Missing recording";
+  $("record-state").textContent = currentRecord() ? "Saved on this device" : "";
   $("record-label").textContent = currentRecord() ? "Re-record" : "Record";
   for (const id of [
     "individual-play",
@@ -427,10 +410,7 @@ $("audio-import").onchange = run(async () => {
 });
 function selectedItems() {
   const missing = required(settings).filter((id) => !get(id));
-  if (missing.length)
-    throw Error(
-      "Record every listed missing prayer before starting or exporting.",
-    );
+  if (missing.length) throw Error("This audio session is not ready yet.");
   return sequence(settings).map((item) => ({ ...item, ...get(item.id) }));
 }
 $("start").onclick = run(async () => {

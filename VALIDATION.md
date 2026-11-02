@@ -55,3 +55,7 @@ Prayer views open with the prayer title and text, followed by recording/playback
 ## Current Catholic default and direct prayer text
 
 Current Catholic is selected for new users and for users whose previous preference was Traditional. Settings exposes exactly Current Catholic and Contemporary English. All eight prayer buttons open to complete words with no source-linked placeholder and no paste-text workflow. Source notices are collapsed below the controls. Tests open every current prayer, retain contemporary wording, migrate a Traditional preference, ignore legacy private text overrides and preserve all 84 seeded legacy/current/contemporary audio slots.
+
+## Quiet reading view
+
+Missing-recording badges and the rosary missing-recordings list were removed at Tom’s request. An unrecorded prayer opens with only its text and bottom controls; an empty idle recording status is hidden. Recording, saved and playing statuses still appear when applicable. Playback/export readiness checks still prevent silently skipping required audio. Browser coverage verifies no missing-recording message and preserves import/save/replay, wording separation, sequence selection and export behavior.
