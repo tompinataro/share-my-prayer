@@ -1,6 +1,6 @@
 # Share My Prayer
 
-A mobile-friendly, buildless GitHub Pages app for praying with your own voice. No accounts, server, uploads, narrator, voice cloning, analytics, or runtime dependencies. **Built locally; not published. Deployment requires Tom’s authorization.**
+A mobile-friendly, buildless GitHub Pages app for praying with your own voice. No accounts, server, uploads, narrator, voice cloning, analytics, or runtime dependencies. **Live app: [Share My Prayer](https://tompinataro.github.io/share-my-prayer/).** Tom authorized publication by requesting a live link on November 2, 2026. Source: [tompinataro/share-my-prayer](https://github.com/tompinataro/share-my-prayer).
 
 ## Run locally
 
@@ -65,7 +65,7 @@ All runtime paths are relative, so `https://OWNER.github.io/share-my-prayer/` wo
 4. After explicit deployment authorization, run **Actions → Publish Share My Prayer → Run workflow**. The workflow runs unit tests, builds `dist/` from an explicit nine-file public allowlist, uploads only `dist/`, then deploys it. Browser tests are run locally separately; they are not claimed as a workflow gate.
 5. Open the returned HTTPS Pages URL and complete the iPhone checklist before inviting users. Enforce HTTPS in Pages settings where offered.
 
-No remote repository has been created, no files pushed, and no deployment workflow run by this implementation session. To preview the deployable artifact locally: `npm run build`, then `python3 -m http.server 4174 --directory dist`.
+The source repository has been created and pushed after Tom requested a live link. The manual Pages workflow completed successfully, and the app page and JavaScript asset returned HTTP 200. To preview the deployable artifact locally: `npm run build`, then `python3 -m http.server 4174 --directory dist`.
 
 ## Extending
 

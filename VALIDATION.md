@@ -1,6 +1,6 @@
 # Validation record
 
-Local verification on macOS, November 2, 2026. No repository or deployment was published.
+Local verification on macOS, November 2, 2026. The initial implementation remained unpublished. After Tom requested a live link, the app was published to [GitHub Pages](https://tompinataro.github.io/share-my-prayer/). [Deployment run](https://github.com/tompinataro/share-my-prayer/actions/runs/41509966961) completed successfully; the app HTML and JavaScript asset were verified with HTTP 200. No user recordings or backups were published.
 
 ## Passed
 
