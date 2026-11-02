@@ -10,10 +10,10 @@ import {
   extension,
   filename,
   validateBackup,
-} from "./core.js?v=7";
-import { prayerText } from "./texts.js?v=7";
-import { allRecordings, saveMany } from "./storage.js?v=7";
-import { Player, assemble } from "./audio.js?v=7";
+} from "./core.js?v=9";
+import { prayerText } from "./texts.js?v=9";
+import { allRecordings, saveMany } from "./storage.js?v=9";
+import { Player, assemble } from "./audio.js?v=9";
 const $ = (id) => document.getElementById(id);
 const defaults = {
   version: "current",
@@ -137,7 +137,7 @@ function update() {
     b.dataset.prayer = p.id;
     b.disabled = !storageReady;
     const name = document.createElement("span");
-    name.textContent = p.name;
+    name.textContent = p.buttonLabel || p.name;
     const badge = document.createElement("span");
     badge.className = `record-badge ${get(p.id) ? "saved" : ""}`;
     badge.textContent = get(p.id) ? "✓ Saved" : "○ Record";

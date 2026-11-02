@@ -482,7 +482,7 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
     "Hail Mary",
     "Our Father",
     "Apostles’ Creed",
-    "Fatima Prayer (O my Jesus)",
+    "O my Jesus",
     "Hail Holy Queen",
     "Rosary Closing Prayer",
   ]);

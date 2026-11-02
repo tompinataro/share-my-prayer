@@ -45,10 +45,10 @@ export const prayers = [
   ["hail", "Hail Mary"],
   ["father", "Our Father"],
   ["creed", "Apostles’ Creed"],
-  ["fatima", "Fatima Prayer (O my Jesus)"],
+  ["fatima", "Fatima Prayer", "O my Jesus"],
   ["queen", "Hail Holy Queen"],
   ["closing", "Rosary Closing Prayer"],
-].map(([id, name]) => ({ id, name }));
+].map(([id, name, buttonLabel]) => ({ id, name, buttonLabel }));
 export const library = [
   ...prayers,
   ...Object.entries(mysteries).flatMap(([set, names]) =>
