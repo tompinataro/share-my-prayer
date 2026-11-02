@@ -1,5 +1,6 @@
 import {
   versions,
+  preferredVersion,
   mysteries,
   prayers,
   library,
@@ -9,13 +10,13 @@ import {
   extension,
   filename,
   validateBackup,
-} from "./core.js";
-import { prayerText } from "./texts.js";
-import { allRecordings, saveMany } from "./storage.js";
-import { Player, assemble } from "./audio.js";
+} from "./core.js?v=5";
+import { prayerText } from "./texts.js?v=5";
+import { allRecordings, saveMany } from "./storage.js?v=5";
+import { Player, assemble } from "./audio.js?v=5";
 const $ = (id) => document.getElementById(id);
 const defaults = {
-  version: "traditional",
+  version: "current",
   mode: "decade",
   set: "Joyful",
   decade: 0,
@@ -39,8 +40,7 @@ let settings = { ...defaults },
 try {
   const s = JSON.parse(localStorage.getItem("smp-settings") || "{}");
   settings = { ...defaults, ...s };
-  if (!Object.hasOwn(versions, settings.version))
-    settings.version = defaults.version;
+  settings.version = preferredVersion(settings.version);
   sequence(settings);
   settings.sender = String(settings.sender || "").slice(0, 60);
   settings.subtitle = !!settings.subtitle;
@@ -230,20 +230,10 @@ function refreshPrayer() {
   $("prayer-title").textContent = p.name;
   $("prayer-version").textContent = versions[active.version];
   $("text-note").textContent = text.note;
+  $("copyright-notice").textContent = text.note.includes("©") ? text.note : "";
+  $("copyright-notice").hidden = !text.note.includes("©");
   $("text-source").href = text.url;
   $("prayer-text").textContent = text.text;
-  $("custom-field").hidden = !!text.text;
-  try {
-    $("custom-text").value =
-      localStorage.getItem(`smp-prompt:${keyFor(active.version, active.id)}`) ||
-      "";
-  } catch {
-    $("custom-text").value = "";
-  }
-  if (!text.text)
-    $("prayer-text").textContent =
-      $("custom-text").value.trim() ||
-      "This wording is source-linked. Add your private prayer text below to read it here, or open the source.";
   $("record-state").textContent = currentRecord()
     ? "Saved on this device"
     : "Missing recording";
@@ -282,16 +272,6 @@ $("prayer-close").onclick = closePrayer;
 $("prayer-dialog").addEventListener("cancel", (e) => {
   e.preventDefault();
   closePrayer();
-});
-$("save-prompt").onclick = run(() => {
-  localStorage.setItem(
-    `smp-prompt:${keyFor(active.version, active.id)}`,
-    $("custom-text").value,
-  );
-  $("prayer-text").textContent =
-    $("custom-text").value.trim() ||
-    "This wording is source-linked. Add your private prayer text below to read it here, or open the source.";
-  notice("Private prompt saved in this browser.");
 });
 $("record").onclick = run(async () => {
   if (draft) return notice("Save or discard this take before recording again.");
@@ -596,7 +576,7 @@ for (const id of ["settings-close", "settings-done"])
   $(id).onclick = () => $("settings-dialog").close();
 $("wording").onchange = () => {
   player.stop();
-  settings.version = $("wording").value;
+  settings.version = preferredVersion($("wording").value);
   invalidateExport();
   preferences();
   update();

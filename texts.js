@@ -1,4 +1,4 @@
-// Complete modern Catholic texts are intentionally not redistributed without a license.
+// Current Catholic wording follows the USCCB prayer pages. See SOURCES.md for reuse terms.
 export const sourceLinks = {
   traditional: "https://www.fsspminneapolis.org/prayers",
   current: "https://www.usccb.org/prayers/prayers-rosary",
@@ -20,6 +20,23 @@ const historicalRosary = {
     "Hail, holy Queen, Mother of Mercy! our life, our sweetness, and our hope! To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley, of tears. Turn, then, most gracious Advocate, thine eyes of mercy toward us; and after this our exile show unto us the blessed fruit of thy womb, Jesus; O clement, O loving, O sweet Virgin Mary.",
   closing:
     "V. Pray for us, O holy Mother of God.\nR. That we may be made worthy of the promises of Christ.\nLet Us Pray\nO God, whose only begotten Son, by His life, death, and resurrection has purchased for us the rewards of eternal life, grant, we beseech Thee, that meditating upon these mysteries in the most holy Rosary of the Blessed Virgin Mary, we may imitate what they contain, and obtain what they promise: through the same Christ our Lord. Amen.",
+};
+export const currentCatholic = {
+  cross:
+    "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+  glory:
+    "Glory be to the Father\nand to the Son\nand to the Holy Spirit,\nas it was in the beginning\nis now, and ever shall be\nworld without end.\n\nAmen.",
+  father:
+    "Our Father, who art in heaven,\nhallowed be thy name;\nthy kingdom come,\nthy will be done\non earth as it is in heaven.\nGive us this day our daily bread,\nand forgive us our trespasses,\nas we forgive those who trespass against us;\nand lead us not into temptation,\nbut deliver us from evil.\n\nAmen.",
+  hail: "Hail Mary, full of grace, the Lord is with you;\nblessed are you among women,\nand blessed is the fruit of your womb, Jesus.\nHoly Mary, Mother of God,\npray for us sinners\nnow and at the hour of our death.\nAmen.",
+  creed:
+    "I believe in God,\nthe Father almighty,\nCreator of heaven and earth,\nand in Jesus Christ, his only Son, our Lord,\nwho was conceived by the Holy Spirit,\nborn of the Virgin Mary,\nsuffered under Pontius Pilate,\nwas crucified, died and was buried;\nhe descended into hell;\non the third day he rose again from the dead;\nhe ascended into heaven,\nand is seated at the right hand of God the Father almighty;\nfrom there he will come to judge the living and the dead.\nI believe in the Holy Spirit,\nthe holy catholic Church,\nthe communion of saints,\nthe forgiveness of sins,\nthe resurrection of the body,\nand life everlasting.\nAmen.",
+  fatima:
+    "O my Jesus, forgive us our sins, save us from the fires of hell; lead all souls to Heaven, especially those who have most need of your mercy.",
+  queen:
+    "Hail, holy Queen, mother of mercy,\nour life, our sweetness, and our hope.\nTo you we cry, poor banished children of Eve;\nto you we send up our sighs,\nmourning and weeping in this valley of tears.\nTurn, then, most gracious advocate,\nyour eyes of mercy toward us;\nand after this, our exile,\nshow unto us the blessed fruit of your womb, Jesus.\nO clement, O loving, O sweet Virgin Mary.",
+  closing:
+    "V. Pray for us, O holy Mother of God.\nR. That we may be made worthy of the promises of Christ.\n\nLet us pray:\nO God, whose Only Begotten Son, by his life, Death, and Resurrection, has purchased for us the rewards of eternal life, grant, we beseech thee, that while meditating on these mysteries of the most holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ our Lord. Amen.",
 };
 const contemporary = {
   father:
@@ -44,6 +61,21 @@ export function prayerText(prayer, version) {
       text: `The ${["first", "second", "third", "fourth", "fifth"][prayer.index]} ${prayer.set.toLowerCase()} mystery: ${prayer.name}.`,
       note: "Original announcement prompt. Mystery names follow the USCCB rosary guide.",
       url: "https://www.usccb.org/how-to-pray-the-rosary",
+    };
+  if (version === "current")
+    return {
+      text: currentCatholic[prayer.id],
+      note:
+        prayer.id === "creed"
+          ? "Excerpts from the English translation of The Roman Missal © 2010, International Commission on English in the Liturgy Corporation. All rights reserved. Reproduced under ICEL’s non-commercial Internet publication policy. No ICEL affiliation or endorsement is implied."
+          : "Current Catholic wording. Sources: USCCB prayers and rosary guide. Historical devotional prayers in customary Catholic use.",
+      url: ["closing", "fatima"].includes(prayer.id)
+        ? "https://www.usccb.org/how-to-pray-the-rosary"
+        : prayer.id === "father"
+          ? "https://www.usccb.org/prayers/our-father"
+          : prayer.id === "glory"
+            ? "https://www.usccb.org/prayers/glory-be-doxology"
+            : sourceLinks.current,
     };
   if (version === "traditional" && historical[prayer.id])
     return {

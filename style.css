@@ -601,9 +601,6 @@ audio {
   button {
     transition: background 0.15s;
   }
-  dialog[open] {
-    animation: appear 0.18s ease-out;
-  }
   @keyframes appear {
     from {
       opacity: 0;

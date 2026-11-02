@@ -4,8 +4,8 @@ Local verification on macOS, November 2, 2026. The initial implementation remain
 
 ## Passed
 
-- `npm test`: 9 core tests. All four sets, all 20 individual decades, exact opening and closing, 80 full-session steps, 53 Hail Marys, 6 Our Fathers, 6 Glory Bes, 5 Fatima Prayers, 5 distinct announcements, 2 Signs of the Cross. Version keys, names/extensions, PCM clipping/RIFF header, invalid selection and malformed/duplicate backup validation.
-- `npm run test:browser`: 24 passed, 2 explicitly skipped. Desktop Chromium and WebKit at 390 × 844 with touch/mobile mode.
+- `npm test`: 10 core tests. All four sets, all 20 individual decades, exact opening and closing, 80 full-session steps, 53 Hail Marys, 6 Our Fathers, 6 Glory Bes, 5 Fatima Prayers, 5 distinct announcements, 2 Signs of the Cross. Version keys, names/extensions, PCM clipping/RIFF header, invalid selection and malformed/duplicate backup validation.
+- `npm run test:browser`: 26 passed, 2 explicitly skipped. Desktop Chromium and WebKit at 390 × 844 with touch/mobile mode.
 - Real MediaRecorder capture using Chromium’s synthetic microphone: record → stop → review → save → reload → replay. No human voice was recorded for tests.
 - Audio import/save/reload/replay on both engines; independent wording slots; discard replacement preserves saved audio.
 - All mystery-set/decade selectors and settings synchronization; dedication persistence; missing-recording buttons link to the correct prompt.
@@ -36,11 +36,11 @@ Before release, on an authorized HTTPS preview:
 7. Save a backup into Files and restore in another authorized browser/device. Verify all selected wording versions and private prompts. Keep a private second copy.
 8. Test VoiceOver and increased text size, all settings dialogs, keyboard-only navigation on desktop, and another current desktop browser such as Firefox. Automated accessibility checks cannot replace these checks.
 
-## Known content and operational limits
+## Current content and operational limits
 
-Current Catholic full texts and Traditional Fatima text are source-linked pending documented redistribution permission; independent recording slots, local private prompts, imports, sequence playback and exports all work. See `SOURCES.md`. No official approval is claimed for contemporary adaptations.
+Current Catholic now displays all eight prayers, with the current Creed covered by ICEL’s non-commercial Internet publication policy and the customary prayers checked against the USCCB. Contemporary English remains available; adaptations are labeled in source details. Traditional is suppressed but legacy audio is retained. See `SOURCES.md` for exact provenance and terms.
 
-No guaranteed background/locked-phone playback, no killed-tab draft recovery, no offline cache, no automatic sync, no MP3 encoding. Backups are unencrypted; restore limit is 150 MB, individual import 60 MB, exports limited to 10 minutes per unique clip and 90 minutes expanded. Real codec behavior and attachment limits depend on the browser/device. Complete permissions and physical-device review before treating the app as release-ready.
+No guaranteed background/locked-phone playback, no killed-tab draft recovery, no offline cache, no automatic sync, no MP3 encoding. Backups are unencrypted; restore limit is 150 MB, individual import 60 MB, exports limited to 10 minutes per unique clip and 90 minutes expanded. Physical-device checks above remain applicable.
 
 ## Simplified home update
 
@@ -51,3 +51,7 @@ Regression checks cover opening each secondary surface, missing-recording links 
 ## Prayer text first update
 
 Prayer views open with the prayer title and text, followed by recording/playback controls, version/source details, private prompt editor, and export controls. Opening another prayer resets scroll and focuses the title. Saved private prompts now appear as reading text at the top for source-linked wording. The Stop recording button remains pinned at the bottom while recording, including when scrolling back to read a long prayer. Browser assertions verify the text/control ordering, scroll reset and private-prompt display on both engines.
+
+## Current Catholic default and direct prayer text
+
+Current Catholic is selected for new users and for users whose previous preference was Traditional. Settings exposes exactly Current Catholic and Contemporary English. All eight prayer buttons open to complete words with no source-linked placeholder and no paste-text workflow. Source notices are collapsed below the controls. Tests open every current prayer, retain contemporary wording, migrate a Traditional preference, ignore legacy private text overrides and preserve all 84 seeded legacy/current/contemporary audio slots.

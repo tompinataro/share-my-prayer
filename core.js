@@ -3,6 +3,12 @@ export const versions = {
   current: "Current Catholic",
   contemporary: "Contemporary English",
 };
+export const selectableVersions = {
+  current: versions.current,
+  contemporary: versions.contemporary,
+};
+export const preferredVersion = (version) =>
+  Object.hasOwn(selectableVersions, version) ? version : "current";
 export const mysteries = {
   Joyful: [
     "The Annunciation",
@@ -41,7 +47,7 @@ export const prayers = [
   ["creed", "Apostles’ Creed"],
   ["fatima", "Fatima Prayer (O my Jesus)"],
   ["queen", "Hail Holy Queen"],
-  ["closing", "Rosary closing dialogue and prayer"],
+  ["closing", "Rosary Closing Prayer"],
 ].map(([id, name]) => ({ id, name }));
 export const library = [
   ...prayers,

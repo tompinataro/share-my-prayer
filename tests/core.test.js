@@ -105,3 +105,23 @@ test("invalid selections rejected", () => {
   ])
     assert.throws(() => sequence(s));
 });
+
+import { prayerText, currentCatholic } from "../texts.js";
+import { prayers, selectableVersions, preferredVersion } from "../core.js";
+test("visible wording choices default current and every prayer has text", () => {
+  assert.deepEqual(Object.keys(selectableVersions), [
+    "current",
+    "contemporary",
+  ]);
+  assert.equal(preferredVersion("traditional"), "current");
+  assert.equal(preferredVersion(undefined), "current");
+  assert.equal(preferredVersion("contemporary"), "contemporary");
+  for (const version of Object.keys(selectableVersions))
+    for (const prayer of prayers) {
+      assert.ok(prayerText(prayer, version).text.length > 20);
+      assert.ok(!/paste|source-linked/i.test(prayerText(prayer, version).text));
+    }
+  assert.match(currentCatholic.hail, /the Lord is with you/);
+  assert.match(currentCatholic.creed, /he descended into hell/);
+  assert.match(currentCatholic.closing, /V\. Pray for us/);
+});

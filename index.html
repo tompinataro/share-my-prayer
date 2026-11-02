@@ -12,7 +12,7 @@
       content="A rosary in your own voice. Record prayers privately on your device, listen, and share with love."
     />
     <title>Share My Prayer</title>
-    <link rel="stylesheet" href="./style.css?v=4" />
+    <link rel="stylesheet" href="./style.css?v=5" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
@@ -110,19 +110,14 @@
             ><span>Play saved</span></button
           ><button id="individual-stop" hidden>■ Stop audio</button>
         </div>
-        <p id="prayer-version" class="eyebrow"></p>
-        <p id="text-note" class="small"></p>
-        <a id="text-source" target="_blank" rel="noopener">Read the source ↗</a>
-        <div id="custom-field" hidden>
-          <label for="custom-text">Your private reading prompt</label
-          ><textarea
-            id="custom-text"
-            rows="7"
-            placeholder="Paste text you have permission to use, or read from the source."
-          ></textarea
-          ><button id="save-prompt">Save private prompt</button>
-        </div>
-
+        <details class="prayer-source">
+          <summary>Source & wording</summary>
+          <p id="prayer-version" class="eyebrow"></p>
+          <p id="text-note" class="small"></p>
+          <a id="text-source" target="_blank" rel="noopener"
+            >Read the source ↗</a
+          >
+        </details>
         <div id="draft" hidden>
           <p>
             Review your new recording. Your previous recording stays saved until
@@ -143,6 +138,7 @@
             hidden
           />
         </div>
+        <p id="copyright-notice" class="small" hidden></p>
         <p class="small">
           Microphone access requires HTTPS (or localhost). Speak naturally, then
           stop and save. Imported audio is previewed before saving.
@@ -157,7 +153,6 @@
       <div class="field">
         <label for="wording">Prayer wording</label
         ><select id="wording">
-          <option value="traditional">Traditional Catholic</option>
           <option value="current">Current Catholic</option>
           <option value="contemporary">Contemporary English</option>
         </select>
@@ -183,9 +178,8 @@
         ><select id="settings-decade"></select>
       </div>
       <p class="small">
-        Recordings are kept separately for every wording choice. Some complete
-        texts are source-linked pending permission; contemporary adaptations are
-        labeled.
+        Current Catholic is the default. Contemporary English is an optional
+        alternative. Recordings are saved separately for each wording.
       </p>
       <div class="field">
         <label
@@ -234,22 +228,11 @@
       <details class="sources">
         <summary>Prayer wording, sources & privacy</summary>
         <p>
-          Three wording choices have separate recordings. Traditional Catholic
-          includes verified historical texts where available. Current Catholic
-          links to the USCCB where app reuse permission is unconfirmed; paste a
-          private prompt or read from the source. Contemporary English uses
-          licensed ELLC ecumenical texts and clearly labeled original
-          adaptations. These adaptations are not officially approved Catholic
-          translations.
+          Current Catholic is the default and displays the complete prayers.
+          Contemporary English offers licensed ELLC texts and original
+          adaptations, which are not officially approved Catholic translations.
         </p>
         <p>
-          <a
-            href="https://www.fsspminneapolis.org/prayers"
-            target="_blank"
-            rel="noopener"
-            >All Saints: traditional prayers</a
-          >
-          ·
           <a
             href="https://www.usccb.org/prayers/prayers-rosary"
             target="_blank"
@@ -298,6 +281,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=4"></script>
+    <script type="module" src="./app.js?v=5"></script>
   </body>
 </html>

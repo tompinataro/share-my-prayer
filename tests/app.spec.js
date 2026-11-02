@@ -126,7 +126,7 @@ test("import, save, reload, replay and separate versions; draft preserves previo
   await expect(page.locator("#record-state")).toContainText("Saved");
   await page.locator("#prayer-close").click();
   await page.locator("#settings-open").click();
-  await page.locator("#wording").selectOption("current");
+  await page.locator("#wording").selectOption("contemporary");
   await page.locator("#settings-done").click();
   await page.locator('#prayers [data-prayer="hail"]').click();
   await expect(page.locator("#record-state")).toContainText("Missing");
@@ -447,7 +447,7 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
     "Apostles’ Creed",
     "Fatima Prayer (O my Jesus)",
     "Hail Holy Queen",
-    "Rosary closing dialogue and prayer",
+    "Rosary Closing Prayer",
   ]);
   await expect(
     page.getByRole("button", { name: "Settings", exact: true }),
@@ -487,42 +487,93 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
   ).toBe(true);
 });
 
-test("prayer opens with text first and supporting controls below, including saved private prompts", async ({
+test("prayers open directly with complete current Catholic wording and controls below", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.locator('#prayers [data-prayer="creed"]').click();
-  await expect(page.locator("#prayer-text")).toContainText("I believe in God");
-  expect(
-    await page.locator("#prayer-dialog").evaluate((d) => d.scrollTop),
-  ).toBe(0);
-  const text = await page.locator("#prayer-text").boundingBox();
-  const controls = await page.locator("#record").boundingBox();
-  const note = await page.locator("#text-note").boundingBox();
-  expect(text.y).toBeLessThan(controls.y);
-  expect(text.y + text.height).toBeLessThan(controls.y);
-  expect(text.y + text.height).toBeLessThan(note.y);
-  await page.locator("#record").scrollIntoViewIfNeeded();
-  await page.locator("#prayer-close").click();
-  await page.locator('#prayers [data-prayer="father"]').click();
-  expect(
-    await page.locator("#prayer-dialog").evaluate((d) => d.scrollTop),
-  ).toBe(0);
-  await expect(page.locator("#prayer-text")).toBeInViewport();
-  await page.locator("#prayer-close").click();
+  await expect(page.locator("#wording")).toHaveValue("current");
+  await expect(page.locator("#wording option")).toHaveText([
+    "Current Catholic",
+    "Contemporary English",
+  ]);
+  for (const [id, words] of Object.entries({
+    cross: "In the name of the Father",
+    glory: "Glory be to the Father",
+    hail: "Hail Mary, full of grace",
+    father: "Our Father, who art in heaven",
+    creed: "I believe in God",
+    fatima: "O my Jesus, forgive us our sins",
+    queen: "Hail, holy Queen",
+    closing: "O God, whose Only Begotten Son",
+  })) {
+    await page.locator(`#prayers [data-prayer="${id}"]`).click();
+    await expect(page.locator("#prayer-text")).toContainText(words);
+    expect(
+      await page.locator("#prayer-dialog").evaluate((d) => d.scrollTop),
+    ).toBe(0);
+    expect(
+      await page
+        .locator("#prayer-text")
+        .evaluate(
+          (p) =>
+            !!(
+              p.compareDocumentPosition(
+                document.querySelector(".prayer-tools"),
+              ) & Node.DOCUMENT_POSITION_FOLLOWING
+            ),
+        ),
+    ).toBe(true);
+    await expect(page.locator("#custom-field")).toHaveCount(0);
+    await expect(page.locator("#prayer-dialog")).not.toContainText("paste");
+    await expect(page.locator(".prayer-source")).not.toHaveAttribute(
+      "open",
+      "",
+    );
+    await page.locator("#prayer-close").click();
+  }
   await page.locator("#settings-open").click();
-  await page.locator("#wording").selectOption("current");
+  await page.locator("#wording").selectOption("contemporary");
   await page.locator("#settings-done").click();
-  await page.locator('#prayers [data-prayer="hail"]').click();
-  await expect(page.locator("#prayer-text")).toContainText("source-linked");
-  await page.locator("#custom-text").fill("My private prayer reading prompt.");
-  await page.locator("#save-prompt").click();
-  await page.locator("#prayer-close").click();
-  await page.locator('#prayers [data-prayer="hail"]').click();
-  await expect(page.locator("#prayer-text")).toHaveText(
-    "My private prayer reading prompt.",
+  await page.locator('#prayers [data-prayer="father"]').click();
+  await expect(page.locator("#prayer-text")).toContainText(
+    "Our Father in heaven",
   );
+  await expect(page.locator("#prayer-text")).toContainText(
+    "Save us from the time of trial",
+  );
+});
+test("old Traditional preference migrates to Current Catholic without deleting audio", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await seed(page);
+  await page.evaluate(() => {
+    localStorage.setItem(
+      "smp-settings",
+      JSON.stringify({
+        version: "traditional",
+        mode: "decade",
+        set: "Joyful",
+        decade: 0,
+      }),
+    );
+    localStorage.setItem(
+      "smp-prompt:current:hail",
+      "Old paste prompt must not replace the prayer.",
+    );
+  });
+  await page.reload();
+  await expect(page.locator("#wording")).toHaveValue("current");
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  await expect(page.locator("#prayer-text")).toContainText(
+    "Hail Mary, full of grace",
+  );
+  await expect(page.locator("#prayer-text")).not.toContainText("Old paste");
+  await expect(page.locator("#record-state")).toContainText("Saved");
   expect(
-    await page.locator("#prayer-dialog").evaluate((d) => d.scrollTop),
-  ).toBe(0);
+    await page.evaluate(async () => {
+      const { allRecordings } = await import("./storage.js");
+      return (await allRecordings()).length;
+    }),
+  ).toBe(84);
 });
