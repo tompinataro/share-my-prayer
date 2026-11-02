@@ -12,181 +12,85 @@
       content="A rosary in your own voice. Record prayers privately on your device, listen, and share with love."
     />
     <title>Share My Prayer</title>
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./style.css?v=3" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
     <header>
-      <a class="brand" href="./"
-        ><span class="cross" aria-hidden="true">✝</span> Share My Prayer</a
-      ><button id="settings-open">⚙ <span>Settings</span></button>
+      <h1 class="brand">
+        <span class="cross" aria-hidden="true">✝</span> Share My Prayer
+      </h1>
+      <button id="settings-open" aria-label="Settings" title="Settings">
+        <span aria-hidden="true">⚙</span>
+      </button>
     </header>
-    <main id="main">
-      <section class="intro">
-        <div class="eyebrow">YOUR VOICE. A GIFT OF PRAYER.</div>
-        <h1>A familiar voice.<br />A prayer to keep.</h1>
-        <p>Record once. Pray together, wherever you are.</p>
-        <p id="dedication" class="dedication" hidden></p>
-        <div class="private-tag">
-          ◈ Private by design · Saved on this device
-        </div>
-      </section>
-      <div class="workspace">
-        <section class="panel library">
-          <div class="section-heading">
-            <div>
-              <div class="eyebrow">MAKE IT YOURS</div>
-              <h2>Your prayer library</h2>
-            </div>
-            <span id="saved-count" class="pill">0 saved</span>
-          </div>
-          <p>
-            Read each prayer aloud in your own voice. We’ll bring your
-            recordings together.
-          </p>
-          <div id="version-label" class="version-label"></div>
-          <div id="prayers" class="prayer-list"></div>
-          <details id="mysteries-details">
-            <summary>Mystery announcements <span>20 prompts</span></summary>
-            <div id="mystery-list"></div>
-          </details>
-        </section>
-        <section class="panel session">
-          <div class="eyebrow">A MOMENT OF PEACE</div>
-          <h2>Pray the rosary</h2>
-          <p>Your prayers, in their familiar rhythm.</p>
-          <div class="field">
-            <label for="mode">Rosary mode</label
-            ><select id="mode">
-              <option value="decade">Decades · one individual decade</option>
-              <option value="whole">Whole Rosary · five decades</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="set">Mystery set</label
-            ><select id="set">
-              <option>Joyful</option>
-              <option>Luminous</option>
-              <option>Sorrowful</option>
-              <option>Glorious</option>
-            </select>
-          </div>
-          <div class="field" id="decade-field">
-            <label for="decade">Choose your decade</label
-            ><select id="decade"></select>
-          </div>
-          <div class="rosary-art" aria-hidden="true">
-            <span>○ · ○ · ○ · ○ · ○ · ○ · ○ · ○ · ○ · ○</span><b>✝</b>
-          </div>
-          <div id="session-summary"></div>
-          <div id="missing" class="missing"></div>
-          <button id="start" class="primary full">▶ Begin prayer</button>
-          <div id="transport" class="transport" hidden>
-            <button id="pause">Ⅱ Pause</button
-            ><button id="resume">▶ Resume</button
-            ><button id="play-stop">■ Stop playback</button>
-          </div>
-          <div id="play-status" role="status">Ready when you are.</div>
-          <progress
-            id="progress"
-            value="0"
-            max="1"
-            aria-label="Prayer session progress"
-          ></progress>
-          <div class="export-buttons">
-            <button id="export">↓ Prepare session download</button
-            ><button id="share-session">↗ Prepare session share</button>
-          </div>
-          <div id="export-result" hidden>
-            <a id="export-download" class="button" download>↓ Download WAV</a
-            ><button id="export-share">↗ Share prepared audio</button>
-          </div>
-          <p class="small">
-            Keep this page open and your phone unlocked while recording or
-            praying. Audio may pause when Safari goes into the background.
-          </p>
-        </section>
-      </div>
-      <section class="care">
-        <span aria-hidden="true">♡</span>
-        <div>
-          <h2>A little care for something meaningful.</h2>
-          <p>
-            Your recordings stay in this browser on this device. Clearing
-            browser data, private browsing, or changing devices can remove them.
-            Download a backup to keep them safe.
-          </p>
-          <div class="backup-actions">
-            <button id="backup">↓ Back up recordings</button
-            ><label class="button" for="restore">↑ Restore backup</label
-            ><input
-              id="restore"
-              type="file"
-              accept="application/json,.json"
-              hidden
-            />
-          </div>
-        </div>
-      </section>
-      <details class="sources">
-        <summary>Prayer wording, sources & privacy</summary>
-        <p>
-          Three wording choices have separate recordings. Traditional Catholic
-          includes verified historical texts where available. Current Catholic
-          links to the USCCB where app reuse permission is unconfirmed; paste a
-          private prompt or read from the source. Contemporary English uses
-          licensed ELLC ecumenical texts and clearly labeled original
-          adaptations. These adaptations are not officially approved Catholic
-          translations.
-        </p>
-        <p>
-          <a
-            href="https://www.fsspminneapolis.org/prayers"
-            target="_blank"
-            rel="noopener"
-            >All Saints: traditional prayers</a
-          >
-          ·
-          <a
-            href="https://www.usccb.org/prayers/prayers-rosary"
-            target="_blank"
-            rel="noopener"
-            >USCCB: current prayers</a
-          >
-          ·
-          <a
-            href="https://www.usccb.org/how-to-pray-the-rosary"
-            target="_blank"
-            rel="noopener"
-            >USCCB: sequence & mysteries</a
-          >
-          ·
-          <a
-            href="https://www.churchofengland.org/faith-life/what-we-believe/lords-prayer"
-            target="_blank"
-            rel="noopener"
-            >Church of England: Lord’s Prayer comparison</a
-          >
-          ·
-          <a
-            href="https://www.englishtexts.org/permissions"
-            target="_blank"
-            rel="noopener"
-            >ELLC: permission</a
-          >
-          · <a href="./SOURCES.md">Source register</a>
-        </p>
-        <p>
-          No accounts, analytics, uploads, AI voices, or default narrator.
-          Sharing sends only the file you choose through your device’s share
-          sheet. Backups contain private audio and should be stored securely.
-        </p>
-      </details>
+    <main id="main" class="simple-home">
+      <p id="dedication" class="dedication" hidden></p>
+      <nav aria-label="Prayers">
+        <div id="prayers" class="prayer-list"></div>
+        <button id="rosary-open" class="rosary-button">Rosary</button>
+      </nav>
     </main>
-    <footer>
-      ✝ &nbsp; Share My Prayer <span>A voice you love. A prayer you know.</span>
-    </footer>
     <div id="notice" role="status" aria-live="polite"></div>
+    <dialog id="rosary-dialog" aria-labelledby="rosary-title">
+      <section class="session">
+        <div class="dialog-top">
+          <h2 id="rosary-title">Rosary</h2>
+          <button id="rosary-close" aria-label="Close rosary">✕</button>
+        </div>
+
+        <div class="field">
+          <label for="mode">Rosary mode</label
+          ><select id="mode">
+            <option value="decade">Decades · one individual decade</option>
+            <option value="whole">Whole Rosary · five decades</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set">Mystery set</label
+          ><select id="set">
+            <option>Joyful</option>
+            <option>Luminous</option>
+            <option>Sorrowful</option>
+            <option>Glorious</option>
+          </select>
+        </div>
+        <div class="field" id="decade-field">
+          <label for="decade">Choose your decade</label
+          ><select id="decade"></select>
+        </div>
+        <div class="rosary-art" aria-hidden="true">
+          <span>○ · ○ · ○ · ○ · ○ · ○ · ○ · ○ · ○ · ○</span><b>✝</b>
+        </div>
+        <div id="session-summary"></div>
+        <div id="missing" class="missing"></div>
+        <button id="start" class="primary full">▶ Begin prayer</button>
+        <div id="transport" class="transport" hidden>
+          <button id="pause">Ⅱ Pause</button
+          ><button id="resume">▶ Resume</button
+          ><button id="play-stop">■ Stop playback</button>
+        </div>
+        <div id="play-status" role="status">Ready when you are.</div>
+        <progress
+          id="progress"
+          value="0"
+          max="1"
+          aria-label="Prayer session progress"
+        ></progress>
+        <div class="export-buttons">
+          <button id="export">↓ Prepare session download</button
+          ><button id="share-session">↗ Prepare session share</button>
+        </div>
+        <div id="export-result" hidden>
+          <a id="export-download" class="button" download>↓ Download WAV</a
+          ><button id="export-share">↗ Share prepared audio</button>
+        </div>
+        <p class="small">
+          Keep this page open and your phone unlocked while recording or
+          praying. Audio may pause when Safari goes into the background.
+        </p>
+      </section>
+    </dialog>
     <dialog id="prayer-dialog" aria-labelledby="prayer-title">
       <div class="dialog-top">
         <span id="prayer-version" class="eyebrow"></span
@@ -295,6 +199,89 @@
         The dedication appears on the page, in filenames and share text. It is
         never spoken automatically.
       </p>
+
+      <p class="small">
+        <span id="version-label"></span> · <span id="saved-count"></span>
+      </p>
+      <details id="mysteries-details">
+        <summary>Mystery announcements <span>20 prompts</span></summary>
+        <div id="mystery-list"></div>
+      </details>
+      <section class="care">
+        <span aria-hidden="true">♡</span>
+        <div>
+          <h2>A little care for something meaningful.</h2>
+          <p>
+            Your recordings stay in this browser on this device. Clearing
+            browser data, private browsing, or changing devices can remove them.
+            Download a backup to keep them safe.
+          </p>
+          <div class="backup-actions">
+            <button id="backup">↓ Back up recordings</button
+            ><label class="button" for="restore">↑ Restore backup</label
+            ><input
+              id="restore"
+              type="file"
+              accept="application/json,.json"
+              hidden
+            />
+          </div>
+        </div>
+      </section>
+      <details class="sources">
+        <summary>Prayer wording, sources & privacy</summary>
+        <p>
+          Three wording choices have separate recordings. Traditional Catholic
+          includes verified historical texts where available. Current Catholic
+          links to the USCCB where app reuse permission is unconfirmed; paste a
+          private prompt or read from the source. Contemporary English uses
+          licensed ELLC ecumenical texts and clearly labeled original
+          adaptations. These adaptations are not officially approved Catholic
+          translations.
+        </p>
+        <p>
+          <a
+            href="https://www.fsspminneapolis.org/prayers"
+            target="_blank"
+            rel="noopener"
+            >All Saints: traditional prayers</a
+          >
+          ·
+          <a
+            href="https://www.usccb.org/prayers/prayers-rosary"
+            target="_blank"
+            rel="noopener"
+            >USCCB: current prayers</a
+          >
+          ·
+          <a
+            href="https://www.usccb.org/how-to-pray-the-rosary"
+            target="_blank"
+            rel="noopener"
+            >USCCB: sequence & mysteries</a
+          >
+          ·
+          <a
+            href="https://www.churchofengland.org/faith-life/what-we-believe/lords-prayer"
+            target="_blank"
+            rel="noopener"
+            >Church of England: Lord’s Prayer comparison</a
+          >
+          ·
+          <a
+            href="https://www.englishtexts.org/permissions"
+            target="_blank"
+            rel="noopener"
+            >ELLC: permission</a
+          >
+          · <a href="./SOURCES.md">Source register</a>
+        </p>
+        <p>
+          No accounts, analytics, uploads, AI voices, or default narrator.
+          Sharing sends only the file you choose through your device’s share
+          sheet. Backups contain private audio and should be stored securely.
+        </p>
+      </details>
       <button id="settings-done" class="primary">Done</button>
     </dialog>
     <dialog id="restore-dialog" aria-label="Restore your recordings">
@@ -308,6 +295,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./app.js?v=3"></script>
   </body>
 </html>

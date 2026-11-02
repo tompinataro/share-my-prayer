@@ -657,3 +657,105 @@ select {
   border-bottom: 1px solid var(--line);
   padding: 12px 0;
 }
+/* The home screen is deliberately just the name, gear, and prayer buttons. */
+header {
+  max-width: 760px;
+  padding: 24px 22px;
+  border-bottom: 0;
+  gap: 16px;
+}
+h1.brand {
+  margin: 0;
+  letter-spacing: 0;
+  font-size: clamp(23px, 5.5vw, 30px);
+  line-height: 1.2;
+}
+#settings-open {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  font-size: 28px;
+  border-radius: 50%;
+}
+.simple-home {
+  max-width: 760px;
+  padding: 8px 22px 36px;
+}
+.simple-home .dedication {
+  text-align: center;
+  margin: 0 0 24px;
+}
+.prayer-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.prayer-list button,
+.rosary-button {
+  border: 1px solid #cdd8c9;
+  background: #fffefb;
+  border-radius: 12px;
+  min-height: 76px;
+  width: 100%;
+  padding: 18px 16px;
+  font-size: 17px;
+  font-weight: 500;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.4;
+  box-shadow: 0 3px 12px #263e3504;
+}
+.prayer-list button:hover,
+.rosary-button:hover {
+  background: #e8eee3;
+  border-color: #9fb29c;
+}
+.rosary-button {
+  margin-top: 14px;
+  background: #e8eee3;
+}
+#settings-dialog .care {
+  padding: 20px;
+  margin: 25px 0;
+  display: block;
+}
+#settings-dialog .care > span {
+  display: none;
+}
+#settings-dialog .sources {
+  margin: 20px 0;
+}
+#settings-dialog .version-label {
+  margin: 0;
+}
+#rosary-dialog .session {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+#rosary-dialog .dialog-top {
+  margin-bottom: 20px;
+}
+@media (max-width: 480px) {
+  header {
+    padding: 20px 18px;
+  }
+  .simple-home {
+    padding: 8px 18px 28px;
+  }
+  .prayer-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .prayer-list button,
+  .rosary-button {
+    min-height: 56px;
+    font-size: 17px;
+    padding: 14px 16px;
+  }
+  .rosary-button {
+    margin-top: 10px;
+  }
+}

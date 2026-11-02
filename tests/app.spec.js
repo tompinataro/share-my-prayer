@@ -53,12 +53,14 @@ test("responsive layout, 20 mysteries, missing direct links, settings and safe t
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator("h1")).toContainText("A familiar voice");
+  await expect(page.locator("h1")).toContainText("Share My Prayer");
   await expect(page.locator("#start")).toBeDisabled();
   await expect(page.locator("#missing button")).toHaveCount(5);
+  await page.locator("#rosary-open").click();
   await page.locator("#missing button").first().click();
   await expect(page.locator("#prayer-title")).toHaveText("The Annunciation");
   await page.locator("#prayer-close").click();
+  await page.locator("#rosary-close").click();
   await page.locator("#settings-open").click();
   await page.locator("#wording").selectOption("contemporary");
   await page.locator("#subtitle").check();
@@ -74,6 +76,7 @@ test("responsive layout, 20 mysteries, missing direct links, settings and safe t
   await expect(page.locator("#text-note")).toContainText("ELLC");
   await page.locator("#prayer-close").click();
   await expect(page.locator("#mystery-list button")).toHaveCount(20);
+  await page.locator("#rosary-open").click();
   for (const set of ["Joyful", "Luminous", "Sorrowful", "Glorious"]) {
     await page.locator("#set").selectOption(set);
     await expect(page.locator("#decade option")).toHaveCount(5);
@@ -133,6 +136,7 @@ test("sequence export is real combined WAV; share fallback; backup restore", asy
 }) => {
   await page.goto("/");
   await seed(page);
+  await page.locator("#rosary-open").click();
   await page.locator("#export").click();
   await expect(page.locator("#export-result")).toBeVisible();
   const bytes = await page
@@ -161,6 +165,8 @@ test("sequence export is real combined WAV; share fallback; backup restore", asy
   const shareDownload = page.waitForEvent("download");
   await page.locator("#export-share").click();
   expect((await shareDownload).suggestedFilename()).toContain("Whole Rosary");
+  await page.locator("#rosary-close").click();
+  await page.locator("#settings-open").click();
   const backup = page.waitForEvent("download");
   await page.locator("#backup").click();
   const file = await backup;
@@ -188,6 +194,7 @@ test("pause/resume stop do not overlap and reject incomplete sessions", async ({
 }) => {
   await page.goto("/");
   await seed(page);
+  await page.locator("#rosary-open").click();
   await page.locator("#start").click();
   await page.locator("#pause").click();
   await expect(page.locator("#play-status")).toContainText("Paused");
@@ -264,6 +271,7 @@ test("export failure and malformed backup are actionable", async ({ page }) => {
       throw Error("Unsupported codec");
     };
   });
+  await page.locator("#rosary-open").click();
   await page.locator("#export").click();
   await expect(page.locator("#notice")).toContainText("Export failed");
   await expect(page.locator("#export-result")).toBeHidden();
@@ -274,6 +282,7 @@ test("export failure and malformed backup are actionable", async ({ page }) => {
     buffer: Buffer.from('{"format":"invalid"}'),
   });
   await expect(page.locator("#notice")).toContainText("not a supported");
+  await page.locator("#rosary-close").click();
   await page.locator("#settings-open").click();
   await page.locator("#settings-mode").selectOption("whole");
   await page.locator("#settings-set").selectOption("Glorious");
@@ -302,6 +311,7 @@ test("native share branch receives a genuine audio file, cancellation is respect
       },
     });
   });
+  await page.locator("#rosary-open").click();
   await page.locator("#share-session").click();
   await expect(page.locator("#export-result")).toBeVisible();
   await page.locator("#export-share").click();
@@ -418,4 +428,57 @@ test("failed batch write rolls back every audio replacement", async ({
     };
   });
   expect(outcome).toEqual({ failed: true, size: tone().length, count: 84 });
+});
+
+test("simple home has prayer-name buttons and a gear; secondary controls open on demand", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#main button")).toHaveCount(9);
+  await expect(page.locator("#prayers button")).toHaveText([
+    "Sign of the Cross",
+    "Glory Be",
+    "Hail Mary",
+    "Our Father",
+    "Apostles’ Creed",
+    "Fatima Prayer (O my Jesus)",
+    "Hail Holy Queen",
+    "Rosary closing dialogue and prayer",
+  ]);
+  await expect(
+    page.getByRole("button", { name: "Settings", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator("#main")).not.toContainText("Record once");
+  await expect(page.locator("#rosary-dialog")).not.toBeVisible();
+  await expect(page.locator("#settings-dialog")).not.toBeVisible();
+  await page.locator("#settings-open").click();
+  await page.locator("#mysteries-details summary").click();
+  await page.locator('#mystery-list [data-prayer="Glorious-4"]').click();
+  await expect(page.locator("#prayer-title")).toHaveText(
+    "The Coronation of Mary",
+  );
+  await page.evaluate(() => {
+    Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
+      configurable: true,
+      value: async () => {
+        throw new DOMException("Denied", "NotAllowedError");
+      },
+    });
+  });
+  await page.locator("#record").click();
+  await expect(page.locator("#prayer-dialog .feedback")).toContainText(
+    "website settings",
+  );
+  await page.locator("#prayer-close").click();
+  const { default: AxeBuilder } = await import("@axe-core/playwright");
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.locator("#settings-done").click();
+  await page.locator("#rosary-open").click();
+  await expect(page.locator("#missing")).toBeVisible();
+  await page.locator("#rosary-close").click();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
 });

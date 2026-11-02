@@ -49,7 +49,14 @@ try {
 }
 const notice = (message) => {
   $("notice").textContent = message;
-  const dialog = document.querySelector("dialog[open]");
+  const dialog = [
+    "restore-dialog",
+    "prayer-dialog",
+    "settings-dialog",
+    "rosary-dialog",
+  ]
+    .map($)
+    .find((dialog) => dialog.open);
   if (dialog) {
     let feedback = dialog.querySelector(".feedback");
     if (!feedback) {
@@ -134,7 +141,8 @@ function update() {
     const badge = document.createElement("span");
     badge.className = `record-badge ${get(p.id) ? "saved" : ""}`;
     badge.textContent = get(p.id) ? "✓ Saved" : "○ Record";
-    b.append(name, badge);
+    if (p.set) b.append(name, badge);
+    else b.append(name);
     b.onclick = () => openPrayer(p.id);
     return b;
   };
@@ -555,6 +563,21 @@ for (const control of [
     preferences();
     update();
   };
+$("rosary-open").onclick = () => {
+  if (busy || activeRecording() || draft)
+    return notice("Finish your current take or export first.");
+  $("rosary-dialog").showModal();
+};
+function closeRosary() {
+  if (busy) return notice("Wait for the current export to finish.");
+  player.stop();
+  $("rosary-dialog").close();
+}
+$("rosary-close").onclick = closeRosary;
+$("rosary-dialog").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeRosary();
+});
 $("settings-open").onclick = () => {
   if (busy || activeRecording() || draft)
     return notice("Finish your current take or export first.");

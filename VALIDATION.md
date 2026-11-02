@@ -5,7 +5,7 @@ Local verification on macOS, November 2, 2026. The initial implementation remain
 ## Passed
 
 - `npm test`: 9 core tests. All four sets, all 20 individual decades, exact opening and closing, 80 full-session steps, 53 Hail Marys, 6 Our Fathers, 6 Glory Bes, 5 Fatima Prayers, 5 distinct announcements, 2 Signs of the Cross. Version keys, names/extensions, PCM clipping/RIFF header, invalid selection and malformed/duplicate backup validation.
-- `npm run test:browser`: 20 passed, 2 explicitly skipped. Desktop Chromium and WebKit at 390 × 844 with touch/mobile mode.
+- `npm run test:browser`: 22 passed, 2 explicitly skipped. Desktop Chromium and WebKit at 390 × 844 with touch/mobile mode.
 - Real MediaRecorder capture using Chromium’s synthetic microphone: record → stop → review → save → reload → replay. No human voice was recorded for tests.
 - Audio import/save/reload/replay on both engines; independent wording slots; discard replacement preserves saved audio.
 - All mystery-set/decade selectors and settings synchronization; dedication persistence; missing-recording buttons link to the correct prompt.
@@ -41,3 +41,9 @@ Before release, on an authorized HTTPS preview:
 Current Catholic full texts and Traditional Fatima text are source-linked pending documented redistribution permission; independent recording slots, local private prompts, imports, sequence playback and exports all work. See `SOURCES.md`. No official approval is claimed for contemporary adaptations.
 
 No guaranteed background/locked-phone playback, no killed-tab draft recovery, no offline cache, no automatic sync, no MP3 encoding. Backups are unencrypted; restore limit is 150 MB, individual import 60 MB, exports limited to 10 minutes per unique clip and 90 minutes expanded. Real codec behavior and attachment limits depend on the browser/device. Complete permissions and physical-device review before treating the app as release-ready.
+
+## Simplified home update
+
+The landing page now contains the app name, a gear at the top right, eight prayer-name buttons, and a Rosary button. Hero copy, library counters, privacy sections, and session controls are removed from the landing page. Rosary controls open on demand; mystery announcements, backups and source/privacy information are in Settings. Optional dedication still appears when enabled. Existing IndexedDB recording keys and local preferences are preserved.
+
+Regression checks cover opening each secondary surface, missing-recording links inside the Rosary dialog, stacked prayer dialogs from Settings, settings accessibility, narrow-screen layout, existing playback/export/restore behavior, and the public repository subpath.
