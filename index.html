@@ -12,7 +12,7 @@
       content="A rosary in your own voice. Record prayers privately on your device, listen, and share with love."
     />
     <title>Share My Prayer</title>
-    <link rel="stylesheet" href="./style.css?v=6" />
+    <link rel="stylesheet" href="./style.css?v=7" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
@@ -128,19 +128,12 @@
         </div>
         <div class="export-buttons">
           <button id="individual-download">↓ Download</button
-          ><button id="individual-share">↗ Share</button
-          ><label for="audio-import" class="button">↑ Import audio</label
-          ><input
-            id="audio-import"
-            type="file"
-            accept="audio/*,.wav,.m4a,.webm,.ogg"
-            hidden
-          />
+          ><button id="individual-share">↗ Share</button>
         </div>
         <p id="copyright-notice" class="small" hidden></p>
         <p class="small">
           Microphone access requires HTTPS (or localhost). Speak naturally, then
-          stop and save. Imported audio is previewed before saving.
+          stop and save.
         </p>
       </div>
     </dialog>
@@ -280,6 +273,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=6"></script>
+    <script type="module" src="./app.js?v=7"></script>
   </body>
 </html>

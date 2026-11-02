@@ -25,6 +25,49 @@ const tone = () => {
     );
   return Buffer.from(a);
 };
+
+// Synthetic capture fixture for cross-engine recording/storage tests. Chromium
+// also exercises the real MediaRecorder with its fake microphone separately.
+async function syntheticMicrophone(page) {
+  await page.addInitScript(
+    (bytes) => {
+      const blob = new Blob([new Uint8Array(bytes)], { type: "audio/wav" });
+      Object.defineProperty(navigator, "mediaDevices", {
+        configurable: true,
+        value: {
+          getUserMedia: async () => ({
+            getTracks: () => [],
+            getAudioTracks: () => [],
+          }),
+        },
+      });
+      window.MediaRecorder = class {
+        static isTypeSupported() {
+          return false;
+        }
+        constructor() {
+          this.mimeType = "audio/wav";
+          this.state = "inactive";
+        }
+        start() {
+          this.state = "recording";
+        }
+        stop() {
+          this.state = "inactive";
+          this.ondataavailable?.({ data: blob });
+          queueMicrotask(() => this.onstop?.());
+        }
+      };
+    },
+    [...tone()],
+  );
+}
+async function recordTake(page) {
+  await page.locator("#record").click();
+  await expect(page.locator("#record-stop")).toBeVisible();
+  await page.locator("#record-stop").click();
+  await expect(page.locator("#draft")).toBeVisible();
+}
 async function seed(page) {
   await page.evaluate(
     async (bytes) => {
@@ -98,16 +141,13 @@ test("responsive layout, mystery selection, settings and quiet reading view", as
   await page.reload();
   await expect(page.locator("#dedication")).toContainText("Tom");
 });
-test("import, save, reload, replay and separate versions; draft preserves previous take", async ({
+test("record, save, reload, replay and separate versions; draft preserves previous take", async ({
   page,
 }) => {
+  await syntheticMicrophone(page);
   await page.goto("/");
   await page.locator('#prayers [data-prayer="hail"]').click();
-  await page.locator("#audio-import").setInputFiles({
-    name: "voice.wav",
-    mimeType: "audio/wav",
-    buffer: tone(),
-  });
+  await recordTake(page);
   await page.locator("#save-recording").click();
   await expect(page.locator("#record-state")).toContainText("Saved");
   await page.reload();
@@ -118,11 +158,7 @@ test("import, save, reload, replay and separate versions; draft preserves previo
   const download = page.waitForEvent("download");
   await page.locator("#individual-download").click();
   expect((await download).suggestedFilename()).toMatch(/\.wav$/);
-  await page.locator("#audio-import").setInputFiles({
-    name: "replacement.wav",
-    mimeType: "audio/wav",
-    buffer: tone(),
-  });
+  await recordTake(page);
   await expect(page.locator("#draft")).toBeVisible();
   await page.locator("#discard").click();
   await expect(page.locator("#record-state")).toContainText("Saved");
@@ -253,11 +289,10 @@ test("denied microphone and storage failure give actionable errors", async ({
   await page.locator('#prayers [data-prayer="father"]').click();
   await page.locator("#record").click();
   await expect(page.locator("#notice")).toContainText("website settings");
-  await page.locator("#audio-import").setInputFiles({
-    name: "voice.wav",
-    mimeType: "audio/wav",
-    buffer: tone(),
-  });
+  await syntheticMicrophone(page);
+  await page.reload();
+  await page.locator('#prayers [data-prayer="father"]').click();
+  await recordTake(page);
   await page.evaluate(() => {
     IDBDatabase.prototype.transaction = function () {
       throw new DOMException("Full", "QuotaExceededError");
@@ -526,6 +561,10 @@ test("prayers open directly with complete current Catholic wording and controls 
         ),
     ).toBe(true);
     await expect(page.locator("#custom-field")).toHaveCount(0);
+    await expect(page.locator("#audio-import")).toHaveCount(0);
+    await expect(page.locator("#prayer-dialog")).not.toContainText(
+      "Import audio",
+    );
     await expect(page.locator("#prayer-dialog")).not.toContainText("paste");
     await expect(page.locator(".prayer-source")).not.toHaveAttribute(
       "open",

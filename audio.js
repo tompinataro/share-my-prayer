@@ -1,4 +1,4 @@
-import { wavHeader, pcm16 } from "./core.js?v=6";
+import { wavHeader, pcm16 } from "./core.js?v=7";
 export class Player {
   constructor(onchange, onerror) {
     this.audio = new Audio();
@@ -23,7 +23,7 @@ export class Player {
       this.stop();
       this.onerror(
         Error(
-          "This recording cannot be played here. Try importing a WAV or re-recording in this browser.",
+          "This recording cannot be played here. Re-record this prayer in this browser.",
         ),
       );
     };

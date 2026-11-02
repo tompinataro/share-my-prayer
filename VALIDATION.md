@@ -7,12 +7,12 @@ Local verification on macOS, November 2, 2026. The initial implementation remain
 - `npm test`: 10 core tests. All four sets, all 20 individual decades, exact opening and closing, 80 full-session steps, 53 Hail Marys, 6 Our Fathers, 6 Glory Bes, 5 Fatima Prayers, 5 distinct announcements, 2 Signs of the Cross. Version keys, names/extensions, PCM clipping/RIFF header, invalid selection and malformed/duplicate backup validation.
 - `npm run test:browser`: 26 passed, 2 explicitly skipped. Desktop Chromium and WebKit at 390 × 844 with touch/mobile mode.
 - Real MediaRecorder capture using Chromium’s synthetic microphone: record → stop → review → save → reload → replay. No human voice was recorded for tests.
-- Audio import/save/reload/replay on both engines; independent wording slots; discard replacement preserves saved audio.
+- Synthetic microphone capture/save/reload/replay on both engines; independent wording slots; discard replacement preserves saved audio.
 - All mystery-set/decade selectors and settings synchronization; dedication persistence; missing-recording buttons link to the correct prompt.
 - Pause/resume retains current step while paused; stop remains stopped after pending media time elapses.
 - Individual download extension, combined 14-step decade and 80-step rosary RIFF/WAV file lengths. Export uses real browser decoding of generated WAV fixtures, not mocked export output.
 - Native-share branch receives a real audio File (share API stubbed; no files sent); cancellation is respected. Unsupported sharing produces a download.
-- Backup of all 84 prayer/version slots, clear disposable test database, restore with count confirmation; imported recordings are playable after reload.
+- Backup of all 84 prayer/version slots, clear disposable test database, restore with count confirmation; restored recordings are playable after reload.
 - Denied microphone, quota/storage failure, unsupported decode/export failure, malformed backup, and interrupted/background recording produce actionable messages. Unsaved draft remains reviewable. A forced failure during the second write proves batch rollback preserves all existing audio.
 - Repository-subpath `/share-my-prayer/` loads all relative assets successfully using a test routing prefix.
 - Axe automated accessibility scan: zero violations on home and open prayer dialog in both engines. Keyboard focus rings, dialog labels, source links, text labels alongside icons, live statuses, mobile no-horizontal-overflow check. Screenshots inspected for desktop and mobile. Safari native select sizing was corrected with normalized 48 px controls.
@@ -40,7 +40,7 @@ Before release, on an authorized HTTPS preview:
 
 Current Catholic now displays all eight prayers, with the current Creed covered by ICEL’s non-commercial Internet publication policy and the customary prayers checked against the USCCB. Contemporary English remains available; adaptations are labeled in source details. Traditional is suppressed but legacy audio is retained. See `SOURCES.md` for exact provenance and terms.
 
-No guaranteed background/locked-phone playback, no killed-tab draft recovery, no offline cache, no automatic sync, no MP3 encoding. Backups are unencrypted; restore limit is 150 MB, individual import 60 MB, exports limited to 10 minutes per unique clip and 90 minutes expanded. Physical-device checks above remain applicable.
+No guaranteed background/locked-phone playback, no killed-tab draft recovery, no offline cache, no automatic sync, no MP3 encoding. Backups are unencrypted; restore limit is 150 MB, exports limited to 10 minutes per unique clip and 90 minutes expanded. Physical-device checks above remain applicable.
 
 ## Simplified home update
 
@@ -58,4 +58,8 @@ Current Catholic is selected for new users and for users whose previous preferen
 
 ## Quiet reading view
 
-Missing-recording badges and the rosary missing-recordings list were removed at Tom’s request. An unrecorded prayer opens with only its text and bottom controls; an empty idle recording status is hidden. Recording, saved and playing statuses still appear when applicable. Playback/export readiness checks still prevent silently skipping required audio. Browser coverage verifies no missing-recording message and preserves import/save/replay, wording separation, sequence selection and export behavior.
+Missing-recording badges and the rosary missing-recordings list were removed at Tom’s request. An unrecorded prayer opens with only its text and bottom controls; an empty idle recording status is hidden. Recording, saved and playing statuses still appear when applicable. Playback/export readiness checks still prevent silently skipping required audio. Browser coverage verifies no missing-recording message and preserves record/save/replay, wording separation, sequence selection and export behavior.
+
+## Recording-only input
+
+The standalone Import audio control and file input, event handler, format inference, and import suggestions were removed. Prayers are recorded with the microphone. Tests exercise the record/stop/review/save/reload/replay flow and safe replacement using a synthetic capture fixture on both engines, plus real Chromium MediaRecorder capture separately. Backup restoration remains available in Settings. Regression checks assert there is no audio import input or label in any prayer view.

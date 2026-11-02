@@ -10,10 +10,10 @@ import {
   extension,
   filename,
   validateBackup,
-} from "./core.js?v=6";
-import { prayerText } from "./texts.js?v=6";
-import { allRecordings, saveMany } from "./storage.js?v=6";
-import { Player, assemble } from "./audio.js?v=6";
+} from "./core.js?v=7";
+import { prayerText } from "./texts.js?v=7";
+import { allRecordings, saveMany } from "./storage.js?v=7";
+import { Player, assemble } from "./audio.js?v=7";
 const $ = (id) => document.getElementById(id);
 const defaults = {
   version: "current",
@@ -261,7 +261,7 @@ $("record").onclick = run(async () => {
   if (busy || activeRecording()) return;
   if (!navigator.mediaDevices?.getUserMedia || !globalThis.MediaRecorder)
     throw Error(
-      "Recording is unavailable. Use updated Safari or Chrome over HTTPS, or import an audio file.",
+      "Recording is unavailable. Use updated Safari or Chrome over HTTPS.",
     );
   starting = true;
   $("record").disabled = true;
@@ -315,15 +315,14 @@ $("record").onclick = run(async () => {
     $("record-stop").hidden = false;
     $("record-state").textContent = "● Recording — read the prayer aloud";
     $("individual-play").disabled = true;
-    $("audio-import").disabled = true;
   } catch (e) {
     cleanup();
     if (e.name === "NotAllowedError")
       throw Error(
-        "Microphone access was denied. Allow it in your browser’s website settings, then try again. You can also import audio.",
+        "Microphone access was denied. Allow it in your browser’s website settings, then try again.",
       );
     if (e.name === "NotFoundError")
-      throw Error("No microphone found. Connect one or import an audio file.");
+      throw Error("No microphone found. Connect a microphone and try again.");
     throw Error(
       "Could not start recording. Check your microphone, close other recording apps, and try again.",
     );
@@ -340,7 +339,6 @@ function cleanup() {
   stream = null;
   $("record-stop").hidden = true;
   $("record").disabled = false;
-  $("audio-import").disabled = false;
   update();
 }
 $("record-stop").onclick = () => {
@@ -386,28 +384,6 @@ $("discard").onclick = () => {
   refreshPrayer();
 };
 $("draft-audio").onplay = () => player.stop();
-$("audio-import").onchange = run(async () => {
-  const file = $("audio-import").files[0];
-  $("audio-import").value = "";
-  if (!file || activeRecording() || busy) return;
-  if (draft)
-    throw Error("Save or discard the current take before importing audio.");
-  if (file.size > 60 * 1024 * 1024)
-    throw Error("Choose an audio file smaller than 60 MB.");
-  let type = file.type;
-  if (!type || type === "application/octet-stream") {
-    type = {
-      wav: "audio/wav",
-      m4a: "audio/mp4",
-      mp4: "audio/mp4",
-      webm: "audio/webm",
-      ogg: "audio/ogg",
-    }[file.name.split(".").pop().toLowerCase()];
-  }
-  extension(type || "");
-  player.stop();
-  showDraft(new Blob([file], { type }));
-});
 function selectedItems() {
   const missing = required(settings).filter((id) => !get(id));
   if (missing.length) throw Error("This audio session is not ready yet.");
@@ -636,7 +612,7 @@ $("restore").onchange = run(async () => {
     return notice("Finish the current recording or export first.");
   if (file.size > 150 * 1024 * 1024)
     throw Error(
-      "Backup is too large (150 MB limit). Import individual recordings instead.",
+      "Backup exceeds the 150 MB restore limit. Choose a smaller backup.",
     );
   restoreData = validateBackup(JSON.parse(await file.text()));
   $("restore-summary").textContent =
@@ -693,7 +669,7 @@ $("restore-confirm").onclick = run(async () => {
     );
   } catch (e) {
     throw Error(
-      `Restore failed: ${e.message}. Audio import is atomic; on a storage failure your saved recordings remain unchanged.`,
+      `Restore failed: ${e.message}. Backup restoration is atomic; on a storage failure your saved recordings remain unchanged.`,
     );
   } finally {
     busy = false;
