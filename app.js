@@ -240,6 +240,10 @@ function refreshPrayer() {
   } catch {
     $("custom-text").value = "";
   }
+  if (!text.text)
+    $("prayer-text").textContent =
+      $("custom-text").value.trim() ||
+      "This wording is source-linked. Add your private prayer text below to read it here, or open the source.";
   $("record-state").textContent = currentRecord()
     ? "Saved on this device"
     : "Missing recording";
@@ -261,6 +265,8 @@ function openPrayer(id) {
   active = { id, version: settings.version };
   refreshPrayer();
   $("prayer-dialog").showModal();
+  $("prayer-dialog").scrollTop = 0;
+  $("prayer-title").focus({ preventScroll: true });
 }
 function closePrayer() {
   if (activeRecording())
@@ -282,6 +288,9 @@ $("save-prompt").onclick = run(() => {
     `smp-prompt:${keyFor(active.version, active.id)}`,
     $("custom-text").value,
   );
+  $("prayer-text").textContent =
+    $("custom-text").value.trim() ||
+    "This wording is source-linked. Add your private prayer text below to read it here, or open the source.";
   notice("Private prompt saved in this browser.");
 });
 $("record").onclick = run(async () => {

@@ -12,7 +12,7 @@
       content="A rosary in your own voice. Record prayers privately on your device, listen, and share with love."
     />
     <title>Share My Prayer</title>
-    <link rel="stylesheet" href="./style.css?v=3" />
+    <link rel="stylesheet" href="./style.css?v=4" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
@@ -92,59 +92,62 @@
       </section>
     </dialog>
     <dialog id="prayer-dialog" aria-labelledby="prayer-title">
-      <div class="dialog-top">
-        <span id="prayer-version" class="eyebrow"></span
-        ><button id="prayer-close" aria-label="Close prayer">✕</button>
-      </div>
-      <h2 id="prayer-title"></h2>
-      <p id="text-note" class="small"></p>
-      <a id="text-source" target="_blank" rel="noopener">Read the source ↗</a>
-      <div id="record-state" role="status">Missing recording</div>
-      <div class="record-controls">
-        <button id="record" class="icon-control">
-          <span class="circle red" aria-hidden="true">●</span
-          ><span id="record-label">Record</span></button
-        ><button id="record-stop" class="danger" hidden>■ Stop recording</button
-        ><button id="individual-play" class="icon-control">
-          <span class="circle green" aria-hidden="true">▶</span
-          ><span>Play saved</span></button
-        ><button id="individual-stop" hidden>■ Stop audio</button>
+      <div class="dialog-top prayer-heading">
+        <h2 id="prayer-title" tabindex="-1"></h2>
+        <button id="prayer-close" aria-label="Close prayer">✕</button>
       </div>
       <p id="prayer-text" class="prayer-text"></p>
-      <div id="custom-field" hidden>
-        <label for="custom-text">Your private reading prompt</label
-        ><textarea
-          id="custom-text"
-          rows="7"
-          placeholder="Paste text you have permission to use, or read from the source."
-        ></textarea
-        ><button id="save-prompt">Save private prompt</button>
-      </div>
+      <div class="prayer-tools">
+        <div id="record-state" role="status">Missing recording</div>
+        <div class="record-controls">
+          <button id="record" class="icon-control">
+            <span class="circle red" aria-hidden="true">●</span
+            ><span id="record-label">Record</span></button
+          ><button id="record-stop" class="danger" hidden>
+            ■ Stop recording</button
+          ><button id="individual-play" class="icon-control">
+            <span class="circle green" aria-hidden="true">▶</span
+            ><span>Play saved</span></button
+          ><button id="individual-stop" hidden>■ Stop audio</button>
+        </div>
+        <p id="prayer-version" class="eyebrow"></p>
+        <p id="text-note" class="small"></p>
+        <a id="text-source" target="_blank" rel="noopener">Read the source ↗</a>
+        <div id="custom-field" hidden>
+          <label for="custom-text">Your private reading prompt</label
+          ><textarea
+            id="custom-text"
+            rows="7"
+            placeholder="Paste text you have permission to use, or read from the source."
+          ></textarea
+          ><button id="save-prompt">Save private prompt</button>
+        </div>
 
-      <div id="draft" hidden>
-        <p>
-          Review your new recording. Your previous recording stays saved until
-          you choose Save.
+        <div id="draft" hidden>
+          <p>
+            Review your new recording. Your previous recording stays saved until
+            you choose Save.
+          </p>
+          <audio id="draft-audio" controls></audio
+          ><button id="save-recording" class="primary">Save recording</button
+          ><button id="discard">Discard take</button>
+        </div>
+        <div class="export-buttons">
+          <button id="individual-download">↓ Download</button
+          ><button id="individual-share">↗ Share</button
+          ><label for="audio-import" class="button">↑ Import audio</label
+          ><input
+            id="audio-import"
+            type="file"
+            accept="audio/*,.wav,.m4a,.webm,.ogg"
+            hidden
+          />
+        </div>
+        <p class="small">
+          Microphone access requires HTTPS (or localhost). Speak naturally, then
+          stop and save. Imported audio is previewed before saving.
         </p>
-        <audio id="draft-audio" controls></audio
-        ><button id="save-recording" class="primary">Save recording</button
-        ><button id="discard">Discard take</button>
       </div>
-      <div class="export-buttons">
-        <button id="individual-download">↓ Download</button
-        ><button id="individual-share">↗ Share</button
-        ><label for="audio-import" class="button">↑ Import audio</label
-        ><input
-          id="audio-import"
-          type="file"
-          accept="audio/*,.wav,.m4a,.webm,.ogg"
-          hidden
-        />
-      </div>
-      <p class="small">
-        Microphone access requires HTTPS (or localhost). Speak naturally, then
-        stop and save. Imported audio is previewed before saving.
-      </p>
     </dialog>
     <dialog id="settings-dialog" aria-label="Settings">
       <div class="dialog-top">
@@ -295,6 +298,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=3"></script>
+    <script type="module" src="./app.js?v=4"></script>
   </body>
 </html>

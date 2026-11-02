@@ -222,6 +222,10 @@ test("real MediaRecorder saves microphone take", async ({
   await page.locator('#prayers [data-prayer="father"]').click();
   await page.locator("#record").click();
   await expect(page.locator("#record-state")).toContainText("Recording");
+  await page.locator("#prayer-dialog").evaluate((dialog) => {
+    dialog.scrollTop = 0;
+  });
+  await expect(page.locator("#record-stop")).toBeInViewport();
   await page.waitForTimeout(300);
   await page.locator("#record-stop").click();
   await expect(page.locator("#draft")).toBeVisible();
@@ -481,4 +485,44 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+});
+
+test("prayer opens with text first and supporting controls below, including saved private prompts", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.locator('#prayers [data-prayer="creed"]').click();
+  await expect(page.locator("#prayer-text")).toContainText("I believe in God");
+  expect(
+    await page.locator("#prayer-dialog").evaluate((d) => d.scrollTop),
+  ).toBe(0);
+  const text = await page.locator("#prayer-text").boundingBox();
+  const controls = await page.locator("#record").boundingBox();
+  const note = await page.locator("#text-note").boundingBox();
+  expect(text.y).toBeLessThan(controls.y);
+  expect(text.y + text.height).toBeLessThan(controls.y);
+  expect(text.y + text.height).toBeLessThan(note.y);
+  await page.locator("#record").scrollIntoViewIfNeeded();
+  await page.locator("#prayer-close").click();
+  await page.locator('#prayers [data-prayer="father"]').click();
+  expect(
+    await page.locator("#prayer-dialog").evaluate((d) => d.scrollTop),
+  ).toBe(0);
+  await expect(page.locator("#prayer-text")).toBeInViewport();
+  await page.locator("#prayer-close").click();
+  await page.locator("#settings-open").click();
+  await page.locator("#wording").selectOption("current");
+  await page.locator("#settings-done").click();
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  await expect(page.locator("#prayer-text")).toContainText("source-linked");
+  await page.locator("#custom-text").fill("My private prayer reading prompt.");
+  await page.locator("#save-prompt").click();
+  await page.locator("#prayer-close").click();
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  await expect(page.locator("#prayer-text")).toHaveText(
+    "My private prayer reading prompt.",
+  );
+  expect(
+    await page.locator("#prayer-dialog").evaluate((d) => d.scrollTop),
+  ).toBe(0);
 });

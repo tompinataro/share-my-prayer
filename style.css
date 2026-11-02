@@ -649,14 +649,7 @@ select {
     min-height: 44px;
   }
 }
-.record-controls {
-  position: sticky;
-  top: -24px;
-  z-index: 2;
-  background: #fffefa;
-  border-bottom: 1px solid var(--line);
-  padding: 12px 0;
-}
+
 /* The home screen is deliberately just the name, gear, and prayer buttons. */
 header {
   max-width: 760px;
@@ -758,4 +751,40 @@ h1.brand {
   .rosary-button {
     margin-top: 10px;
   }
+}
+
+/* Open on the prayer itself; supporting actions follow the complete text. */
+.prayer-heading {
+  align-items: flex-start;
+  gap: 14px;
+}
+.prayer-heading h2 {
+  padding-top: 7px;
+}
+#prayer-text {
+  margin: 20px 0 32px;
+}
+.prayer-tools {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.prayer-tools .record-controls {
+  position: static;
+  border-bottom: 0;
+  padding: 12px 0 22px;
+}
+.prayer-tools .eyebrow {
+  margin: 18px 0 10px;
+}
+#record-stop {
+  position: fixed;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  box-shadow: 0 4px 18px #0003;
+  white-space: nowrap;
+}
+#prayer-title:focus {
+  outline: none;
 }
