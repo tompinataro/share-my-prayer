@@ -63,3 +63,7 @@ Missing-recording badges and the rosary missing-recordings list were removed at 
 ## Recording-only input
 
 The standalone Import audio control and file input, event handler, format inference, and import suggestions were removed. Prayers are recorded with the microphone. Tests exercise the record/stop/review/save/reload/replay flow and safe replacement using a synthetic capture fixture on both engines, plus real Chromium MediaRecorder capture separately. Backup restoration remains available in Settings. Regression checks assert there is no audio import input or label in any prayer view.
+
+## Purple theme and centered prayers
+
+General background is light lavender (#f3edf9); regular buttons are deeper lavender (#d8c6ea), lighter than the dark purple cross (#53336b). Prayer titles and full prayer text are centered. The record and play symbols retain their functional red and green colors. Desktop Chromium and mobile WebKit accessibility and secondary-surface checks passed (four targeted browser tests); home and prayer screenshots were visually inspected. No recording/storage behavior changed.

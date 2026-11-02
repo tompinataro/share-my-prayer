@@ -1,10 +1,13 @@
 :root {
-  --ink: #263e35;
-  --muted: #5e675f;
-  --paper: #f7f6f0;
-  --line: #dfe2d8;
-  --gold: #896832;
-  --green: #2d5b46;
+  --ink: #342440;
+  --muted: #5d496a;
+  --paper: #f3edf9;
+  --line: #c5b2d5;
+  --cross: #53336b;
+  --accent: #62407c;
+  --button: #d8c6ea;
+  --button-hover: #c9ade0;
+  --surface: #faf6fe;
   font-family:
     system-ui,
     -apple-system,
@@ -34,11 +37,12 @@ input,
 textarea {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: var(--surface);
   color: var(--ink);
 }
 button,
 .button {
+  background: var(--button);
   padding: 12px 17px;
   min-height: 44px;
   cursor: pointer;
@@ -52,14 +56,14 @@ button,
 }
 button:hover,
 .button:hover {
-  background: #edf1e8;
+  background: var(--button-hover);
 }
 button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 a {
-  color: var(--green);
+  color: var(--accent);
   text-underline-offset: 3px;
 }
 button:focus-visible,
@@ -68,7 +72,7 @@ summary:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid #b28a48;
+  outline: 3px solid #80569e;
   outline-offset: 4px;
 }
 header {
@@ -92,7 +96,7 @@ header {
 }
 .cross {
   font-size: 31px;
-  color: var(--gold);
+  color: var(--cross);
 }
 header button {
   background: transparent;
@@ -110,7 +114,7 @@ main {
   font-size: 0.69rem;
   letter-spacing: 0.18em;
   font-weight: 700;
-  color: #626b55;
+  color: #6b5379;
 }
 h1 {
   font:
@@ -135,8 +139,8 @@ p {
 }
 .private-tag {
   display: inline-block;
-  background: #eaf0e6;
-  border: 1px solid #d9e3d3;
+  background: #ede2f6;
+  border: 1px solid var(--line);
   border-radius: 30px;
   padding: 9px 17px;
   font-size: 0.73rem;
@@ -150,10 +154,10 @@ p {
 }
 .panel {
   border: 1px solid var(--line);
-  background: #fffefb;
+  background: var(--surface);
   border-radius: 17px;
   padding: 30px;
-  box-shadow: 0 7px 24px #263e3504;
+  box-shadow: 0 7px 24px #34244004;
 }
 .section-heading {
   display: flex;
@@ -163,7 +167,7 @@ p {
 }
 .pill {
   font-size: 0.7rem;
-  background: #edf0e8;
+  background: #e9dff2;
   border-radius: 20px;
   padding: 7px 10px;
   white-space: nowrap;
@@ -173,7 +177,7 @@ p {
 }
 .version-label {
   font-size: 0.73rem;
-  color: #7e755c;
+  color: var(--muted);
   margin: 22px 0 8px;
 }
 .prayer-list button,
@@ -192,7 +196,7 @@ p {
 }
 .prayer-list button:hover,
 .mystery-button:hover {
-  background: #f3f5ee;
+  background: var(--button-hover);
 }
 .record-badge {
   font-size: 0.66rem;
@@ -202,7 +206,7 @@ p {
   margin-left: 8px;
 }
 .record-badge.saved {
-  color: var(--green);
+  color: var(--accent);
 }
 details {
   margin-top: 22px;
@@ -242,19 +246,19 @@ textarea {
   min-height: 46px;
 }
 input[type="checkbox"] {
-  accent-color: var(--green);
+  accent-color: var(--accent);
   width: 18px;
   height: 18px;
   vertical-align: middle;
   margin-right: 8px;
 }
 select {
-  background: #fafbf7;
+  background: var(--surface);
   font-size: 0.86rem;
 }
 .rosary-art {
   text-align: center;
-  color: var(--gold);
+  color: var(--cross);
   padding: 14px 0 8px;
 }
 .rosary-art span {
@@ -275,18 +279,18 @@ select {
   margin-bottom: 20px;
 }
 .primary {
-  background: var(--green);
-  border-color: var(--green);
-  color: white;
+  background: var(--button);
+  border-color: var(--line);
+  color: var(--ink);
 }
 .primary:hover {
-  background: #214b37;
+  background: var(--button-hover);
 }
 .full {
   width: 100%;
 }
 .missing {
-  background: #f6f3e9;
+  background: #ede2f6;
   border-radius: 9px;
   padding: 15px;
   font-size: 0.78rem;
@@ -347,7 +351,7 @@ select {
 progress {
   width: 100%;
   height: 5px;
-  accent-color: var(--green);
+  accent-color: var(--accent);
   display: block;
 }
 .care {
@@ -357,11 +361,11 @@ progress {
   padding: 27px 30px;
   border: 1px solid var(--line);
   border-radius: 13px;
-  background: #edf0e6;
+  background: #ede2f6;
 }
 .care > span {
   font-size: 35px;
-  color: var(--gold);
+  color: var(--cross);
 }
 .care h2 {
   font-size: 23px;
@@ -406,11 +410,11 @@ dialog {
   max-width: calc(100% - 24px);
   max-height: 90dvh;
   overflow: auto;
-  background: #fffefa;
+  background: var(--surface);
   color: var(--ink);
 }
 dialog::backdrop {
-  background: #172e2873;
+  background: #33204166;
   backdrop-filter: blur(3px);
 }
 .dialog-top {
@@ -436,7 +440,7 @@ dialog::backdrop {
 }
 #record-state {
   padding: 13px;
-  background: #edf0e8;
+  background: #e9dff2;
   border-radius: 8px;
   font-size: 0.85rem;
   margin: 20px 0;
@@ -469,7 +473,7 @@ dialog::backdrop {
   background: #ad4943;
 }
 .green {
-  background: var(--green);
+  background: #2d5b46;
 }
 .danger {
   background: #a2342e;
@@ -479,7 +483,7 @@ dialog::backdrop {
   font:
     italic 19px/1.6 Georgia,
     serif;
-  color: #8c6d3b;
+  color: #725087;
 }
 audio {
   width: 100%;
@@ -511,7 +515,7 @@ audio {
   top: 5px;
   left: 5px;
   z-index: 20;
-  background: #fff;
+  background: var(--surface);
   padding: 10px;
 }
 [hidden] {
@@ -527,7 +531,7 @@ audio {
   margin-top: 20px;
 }
 #draft {
-  background: #f1f3ea;
+  background: #ede2f6;
   padding: 17px;
   border-radius: 9px;
   margin-top: 15px;
@@ -614,10 +618,10 @@ audio {
 }
 .feedback {
   padding: 13px;
-  border: 1px solid #c8d3bc;
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: #edf0e6;
-  color: #263e35;
+  background: #ede2f6;
+  color: var(--ink);
   font-size: 0.85rem;
   line-height: 1.6;
 }
@@ -627,7 +631,7 @@ select {
   -webkit-appearance: none;
   height: 48px;
   padding-right: 35px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23263e35' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2353336b' stroke-width='1.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
 }
@@ -684,8 +688,8 @@ h1.brand {
 }
 .prayer-list button,
 .rosary-button {
-  border: 1px solid #cdd8c9;
-  background: #fffefb;
+  border: 1px solid var(--line);
+  background: var(--button);
   border-radius: 12px;
   min-height: 76px;
   width: 100%;
@@ -695,16 +699,16 @@ h1.brand {
   justify-content: center;
   text-align: center;
   line-height: 1.4;
-  box-shadow: 0 3px 12px #263e3504;
+  box-shadow: 0 3px 12px #34244004;
 }
 .prayer-list button:hover,
 .rosary-button:hover {
-  background: #e8eee3;
-  border-color: #9fb29c;
+  background: var(--button-hover);
+  border-color: #a98bbf;
 }
 .rosary-button {
   margin-top: 14px;
-  background: #e8eee3;
+  background: var(--button);
 }
 #settings-dialog .care {
   padding: 20px;
@@ -788,4 +792,32 @@ h1.brand {
 
 #record-state:empty {
   display: none;
+}
+
+/* Purple surfaces stay lighter than the cross; prayer words stay centered. */
+#settings-open,
+.dialog-top button {
+  background: var(--button);
+}
+.mystery-button {
+  background: var(--button);
+}
+.prayer-list button {
+  background: var(--button);
+}
+#prayer-text {
+  text-align: center;
+}
+.prayer-heading {
+  justify-content: center;
+  position: relative;
+  padding-inline: 38px;
+}
+.prayer-heading h2 {
+  text-align: center;
+}
+.prayer-heading #prayer-close {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
