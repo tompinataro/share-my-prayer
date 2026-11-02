@@ -1,4 +1,4 @@
-import { wavHeader, pcm16 } from "./core.js?v=9";
+import { wavHeader, pcm16 } from "./core.js?v=10";
 export class Player {
   constructor(onchange, onerror) {
     this.audio = new Audio();

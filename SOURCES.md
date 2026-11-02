@@ -1,6 +1,6 @@
 # Prayer texts and sources
 
-Reviewed November 2, 2026. Current Catholic is the default; Contemporary English is the other selectable option. Every prayer opens to its complete text. Source notices live in the collapsed “Source & wording” section below the prayer and controls.
+Reviewed November 2, 2026. Current Catholic is the default; Contemporary English is the other selectable option. Every prayer opens to its complete text. Source information is available in Settings. The reading view suppresses source/wording controls; concise required copyright acknowledgments remain at the bottom of the recording page.
 
 ## Current Catholic
 
@@ -17,7 +17,7 @@ These are prayer texts, not copied website explanations, Scripture readings or m
 
 The current Apostles’ Creed is an excerpt from the English translation of The Roman Missal © 2010, International Commission on English in the Liturgy Corporation. All rights reserved.
 
-ICEL’s own [Publication Policies, page 25, “Use of ICEL Materials on Global Computer Networks”](https://www.icelweb.org/PubPolicy.PDF) expressly permits approved, promulgated texts on non-commercial Internet sites without obtaining separate written or oral permission, subject to no access fee, exact text, copyright acknowledgment on the displaying pages/frames, no implied endorsement, and the holder’s ability to modify or terminate the permission. This free, non-commercial Pages site includes the acknowledgment in the Creed’s reading view under Source & wording. [ICEL’s copyright page](https://www.icelweb.org/copyright.htm) supplies the required acknowledgment format. The PDF was downloaded directly from ICEL and its page 25 reviewed, resolving the earlier source-linked placeholder. This is a standing web-publication permission, not a separately negotiated license.
+ICEL’s own [Publication Policies, page 25, “Use of ICEL Materials on Global Computer Networks”](https://www.icelweb.org/PubPolicy.PDF) expressly permits approved, promulgated texts on non-commercial Internet sites without obtaining separate written or oral permission, subject to no access fee, exact text, copyright acknowledgment on the displaying pages/frames, no implied endorsement, and the holder’s ability to modify or terminate the permission. This free, non-commercial Pages site includes the acknowledgment in the Creed’s reading view in its bottom attribution footer. [ICEL’s copyright page](https://www.icelweb.org/copyright.htm) supplies the required acknowledgment format. The PDF was downloaded directly from ICEL and its page 25 reviewed, resolving the earlier source-linked placeholder. This is a standing web-publication permission, not a separately negotiated license.
 
 The permission does not itself grant rights for other publishing forms or commercial use. No default narrator or bundled audio is distributed. User recordings remain private until users choose a download/share action; users should consider applicable permissions for their own distribution. No ICEL, USCCB, parish or Church affiliation, sponsorship, or approval of this app is claimed. Reassess the terms before commercializing, selling access, or packaging the text in another publishing format.
 

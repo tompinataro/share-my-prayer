@@ -566,10 +566,7 @@ test("prayers open directly with complete current Catholic wording and controls 
       "Import audio",
     );
     await expect(page.locator("#prayer-dialog")).not.toContainText("paste");
-    await expect(page.locator(".prayer-source")).not.toHaveAttribute(
-      "open",
-      "",
-    );
+    await expect(page.locator(".prayer-source")).toHaveCount(0);
     await page.locator("#prayer-close").click();
   }
   await page.locator("#settings-open").click();

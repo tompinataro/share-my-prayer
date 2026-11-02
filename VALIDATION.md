@@ -67,3 +67,7 @@ The standalone Import audio control and file input, event handler, format infere
 ## Purple theme and centered prayers
 
 General background is light lavender (#f3edf9); regular buttons are deeper lavender (#d8c6ea), lighter than the dark purple cross (#53336b). Prayer titles and full prayer text are centered. The record and play symbols retain their functional red and green colors. Desktop Chromium and mobile WebKit accessibility and secondary-surface checks passed (four targeted browser tests); home and prayer screenshots were visually inspected. No recording/storage behavior changed.
+
+## Navigation and compact layout
+
+The former top-right close buttons are now plain `<` back controls at the upper left of the prayer, Rosary and Settings views, retaining their existing close/back behavior. The main title is centered independently of the cross and gear. Main prayer/Rosary buttons occupy 75% of their previous content width. Source/wording details are removed from the prayer screen; required text attribution is retained only as a concise footer on that recording view, and full source information remains in Settings. Download actions are labeled “↓ Save.” Explanatory text after the Rosary buttons is removed; recording instructions stay on the recording page.

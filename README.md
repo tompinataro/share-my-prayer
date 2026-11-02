@@ -19,9 +19,9 @@ The landing page contains prayer-name buttons, a Rosary button, and a settings g
 
 1. Open the settings gear and choose Current Catholic (the default) or Contemporary English. Traditional is suppressed; existing recordings are retained in backups. Optionally enable “Made just for you. From _____, with Love” and enter a sender.
 2. Tap Rosary, then choose Decades (one selected decade) or Whole Rosary (five decades plus opening/closing) and a mystery set. The rosary controls stay disabled until the audio session is ready; reading prayers never displays a missing-recording message.
-3. Tap a prayer button to open its text first; recording, playback and sharing follow below the prayer, with source notes in a collapsed section. Or open Settings → Mystery announcements for one of the 20 prompts. Read the displayed prayer; record, stop, review, and explicitly save. Re-recording leaves the previous saved audio intact until the replacement commits.
+3. Tap a prayer button to open its text first; recording, playback and sharing follow below the prayer, with source information available in Settings. Or open Settings → Mystery announcements for one of the 20 prompts. Read the displayed prayer; record, stop, review, and explicitly save. Re-recording leaves the previous saved audio intact until the replacement commits.
 4. Begin prayer when all required recordings exist. Pause, resume, or stop at any point. Changing a selection stops playback. The player displays prayer, decade, Hail Mary number, and step progress.
-5. Download/share individual saved recordings. For a session, prepare it first, then tap Download WAV or Share prepared audio. A second explicit tap preserves the user gesture required by Safari’s file-sharing API. Unsupported file sharing falls back to download. Share cancellation does not force a download.
+5. Download/share individual saved recordings. For a session, prepare it first, then tap ↓ Save or Share prepared audio. A second explicit tap preserves the user gesture required by Safari’s file-sharing API. Unsupported file sharing falls back to download. Share cancellation does not force a download.
 6. In Settings, download a private backup regularly. Restore the JSON backup on this or another browser; review its count and confirm replacements. Restore merges by wording and prayer atomically; unrelated audio and current preferences stay intact. Private text prompts are included/restored. Preference metadata is included for reference but is not automatically applied.
 
 ## Wording and permissions
@@ -30,7 +30,7 @@ Every prayer displays its full text immediately. **Current Catholic is the defau
 
 The paste-text workflow has been removed. Old private prompts remain in local storage/backups for compatibility but do not replace the displayed prayers.
 
-[SOURCES.md](./SOURCES.md) documents the primary texts and ICEL’s standing permission for approved texts on free, non-commercial websites (Publication Policies, page 25), with the required Creed attribution in its source details. There is no claim of app endorsement or a blanket license to all USCCB material. Contemporary adaptations are not officially approved Catholic translations.
+[SOURCES.md](./SOURCES.md) documents the primary texts and ICEL’s standing permission for approved texts on free, non-commercial websites (Publication Policies, page 25), with the required Creed attribution at the bottom of its recording view. There is no claim of app endorsement or a blanket license to all USCCB material. Contemporary adaptations are not officially approved Catholic translations.
 
 ## Privacy, storage, and backups
 

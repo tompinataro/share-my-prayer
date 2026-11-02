@@ -10,10 +10,10 @@ import {
   extension,
   filename,
   validateBackup,
-} from "./core.js?v=9";
-import { prayerText } from "./texts.js?v=9";
-import { allRecordings, saveMany } from "./storage.js?v=9";
-import { Player, assemble } from "./audio.js?v=9";
+} from "./core.js?v=10";
+import { prayerText } from "./texts.js?v=10";
+import { allRecordings, saveMany } from "./storage.js?v=10";
+import { Player, assemble } from "./audio.js?v=10";
 const $ = (id) => document.getElementById(id);
 const defaults = {
   version: "current",
@@ -213,11 +213,10 @@ function refreshPrayer() {
   const p = library.find((p) => p.id === active.id),
     text = prayerText(p, active.version);
   $("prayer-title").textContent = p.name;
-  $("prayer-version").textContent = versions[active.version];
-  $("text-note").textContent = text.note;
-  $("copyright-notice").textContent = text.note.includes("©") ? text.note : "";
+  $("copyright-notice").textContent = text.note.includes("©")
+    ? text.note.split(" Reproduced under")[0].split(" Ecumenical wording")[0]
+    : "";
   $("copyright-notice").hidden = !text.note.includes("©");
-  $("text-source").href = text.url;
   $("prayer-text").textContent = text.text;
   $("record-state").textContent = currentRecord() ? "Saved on this device" : "";
   $("record-label").textContent = currentRecord() ? "Re-record" : "Record";
@@ -472,7 +471,7 @@ async function prepareExport(wantShare) {
     notice(
       wantShare
         ? "Audio ready. Tap “Share prepared audio” to open your device’s share sheet."
-        : "Audio ready. Tap “Download WAV” to save your session.",
+        : "Audio ready. Tap “Save” to save your session.",
     );
   } catch (e) {
     throw Error(

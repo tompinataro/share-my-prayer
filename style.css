@@ -816,8 +816,60 @@ h1.brand {
 .prayer-heading h2 {
   text-align: center;
 }
-.prayer-heading #prayer-close {
+
+/* A centered title, balanced navigation, and narrower prayer choices. */
+header {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  gap: 8px;
+}
+h1.brand {
+  display: block;
+  text-align: center;
+  font-size: clamp(20px, 5.5vw, 30px);
+}
+header > .cross {
+  justify-self: start;
+}
+#settings-open {
+  justify-self: end;
+}
+.simple-home .prayer-list {
+  width: 75%;
+  margin-inline: auto;
+}
+.simple-home .rosary-button {
+  width: 75%;
+  margin-inline: auto;
+  display: flex;
+}
+.dialog-top {
+  position: relative;
+  justify-content: center;
+  min-height: 44px;
+  padding-inline: 48px;
+}
+.dialog-top h2 {
+  text-align: center;
+}
+.dialog-top .back-button {
   position: absolute;
-  right: 0;
   top: 0;
+  left: 0;
+  right: auto;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 0;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1;
+  border-radius: 0;
+}
+.dialog-top .back-button:hover {
+  background: transparent;
+  color: var(--accent);
 }

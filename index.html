@@ -12,14 +12,13 @@
       content="A rosary in your own voice. Record prayers privately on your device, listen, and share with love."
     />
     <title>Share My Prayer</title>
-    <link rel="stylesheet" href="./style.css?v=8" />
+    <link rel="stylesheet" href="./style.css?v=10" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
     <header>
-      <h1 class="brand">
-        <span class="cross" aria-hidden="true">✝</span> Share My Prayer
-      </h1>
+      <span class="cross" aria-hidden="true">✝</span>
+      <h1 class="brand">Share My Prayer</h1>
       <button id="settings-open" aria-label="Settings" title="Settings">
         <span aria-hidden="true">⚙</span>
       </button>
@@ -36,7 +35,9 @@
       <section class="session">
         <div class="dialog-top">
           <h2 id="rosary-title">Rosary</h2>
-          <button id="rosary-close" aria-label="Close rosary">✕</button>
+          <button id="rosary-close" class="back-button" aria-label="Back">
+            &lt;
+          </button>
         </div>
 
         <div class="field">
@@ -77,23 +78,21 @@
           aria-label="Prayer session progress"
         ></progress>
         <div class="export-buttons">
-          <button id="export">↓ Prepare session download</button
+          <button id="export">↓ Save</button
           ><button id="share-session">↗ Prepare session share</button>
         </div>
         <div id="export-result" hidden>
-          <a id="export-download" class="button" download>↓ Download WAV</a
+          <a id="export-download" class="button" download>↓ Save</a
           ><button id="export-share">↗ Share prepared audio</button>
         </div>
-        <p class="small">
-          Keep this page open and your phone unlocked while recording or
-          praying. Audio may pause when Safari goes into the background.
-        </p>
       </section>
     </dialog>
     <dialog id="prayer-dialog" aria-labelledby="prayer-title">
       <div class="dialog-top prayer-heading">
         <h2 id="prayer-title" tabindex="-1"></h2>
-        <button id="prayer-close" aria-label="Close prayer">✕</button>
+        <button id="prayer-close" class="back-button" aria-label="Back">
+          &lt;
+        </button>
       </div>
       <p id="prayer-text" class="prayer-text"></p>
       <div class="prayer-tools">
@@ -109,14 +108,6 @@
             ><span>Play saved</span></button
           ><button id="individual-stop" hidden>■ Stop audio</button>
         </div>
-        <details class="prayer-source">
-          <summary>Source & wording</summary>
-          <p id="prayer-version" class="eyebrow"></p>
-          <p id="text-note" class="small"></p>
-          <a id="text-source" target="_blank" rel="noopener"
-            >Read the source ↗</a
-          >
-        </details>
         <div id="draft" hidden>
           <p>
             Review your new recording. Your previous recording stays saved until
@@ -127,20 +118,22 @@
           ><button id="discard">Discard take</button>
         </div>
         <div class="export-buttons">
-          <button id="individual-download">↓ Download</button
+          <button id="individual-download">↓ Save</button
           ><button id="individual-share">↗ Share</button>
         </div>
         <p id="copyright-notice" class="small" hidden></p>
         <p class="small">
-          Microphone access requires HTTPS (or localhost). Speak naturally, then
-          stop and save.
+          Tap Record, read the prayer, then stop and save. Keep this page open
+          and your phone unlocked while recording.
         </p>
       </div>
     </dialog>
     <dialog id="settings-dialog" aria-label="Settings">
       <div class="dialog-top">
         <h2>Settings</h2>
-        <button id="settings-close" aria-label="Close settings">✕</button>
+        <button id="settings-close" class="back-button" aria-label="Back">
+          &lt;
+        </button>
       </div>
       <div class="field">
         <label for="wording">Prayer wording</label
@@ -273,6 +266,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=9"></script>
+    <script type="module" src="./app.js?v=10"></script>
   </body>
 </html>
