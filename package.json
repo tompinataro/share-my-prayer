@@ -1,0 +1,17 @@
+{
+  "name": "share-my-prayer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "python3 -m http.server 4173 --bind 127.0.0.1",
+    "test": "node --test tests/core.test.js",
+    "test:browser": "playwright test",
+    "build": "node scripts/package.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.56.1",
+    "prettier": "^3.9.10"
+  }
+}

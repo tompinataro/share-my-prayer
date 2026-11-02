@@ -1,0 +1,659 @@
+:root {
+  --ink: #263e35;
+  --muted: #5e675f;
+  --paper: #f7f6f0;
+  --line: #dfe2d8;
+  --gold: #896832;
+  --green: #2d5b46;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 16px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+.button,
+select,
+input,
+textarea {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+}
+button,
+.button {
+  padding: 12px 17px;
+  min-height: 44px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+button:hover,
+.button:hover {
+  background: #edf1e8;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+a {
+  color: var(--green);
+  text-underline-offset: 3px;
+}
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #b28a48;
+  outline-offset: 4px;
+}
+header {
+  max-width: 1180px;
+  margin: auto;
+  padding: 25px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  font:
+    600 23px Georgia,
+    serif;
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  gap: 13px;
+  align-items: center;
+}
+.cross {
+  font-size: 31px;
+  color: var(--gold);
+}
+header button {
+  background: transparent;
+}
+main {
+  max-width: 1110px;
+  margin: auto;
+  padding: 0 28px;
+}
+.intro {
+  text-align: center;
+  padding: 63px 0 43px;
+}
+.eyebrow {
+  font-size: 0.69rem;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  color: #626b55;
+}
+h1 {
+  font:
+    normal clamp(38px, 5.5vw, 62px)/1.12 Georgia,
+    serif;
+  letter-spacing: -1.6px;
+  margin: 20px 0;
+}
+h2 {
+  font:
+    normal 29px/1.2 Georgia,
+    serif;
+  margin: 8px 0 13px;
+}
+p {
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 8px 0 20px;
+}
+.intro p {
+  font-size: 16px;
+}
+.private-tag {
+  display: inline-block;
+  background: #eaf0e6;
+  border: 1px solid #d9e3d3;
+  border-radius: 30px;
+  padding: 9px 17px;
+  font-size: 0.73rem;
+  margin-top: 8px;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 25px;
+  align-items: start;
+}
+.panel {
+  border: 1px solid var(--line);
+  background: #fffefb;
+  border-radius: 17px;
+  padding: 30px;
+  box-shadow: 0 7px 24px #263e3504;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.pill {
+  font-size: 0.7rem;
+  background: #edf0e8;
+  border-radius: 20px;
+  padding: 7px 10px;
+  white-space: nowrap;
+}
+.panel > p {
+  font-size: 0.87rem;
+}
+.version-label {
+  font-size: 0.73rem;
+  color: #7e755c;
+  margin: 22px 0 8px;
+}
+.prayer-list button,
+.mystery-button {
+  display: flex;
+  text-align: left;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 16px 0;
+  font-weight: 500;
+  font-size: 0.91rem;
+}
+.prayer-list button:hover,
+.mystery-button:hover {
+  background: #f3f5ee;
+}
+.record-badge {
+  font-size: 0.66rem;
+  font-weight: 400;
+  color: var(--muted);
+  white-space: nowrap;
+  margin-left: 8px;
+}
+.record-badge.saved {
+  color: var(--green);
+}
+details {
+  margin-top: 22px;
+}
+summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 13px 0;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+summary span {
+  float: right;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.72rem;
+}
+h3 {
+  font:
+    normal 21px Georgia,
+    serif;
+}
+.field {
+  margin: 20px 0;
+}
+label {
+  display: block;
+  font-size: 0.79rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+select,
+input:not([type="checkbox"]),
+textarea {
+  width: 100%;
+  padding: 13px;
+  min-height: 46px;
+}
+input[type="checkbox"] {
+  accent-color: var(--green);
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+select {
+  background: #fafbf7;
+  font-size: 0.86rem;
+}
+.rosary-art {
+  text-align: center;
+  color: var(--gold);
+  padding: 14px 0 8px;
+}
+.rosary-art span {
+  display: block;
+  letter-spacing: 2px;
+  font-size: 17px;
+}
+.rosary-art b {
+  font-size: 31px;
+  font-weight: 400;
+  display: block;
+  margin-top: 5px;
+}
+#session-summary {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.primary:hover {
+  background: #214b37;
+}
+.full {
+  width: 100%;
+}
+.missing {
+  background: #f6f3e9;
+  border-radius: 9px;
+  padding: 15px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.missing:empty {
+  display: none;
+}
+.missing button {
+  background: transparent;
+  min-height: 35px;
+  border: 0;
+  padding: 4px;
+  text-decoration: underline;
+  justify-content: flex-start;
+  font-size: 0.77rem;
+  text-align: left;
+}
+.missing ul {
+  padding-left: 17px;
+  margin: 8px 0;
+}
+.small {
+  font-size: 0.74rem;
+  line-height: 1.65;
+}
+.session > .small {
+  margin: 18px 0 0;
+}
+.export-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.export-buttons > * {
+  flex: 1;
+  font-size: 0.75rem;
+  padding: 11px 9px;
+}
+.transport {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.transport button {
+  flex: 1;
+  padding: 9px;
+  font-size: 0.76rem;
+}
+#play-status {
+  text-align: center;
+  font-size: 0.8rem;
+  margin: 16px 0 9px;
+  line-height: 1.5;
+}
+progress {
+  width: 100%;
+  height: 5px;
+  accent-color: var(--green);
+  display: block;
+}
+.care {
+  display: flex;
+  gap: 23px;
+  margin: 35px 0;
+  padding: 27px 30px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #edf0e6;
+}
+.care > span {
+  font-size: 35px;
+  color: var(--gold);
+}
+.care h2 {
+  font-size: 23px;
+}
+.care p {
+  font-size: 0.83rem;
+  max-width: 720px;
+}
+.backup-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.backup-actions label {
+  margin: 0;
+}
+.sources {
+  margin: 10px 5px 30px;
+}
+.sources p {
+  font-size: 0.8rem;
+}
+footer {
+  border-top: 1px solid var(--line);
+  max-width: 1110px;
+  margin: 25px auto 0;
+  padding: 25px 28px 35px;
+  font:
+    17px Georgia,
+    serif;
+}
+footer span {
+  float: right;
+  font: 12px system-ui;
+  color: var(--muted);
+}
+dialog {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 30px;
+  width: 600px;
+  max-width: calc(100% - 24px);
+  max-height: 90dvh;
+  overflow: auto;
+  background: #fffefa;
+  color: var(--ink);
+}
+dialog::backdrop {
+  background: #172e2873;
+  backdrop-filter: blur(3px);
+}
+.dialog-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+.dialog-top button {
+  border: 0;
+  background: transparent;
+}
+.dialog-top h2 {
+  margin: 0;
+}
+.prayer-text {
+  font:
+    23px/1.7 Georgia,
+    serif;
+  white-space: pre-line;
+  color: var(--ink);
+  margin: 25px 0;
+}
+#record-state {
+  padding: 13px;
+  background: #edf0e8;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin: 20px 0;
+}
+.record-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  padding: 8px;
+}
+.icon-control {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: 0;
+  padding: 4px;
+  font-size: 0.78rem;
+}
+.circle {
+  border-radius: 50%;
+  height: 62px;
+  width: 62px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  color: white;
+}
+.red {
+  background: #ad4943;
+}
+.green {
+  background: var(--green);
+}
+.danger {
+  background: #a2342e;
+  color: white;
+}
+.dedication {
+  font:
+    italic 19px/1.6 Georgia,
+    serif;
+  color: #8c6d3b;
+}
+audio {
+  width: 100%;
+  margin: 12px 0;
+}
+#notice {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 30px);
+  background: var(--ink);
+  color: white;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 0.85rem;
+  z-index: 10;
+  box-shadow: 0 5px 20px #0002;
+}
+#notice:empty {
+  display: none;
+}
+.skip {
+  position: absolute;
+  top: -100px;
+}
+.skip:focus {
+  top: 5px;
+  left: 5px;
+  z-index: 20;
+  background: #fff;
+  padding: 10px;
+}
+[hidden] {
+  display: none !important;
+}
+#export-result {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#custom-field {
+  margin-top: 20px;
+}
+#draft {
+  background: #f1f3ea;
+  padding: 17px;
+  border-radius: 9px;
+  margin-top: 15px;
+}
+#draft p {
+  font-size: 0.8rem;
+}
+#draft button {
+  margin: 4px;
+  font-size: 0.8rem;
+}
+@media (max-width: 760px) {
+  header {
+    padding: 17px 20px;
+  }
+  .brand {
+    font-size: 20px;
+  }
+  .cross {
+    font-size: 26px;
+  }
+  header button {
+    font-size: 0.75rem;
+    padding: 9px 12px;
+  }
+  main {
+    padding: 0 17px;
+  }
+  .intro {
+    padding: 40px 0 30px;
+  }
+  h1 {
+    font-size: 44px;
+  }
+  .intro p {
+    font-size: 14px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .panel {
+    padding: 24px 21px;
+  }
+  .session {
+    grid-row: 1;
+  }
+  .care {
+    padding: 22px 19px;
+    gap: 14px;
+  }
+  .care > span {
+    display: none;
+  }
+  footer span {
+    display: block;
+    float: none;
+    margin-top: 9px;
+  }
+  dialog {
+    padding: 23px 19px;
+  }
+  .prayer-text {
+    font-size: 22px;
+  }
+  .record-controls {
+    gap: 16px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  button {
+    transition: background 0.15s;
+  }
+  dialog[open] {
+    animation: appear 0.18s ease-out;
+  }
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+.feedback {
+  padding: 13px;
+  border: 1px solid #c8d3bc;
+  border-radius: 8px;
+  background: #edf0e6;
+  color: #263e35;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+/* Normalize native Safari selects and keep comfortable touch targets. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 48px;
+  padding-right: 35px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23263e35' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.rosary-art span {
+  white-space: nowrap;
+  font-size: clamp(12px, 3.1vw, 17px);
+  letter-spacing: 1px;
+}
+@media (max-width: 760px) {
+  select,
+  input:not([type="checkbox"]),
+  textarea {
+    font-size: 16px;
+  }
+  .missing button {
+    min-height: 44px;
+  }
+}
+.record-controls {
+  position: sticky;
+  top: -24px;
+  z-index: 2;
+  background: #fffefa;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+}
