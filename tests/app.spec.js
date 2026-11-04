@@ -931,3 +931,25 @@ test("prayer playback toggles pause and resume without restarting and stays cent
     path: `test-results/${test.info().project.name}-centered-playback.png`,
   });
 });
+
+test("release bypasses stale cached stylesheet URLs for the cog", async ({
+  page,
+}) => {
+  await page.route(/style\.css\?v=(11|12)$/, (route) =>
+    route.fulfill({
+      contentType: "text/css",
+      body: "#settings-open svg { width: 150px; height: 150px; color: pink; }",
+    }),
+  );
+  await page.goto("/");
+  await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
+    "href",
+    "./style.css?v=settings-playback-1",
+  );
+  const settings = page.getByRole("button", { name: "Settings", exact: true });
+  await expect(settings.locator("svg")).toHaveCSS("width", "28px");
+  await expect(settings.locator("svg")).toHaveCSS("height", "28px");
+  await expect(settings.locator("svg")).toHaveCSS("color", "rgb(52, 36, 64)");
+  await settings.click();
+  await expect(page.locator("#settings-dialog")).toBeVisible();
+});
