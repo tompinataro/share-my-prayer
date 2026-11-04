@@ -931,6 +931,7 @@ header > .cross {
   margin: 18px auto 0;
   text-align: center;
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: clamp(0.6875rem, 3.2vw, 0.875rem);
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }

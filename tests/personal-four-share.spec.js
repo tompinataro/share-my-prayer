@@ -128,7 +128,7 @@ test("four-prayer Share requires all four personal recordings in the selected wo
   await page.goto("/");
   await expect(page.locator("#home-share-four")).toBeHidden();
   await expect(page.locator("#personal-share-help")).toContainText(
-    "record and save all four prayers",
+    "After you record the four prayers above,",
   );
   await save(page, ids.slice(0, 3));
   await expect(page.locator("#home-share-four")).toBeHidden();
@@ -310,4 +310,48 @@ test("saving the fourth prayer and replacing a take updates combined Share witho
     await page.evaluate(() => window.shared[1].samples),
     [4096, 8192, 2048, 16384],
   );
+});
+
+test("home sharing instruction has the exact three centered lines and safe text enlargement", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const note = page.locator("#personal-share-help");
+  await expect(note.locator("span")).toHaveText([
+    "After you record the four prayers above,",
+    "in your own voice, you can share them.",
+    "🙏",
+  ]);
+  await expect(note.locator("br")).toHaveCount(2);
+  await expect(note).toHaveCSS("text-align", "center");
+  for (const width of [320, 390, 1280]) {
+    await page.setViewportSize({ width, height: 1000 });
+    const result = await note.evaluate((el) => ({
+      lines: [...el.querySelectorAll("span")].map((span) => {
+        const range = document.createRange();
+        range.selectNodeContents(span);
+        return range.getClientRects().length;
+      }),
+      overflow:
+        el.scrollWidth > el.clientWidth ||
+        document.documentElement.scrollWidth > innerWidth,
+    }));
+    expect(result.lines).toEqual([1, 1, 1]);
+    expect(result.overflow).toBe(false);
+    await page.screenshot({
+      path: `test-results/${test.info().project.name}-home-copy-${width}.png`,
+    });
+  }
+  await page.setViewportSize({ width: 320, height: 1000 });
+  await page.evaluate(() => (document.documentElement.style.fontSize = "32px"));
+  expect(
+    await note.evaluate(
+      (el) =>
+        el.scrollWidth <= el.clientWidth &&
+        document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.screenshot({
+    path: `test-results/${test.info().project.name}-home-copy-enlarged.png`,
+  });
 });
