@@ -1,4 +1,23 @@
 import { test, expect } from "@playwright/test";
+// Keep existing personal-recording regression tests independent of staged defaults.
+// Narrator-specific tests register their own route later, overriding this fixture.
+test.beforeEach(async ({ page }, testInfo) => {
+  // Existing regression suite exercises the unchanged Current wording explicitly.
+  if (!testInfo.title.startsWith("Classic wording is explicit"))
+    await page.addInitScript(() => {
+      if (!localStorage.getItem("smp-settings"))
+        localStorage.setItem(
+          "smp-settings",
+          JSON.stringify({ version: "current" }),
+        );
+    });
+  await page.route("**/narrator-manifest.js*", (route) =>
+    route.fulfill({
+      contentType: "application/javascript",
+      body: "export const narratorClips = {};",
+    }),
+  );
+});
 const tone = () => {
   const a = new Uint8Array(44 + 4800);
   const d = new DataView(a.buffer);
@@ -71,27 +90,32 @@ async function recordTake(page) {
   await page.locator("#record-stop").click();
   await expect(page.locator("#draft")).toBeVisible();
 }
-async function seed(page) {
-  await page.evaluate(
-    async (bytes) => {
+async function seed(page, { legacyOnly = false } = {}) {
+  const count = await page.evaluate(
+    async ({ bytes, legacyOnly }) => {
       const { library, versions, keyFor } = await import("./core.js");
       const { saveMany } = await import("./storage.js");
       const blob = new Blob([new Uint8Array(bytes)], { type: "audio/wav" });
       await saveMany(
-        Object.keys(versions).flatMap((version) =>
-          library.map((p) => ({
-            id: p.id,
-            version,
-            key: keyFor(version, p.id),
-            blob,
-            type: blob.type,
-            savedAt: new Date().toISOString(),
-          })),
-        ),
+        Object.keys(versions)
+          .filter((version) => !legacyOnly || version !== "classic")
+          .flatMap((version) =>
+            library.map((p) => ({
+              id: p.id,
+              version,
+              key: keyFor(version, p.id),
+              blob,
+              type: blob.type,
+              savedAt: new Date().toISOString(),
+            })),
+          ),
       );
+      const { allRecordings } = await import("./storage.js");
+      return (await allRecordings()).length;
     },
-    [...tone()],
+    { bytes: [...tone()], legacyOnly },
   );
+  expect(count).toBe(legacyOnly ? 84 : 112);
   await page.reload();
   await expect(page.locator("#saved-count")).toContainText("28 / 28");
 }
@@ -167,6 +191,10 @@ test("record, save, reload, replay and separate versions; draft preserves previo
   await expect(page.locator("#reading-view")).toBeVisible();
   await expect(page.locator("#recording-view")).toBeHidden();
   await expect(page.locator("#record-state")).toContainText("Saved");
+  // Regression: controls work immediately after saving, without reopening.
+  await expect(page.locator("#individual-play")).toBeEnabled();
+  await expect(page.locator("#individual-download")).toBeEnabled();
+  await expect(page.locator("#individual-share")).toBeEnabled();
   await page.reload();
   await page.locator('#prayers [data-prayer="hail"]').click();
   await page.locator("#individual-play").click();
@@ -239,7 +267,9 @@ test("sequence export is real combined WAV; share fallback; backup restore", asy
   await page.reload();
   await expect(page.locator("#saved-count")).toContainText("0 / 28");
   await page.locator("#restore").setInputFiles(path);
-  await expect(page.locator("#restore-summary")).toContainText("84 recordings");
+  await expect(page.locator("#restore-summary")).toContainText(
+    "112 recordings",
+  );
   await page.locator("#restore-confirm").click();
   await expect(page.locator("#saved-count")).toContainText("28 / 28");
   await expect(page.locator("#start")).toBeEnabled();
@@ -488,7 +518,7 @@ test("failed batch write rolls back every audio replacement", async ({
       count: records.length,
     };
   });
-  expect(outcome).toEqual({ failed: true, size: tone().length, count: 84 });
+  expect(outcome).toEqual({ failed: true, size: tone().length, count: 112 });
 });
 
 test("simple home has prayer-name buttons and a gear; secondary controls open on demand", async ({
@@ -551,7 +581,8 @@ test("prayers open directly with complete current Catholic wording and controls 
   await page.goto("/");
   await expect(page.locator("#wording")).toHaveValue("current");
   await expect(page.locator("#wording option")).toHaveText([
-    "Current Catholic",
+    "Classic prayers · historical + adapted",
+    "Current Catholic · existing wording",
     "Contemporary English",
   ]);
   for (const [id, words] of Object.entries({
@@ -605,7 +636,8 @@ test("old Traditional preference migrates to Current Catholic without deleting a
   page,
 }) => {
   await page.goto("/");
-  await seed(page);
+  // Explicit old three-version fixture: migration must preserve exactly 84 records.
+  await seed(page, { legacyOnly: true });
   await page.evaluate(() => {
     localStorage.setItem(
       "smp-settings",
@@ -635,4 +667,172 @@ test("old Traditional preference migrates to Current Catholic without deleting a
       return (await allRecordings()).length;
     }),
   ).toBe(84);
+});
+
+test("Bella defaults are available without saving narrator assets into personal storage", async ({
+  page,
+}) => {
+  await page.route("**/narrator-manifest.js*", (route) =>
+    route.fulfill({
+      contentType: "application/javascript",
+      body: 'export const narratorClips = {"current:hail":{path:"./narration/bella/current/hail.wav"}};',
+    }),
+  );
+  await page.route("**/narration/bella/current/hail.wav", (route) =>
+    route.fulfill({ contentType: "audio/wav", body: tone() }),
+  );
+  await page.goto("/");
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  await expect(page.locator("#play-label")).toHaveText("Play Bella");
+  await expect(page.locator("#audio-source")).toContainText("AI-generated");
+  await expect(page.locator("#individual-play")).toBeEnabled();
+  const downloaded = page.waitForEvent("download");
+  await page.locator("#individual-download").click();
+  expect((await downloaded).suggestedFilename()).toMatch(/\.wav$/);
+  expect(
+    await page.evaluate(
+      async () => (await (await import("./storage.js")).allRecordings()).length,
+    ),
+  ).toBe(0);
+  await seed(page);
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  await expect(page.locator("#play-label")).toHaveText("Play saved");
+  await expect(page.locator("#audio-source")).toContainText(
+    "Your saved recording",
+  );
+});
+
+test("failed Bella fetch leaves personal storage untouched and can retry", async ({
+  page,
+}) => {
+  let fail = true;
+  await page.route("**/narrator-manifest.js*", (route) =>
+    route.fulfill({
+      contentType: "application/javascript",
+      body: 'export const narratorClips = {"current:hail":{path:"./narration/bella/current/hail.wav"}};',
+    }),
+  );
+  await page.route("**/narration/bella/current/hail.wav", (route) =>
+    fail
+      ? route.fulfill({ status: 503, body: "Unavailable" })
+      : route.fulfill({ contentType: "audio/wav", body: tone() }),
+  );
+  await page.goto("/");
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  await page.locator("#individual-play").click();
+  await expect(page.locator("#reading-view .feedback")).toContainText(
+    "could not be loaded",
+  );
+  await expect(page.locator("#individual-play")).toBeEnabled();
+  fail = false;
+  const downloaded = page.waitForEvent("download");
+  await page.locator("#individual-download").click();
+  await downloaded;
+  expect(
+    await page.evaluate(
+      async () => (await (await import("./storage.js")).allRecordings()).length,
+    ),
+  ).toBe(0);
+});
+
+test("incomplete Current rosary identifies required personal recordings; ready sessions clear the warning", async ({
+  page,
+}) => {
+  const { narratorClips } = await import("../narrator-manifest.js");
+  await page.route("**/narrator-manifest.js*", (route) =>
+    route.fulfill({
+      contentType: "application/javascript",
+      body: `export const narratorClips = ${JSON.stringify(narratorClips)};`,
+    }),
+  );
+  await page.addInitScript(() =>
+    localStorage.setItem(
+      "smp-settings",
+      JSON.stringify({
+        version: "current",
+        mode: "whole",
+        set: "Joyful",
+        decade: 0,
+      }),
+    ),
+  );
+  await page.goto("/");
+  await page.locator("#rosary-open").click();
+  for (const id of ["start", "export", "share-session"])
+    await expect(page.locator(`#${id}`)).toBeDisabled();
+  const status = page.locator("#play-status");
+  await expect(status).toContainText("needs 5 personal recordings");
+  for (const name of [
+    "Apostles’ Creed",
+    "Hail Mary",
+    "Fatima Prayer (O my Jesus)",
+    "Hail Holy Queen",
+    "Rosary Closing Prayer",
+  ])
+    await expect(status).toContainText(name);
+  await expect(status).toContainText("Record and Save");
+  await expect(status).not.toContainText("Ready when you are");
+  await page.locator("#rosary-close").click();
+  await page.locator("#settings-open").click();
+  await page.locator("#wording").selectOption("contemporary");
+  await page.locator("#settings-done").click();
+  await page.locator("#rosary-open").click();
+  await expect(status).toHaveText("Ready when you are.");
+  await expect(page.locator("#start")).toBeEnabled();
+  await page.locator("#rosary-close").click();
+  await seed(page);
+  await page.locator("#rosary-open").click();
+  await expect(status).toHaveText("Ready when you are.");
+  await expect(page.locator("#start")).toBeEnabled();
+});
+
+test("Classic wording is explicit and old Current recording stays in its own selection", async ({
+  page,
+}) => {
+  // Override the historical-regression fixture: this test starts as a new user.
+  await page.addInitScript(() => localStorage.removeItem("smp-settings"));
+  await page.goto("/");
+  await page.locator("#settings-open").click();
+  await expect(page.locator("#wording")).toHaveValue("classic");
+  await expect(page.locator("#wording-help")).toContainText("adapted Fatima");
+  await page.locator("#settings-done").click();
+  await page.evaluate(
+    async (bytes) => {
+      const { saveMany } = await import("./storage.js");
+      await saveMany([
+        {
+          key: "current:hail",
+          id: "hail",
+          version: "current",
+          blob: new Blob([new Uint8Array(bytes)], { type: "audio/wav" }),
+        },
+      ]);
+    },
+    [...tone()],
+  );
+  await page.reload();
+  // No preferences, but existing Current recording: keep it discoverable by default.
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  await expect(page.locator("#reading-wording")).toHaveText("Current Catholic");
+  await expect(page.locator("#prayer-text")).toContainText("with you");
+  await expect(page.locator("#audio-source")).toContainText(
+    "Your saved recording",
+  );
+  await page.locator("#prayer-close").click();
+  await page.locator("#settings-open").click();
+  await page.locator("#wording").selectOption("classic");
+  await page.locator("#settings-done").click();
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  await expect(page.locator("#reading-wording")).toContainText(
+    "Classic prayers · Historical wording",
+  );
+  await expect(page.locator("#prayer-text")).toContainText("with thee");
+  await expect(page.locator("#saved-count")).toContainText("0 / 28 saved");
+  const records = await page.evaluate(async () =>
+    (await (await import("./storage.js")).allRecordings()).map((r) => ({
+      key: r.key,
+      version: r.version,
+    })),
+  );
+  expect(records).toEqual([{ key: "current:hail", version: "current" }]);
 });

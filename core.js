@@ -1,14 +1,28 @@
 export const versions = {
   traditional: "Traditional Catholic",
+  classic: "Classic prayers",
   current: "Current Catholic",
   contemporary: "Contemporary English",
 };
 export const selectableVersions = {
+  classic: versions.classic,
   current: versions.current,
   contemporary: versions.contemporary,
 };
 export const preferredVersion = (version) =>
-  Object.hasOwn(selectableVersions, version) ? version : "current";
+  Object.hasOwn(selectableVersions, version)
+    ? version
+    : version === undefined
+      ? "classic"
+      : "current";
+export function initialWording(storedVersion, savedRecords = []) {
+  if (storedVersion !== undefined) return preferredVersion(storedVersion);
+  // A returning user without preferences still keeps access to existing audio.
+  if (savedRecords.some((r) => r.version === "current")) return "current";
+  if (savedRecords.some((r) => r.version === "contemporary"))
+    return "contemporary";
+  return "classic";
+}
 export const mysteries = {
   Joyful: [
     "The Annunciation",
@@ -142,7 +156,7 @@ export function validateBackup(data) {
     data?.format !== "share-my-prayer" ||
     data.version !== 1 ||
     !Array.isArray(data.recordings) ||
-    data.recordings.length > 84
+    data.recordings.length > library.length * Object.keys(versions).length
   )
     throw Error("This is not a supported Share My Prayer backup.");
   const seen = new Set();

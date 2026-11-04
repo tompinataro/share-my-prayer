@@ -57,7 +57,7 @@ test("library keys isolate versions and include all mystery prompts", () => {
     new Set(
       Object.keys(versions).flatMap((v) => library.map((p) => keyFor(v, p.id))),
     ).size,
-    84,
+    112,
   );
 });
 test("accurate types and safe dedication filenames", () => {
@@ -108,13 +108,14 @@ test("invalid selections rejected", () => {
 
 import { prayerText, currentCatholic } from "../texts.js";
 import { prayers, selectableVersions, preferredVersion } from "../core.js";
-test("visible wording choices default current and every prayer has text", () => {
+test("visible wording choices default Classic for new users and every prayer has text", () => {
   assert.deepEqual(Object.keys(selectableVersions), [
+    "classic",
     "current",
     "contemporary",
   ]);
   assert.equal(preferredVersion("traditional"), "current");
-  assert.equal(preferredVersion(undefined), "current");
+  assert.equal(preferredVersion(undefined), "classic");
   assert.equal(preferredVersion("contemporary"), "contemporary");
   for (const version of Object.keys(selectableVersions))
     for (const prayer of prayers) {

@@ -77,7 +77,7 @@
           ><button id="resume">▶ Resume</button
           ><button id="play-stop">■ Stop playback</button>
         </div>
-        <div id="play-status" role="status">Ready when you are.</div>
+        <div id="play-status" role="status">Checking audio availability…</div>
         <progress
           id="progress"
           value="0"
@@ -102,8 +102,10 @@
             &lt;
           </button>
         </div>
+        <p id="reading-wording" class="small"></p>
         <p id="prayer-text" class="prayer-text"></p>
         <p id="reading-credit" class="small" hidden></p>
+        <p id="audio-source" class="small" hidden></p>
         <div class="prayer-tools">
           <div class="record-controls">
             <button id="record" class="icon-control">
@@ -162,7 +164,10 @@
       <div class="field">
         <label for="wording">Prayer wording</label
         ><select id="wording">
-          <option value="current">Current Catholic</option>
+          <option value="classic">
+            Classic prayers · historical + adapted
+          </option>
+          <option value="current">Current Catholic · existing wording</option>
           <option value="contemporary">Contemporary English</option>
         </select>
       </div>
@@ -186,10 +191,7 @@
         <label for="settings-decade">Choose your decade</label
         ><select id="settings-decade"></select>
       </div>
-      <p class="small">
-        Current Catholic is the default. Contemporary English is an optional
-        alternative. Recordings are saved separately for each wording.
-      </p>
+      <p id="wording-help" class="small"></p>
       <div class="field">
         <label
           ><input id="subtitle" type="checkbox" /> Add a personal
@@ -237,9 +239,13 @@
       <details class="sources">
         <summary>Prayer wording, sources & privacy</summary>
         <p>
-          Current Catholic is the default and displays the complete prayers.
-          Contemporary English offers licensed ELLC texts and original
-          adaptations, which are not officially approved Catholic translations.
+          Classic prayers combines historical Creed, Hail Mary, Hail Holy Queen
+          and closing wording with an original adapted Fatima prayer. Other
+          prayers retain their customary wording. Current Catholic keeps the
+          earlier words and recordings unchanged. Contemporary English offers
+          licensed ELLC texts and original adaptations, not officially approved
+          Catholic translations. Recordings remain separate for every wording
+          selection.
         </p>
         <p>
           <a
@@ -290,6 +296,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=11"></script>
+    <script type="module" src="./app.js?v=bella-classic"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-import { wavHeader, pcm16 } from "./core.js?v=11";
+import { wavHeader, pcm16 } from "./core.js?v=bella-classic";
 export class Player {
   constructor(onchange, onerror) {
     this.audio = new Audio();

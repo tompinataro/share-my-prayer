@@ -62,6 +62,17 @@ export function prayerText(prayer, version) {
       note: "Original announcement prompt. Mystery names follow the USCCB rosary guide.",
       url: "https://www.usccb.org/how-to-pray-the-rosary",
     };
+  if (version === "classic") {
+    const sourceVersion = ["creed", "hail", "queen", "closing"].includes(
+      prayer.id,
+    )
+      ? "traditional"
+      : prayer.id === "fatima"
+        ? "contemporary"
+        : "current";
+    const result = prayerText(prayer, sourceVersion);
+    return { ...result, note: `Classic prayers selection. ${result.note}` };
+  }
   if (version === "current")
     return {
       text: currentCatholic[prayer.id],

@@ -39,3 +39,18 @@ All 20 announcement prompts are original ordinal announcement sentences using th
 Traditional Catholic is hidden from Settings and is never selected by default. An existing Traditional preference is interpreted as Current Catholic; an explicit Contemporary English preference is retained. Legacy recordings retain their original version keys and stay in local storage and backups. They are not silently relabeled as Current Catholic recordings.
 
 Historical text data is retained only for legacy compatibility: [Baltimore Catechism No. 1](https://www.gutenberg.org/ebooks/14551), [Baltimore Catechism No. 3](https://www.gutenberg.org/ebooks/14553), and [How to Say the Rosary (1937)](https://en.wikisource.org/wiki/How_to_Say_the_Rosary). These historical sources are public domain in the United States; status elsewhere may differ. [All Saints/FSSP prayers](https://www.fsspminneapolis.org/prayers) was an initial comparison source, not a grant of app rights.
+
+
+## Unpublished Bella narration preview
+
+A local, unpublished preview includes Bella audio for the three historically based Current forms (Sign of the Cross, Glory Be, Our Father), all eight Contemporary forms, and the 20 original mystery announcements. This is not blanket release clearance. Current Hail Mary, Hail Holy Queen, Fatima and closing are held pending exact-wording rights review; Current Creed narration is excluded. Personal recordings remain separate.
+
+English translations of the Lord's Prayer, Apostles' Creed and Gloria Patri, © 1998 English Language Liturgical Consultation (ELLC), and used by permission. www.englishtexts.org. This attribution applies to the corresponding Contemporary audio and is also retained in those MP3 files' copyright metadata. Contemporary adaptations remain labeled as not officially approved Catholic translations.
+
+All generated audio requires listening and device QA before any public release. No claim of ICEL, USCCB, ELLC, parish or Church endorsement is made.
+
+## Approved Classic selection (unpublished)
+
+Classic prayers is a new, separate wording option approved by Tom on November 3, 2026. Its Creed and Hail Mary use the retained Baltimore Catechism No. 1 text; Hail Holy Queen and closing use the retained How to Say the Rosary historical transcription. The Fatima prayer uses the existing app-authored CC0 Contemporary adaptation, expressly labeled as such. Cross, Glory Be and Our Father keep their Current wording; mystery announcements remain original app prompts. It is not presented as one approved liturgical translation or as a historical version of the adapted Fatima prayer. See CLASSIC-SELECTION-DESIGN.md for preservation of existing personal recordings and text/audio matching.
+
+The four Classic historical MP3s are now integrated after verifying exact source input text and file hashes. The approved 1937 wording was additionally checked against all four pages of its historical facsimile, which displayed no copyright notice; the dated publisher/imprimatur and validated transcription support the documented US basis. This is not worldwide clearance. Classic closing retains the supplied V./R. labels verbatim. The model cannot hear whether Bella pronounced those labels; human listening remains necessary. Classic Fatima reuses the existing Contemporary MP3 without regeneration or byte changes.

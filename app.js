@@ -1,6 +1,7 @@
 import {
   versions,
   preferredVersion,
+  initialWording,
   mysteries,
   prayers,
   library,
@@ -10,19 +11,25 @@ import {
   extension,
   filename,
   validateBackup,
-} from "./core.js?v=11";
-import { prayerText } from "./texts.js?v=11";
+} from "./core.js?v=bella-classic";
+import { prayerText } from "./texts.js?v=bella-classic";
 import { allRecordings, saveMany } from "./storage.js?v=11";
 import { Player, assemble } from "./audio.js?v=11";
+import {
+  createAudioResolver,
+  sessionReadinessMessage,
+} from "./narrator.js?v=bella-classic";
 const $ = (id) => document.getElementById(id);
 const defaults = {
-  version: "current",
+  version: "classic",
   mode: "decade",
   set: "Joyful",
   decade: 0,
   subtitle: false,
   sender: "",
 };
+let playbackRequest = 0;
+let storedVersion;
 let settings = { ...defaults },
   records = new Map(),
   storageReady = false,
@@ -39,6 +46,7 @@ let settings = { ...defaults },
   sessionURL = null;
 try {
   const s = JSON.parse(localStorage.getItem("smp-settings") || "{}");
+  storedVersion = s.version;
   settings = { ...defaults, ...s };
   settings.version = preferredVersion(settings.version);
   sequence(settings);
@@ -91,8 +99,20 @@ function preferences() {
     );
   }
 }
+const audioResolver = createAudioResolver(records);
+const availableAudio = (id) => audioResolver.descriptor(settings.version, id);
+const activeAudio = () =>
+  active && audioResolver.descriptor(active.version, active.id);
 const get = (id) => records.get(keyFor(settings.version, id));
 const title = (id) => library.find((p) => p.id === id)?.name || id;
+const readinessMessage = () =>
+  sessionReadinessMessage(
+    required(settings)
+      .filter((id) => !availableAudio(id))
+      .map((id) =>
+        id === "fatima" ? "Fatima Prayer (O my Jesus)" : title(id),
+      ),
+  );
 const currentRecord = () =>
   active && records.get(keyFor(active.version, active.id));
 function activeRecording() {
@@ -111,6 +131,10 @@ function invalidateExport() {
 }
 function update() {
   $("wording").value = settings.version;
+  $("wording-help").textContent =
+    settings.version === "classic"
+      ? "Classic prayers uses historical wording for the Creed, Hail Mary, Hail Holy Queen and closing, plus an original adapted Fatima prayer. Your older recordings remain under their original wording selection."
+      : "Your recordings and displayed words stay separate for each wording. Choose Classic prayers for the historical alternatives and adapted Fatima prayer.";
   $("mode").value = settings.mode;
   $("set").value = settings.set;
   $("subtitle").checked = settings.subtitle;
@@ -120,7 +144,7 @@ function update() {
   $("dedication-preview").textContent = dedication();
   $("version-label").textContent = versions[settings.version];
   $("saved-count").textContent =
-    `${library.filter((p) => get(p.id)).length} / ${library.length} saved`;
+    `${library.filter((p) => get(p.id)).length} / ${library.length} saved · ${library.filter((p) => availableAudio(p.id)?.source === "bella").length} Bella defaults`;
   $("decade").replaceChildren(
     ...mysteries[settings.set].map(
       (name, i) => new Option(`${i + 1}. ${name}`, i),
@@ -146,7 +170,11 @@ function update() {
     name.textContent = p.buttonLabel || p.name;
     const badge = document.createElement("span");
     badge.className = `record-badge ${get(p.id) ? "saved" : ""}`;
-    badge.textContent = get(p.id) ? "✓ Saved" : "○ Record";
+    badge.textContent = get(p.id)
+      ? "✓ Saved"
+      : availableAudio(p.id)
+        ? "Bella"
+        : "○ Record";
     if (p.set) b.append(name, badge);
     else b.append(name);
     b.onclick = () => openPrayer(p.id);
@@ -163,12 +191,14 @@ function update() {
     }),
   );
   const seq = sequence(settings),
-    missing = required(settings).filter((id) => !get(id));
+    missing = required(settings).filter((id) => !availableAudio(id));
   $("session-summary").textContent =
-    `${settings.mode === "whole" ? "Five decades" : "One decade"} · ${seq.length} prayer steps · ${versions[settings.version]}`;
+    `${settings.mode === "whole" ? "Five decades" : "One decade"} · ${seq.length} prayer steps · ${versions[settings.version]}${seq.some((item) => availableAudio(item.id)?.source === "bella") ? " · Includes Bella AI narration" : ""}`;
   $("start").disabled = missing.length > 0 || busy || activeRecording();
   $("export").disabled = missing.length > 0 || busy || activeRecording();
   $("share-session").disabled = $("export").disabled;
+  if (player.state === "stopped")
+    $("play-status").textContent = readinessMessage();
 }
 const player = new Player((state, index, total) => {
   $("transport").hidden = state === "stopped";
@@ -180,13 +210,15 @@ const player = new Player((state, index, total) => {
       ? "Playing"
       : state === "paused"
         ? "Paused"
-        : "Play saved";
+        : activeAudio()?.source === "bella"
+          ? "Play Bella"
+          : "Play saved";
   const item = sessionItems[index];
   if (state === "completed") {
     $("play-status").textContent = "Prayer complete. Peace be with you.";
     $("progress").value = 1;
   } else if (state === "stopped") {
-    $("play-status").textContent = "Ready when you are.";
+    $("play-status").textContent = readinessMessage();
     $("progress").value = 0;
   } else if (item) {
     $("play-status").textContent =
@@ -203,6 +235,10 @@ const player = new Player((state, index, total) => {
             ? "Saved on this device"
             : "";
 }, fail);
+function stopPlayback() {
+  playbackRequest++;
+  player.stop();
+}
 function clearDraft() {
   if (draftURL) URL.revokeObjectURL(draftURL);
   draftURL = null;
@@ -238,14 +274,45 @@ function refreshPrayer() {
   $("recording-title").textContent = p.name;
   $("recording-prayer-text").textContent = text.text;
   $("prayer-text").textContent = text.text;
-  $("record-state").textContent = currentRecord() ? "Saved on this device" : "";
+  $("reading-wording").textContent =
+    versions[active.version] +
+    (active.version === "classic"
+      ? active.id === "fatima"
+        ? " · Original adaptation, not an officially approved Catholic translation"
+        : ["creed", "hail", "queen", "closing"].includes(active.id)
+          ? " · Historical wording"
+          : ""
+      : "");
+  $("record-state").textContent =
+    player.state === "playing"
+      ? "Playing"
+      : player.state === "paused"
+        ? "Playback paused"
+        : currentRecord()
+          ? "Saved on this device"
+          : activeAudio()
+            ? "Bella · AI-generated default"
+            : "";
+  $("play-label").textContent =
+    player.state === "playing"
+      ? "Playing"
+      : player.state === "paused"
+        ? "Paused"
+        : activeAudio()?.source === "bella"
+          ? "Play Bella"
+          : "Play saved";
+  $("audio-source").hidden = !activeAudio();
+  $("audio-source").textContent =
+    activeAudio()?.source === "bella"
+      ? "Bella · AI-generated default. Save your own recording to use your voice instead."
+      : "Your saved recording is used instead of the default voice.";
   $("record-label").textContent = currentRecord() ? "Re-record" : "Record";
   for (const id of [
     "individual-play",
     "individual-download",
     "individual-share",
   ])
-    $(id).disabled = !currentRecord();
+    $(id).disabled = !activeAudio() || busy;
 }
 function openPrayer(id) {
   if (!storageReady)
@@ -253,7 +320,7 @@ function openPrayer(id) {
   if (busy || activeRecording())
     return notice("Finish the current recording or export first.");
   if (draft) return notice("Save or discard your new take first.");
-  player.stop();
+  stopPlayback();
   active = { id, version: settings.version };
   refreshPrayer();
   $("reading-view").hidden = false;
@@ -264,12 +331,13 @@ function openPrayer(id) {
   $("prayer-title").focus({ preventScroll: true });
 }
 function closePrayer() {
+  if (busy) return notice("Wait for the audio to finish loading or preparing.");
   if (activeRecording())
     return notice(
       "Stop the recording, then save or discard your take before closing.",
     );
   if (draft) return notice("Save or discard your take before closing.");
-  player.stop();
+  stopPlayback();
   $("prayer-dialog").close();
   active = null;
 }
@@ -313,7 +381,7 @@ $("record").onclick = run(async () => {
   $("recording-title").focus({ preventScroll: true });
   starting = true;
   $("record").disabled = true;
-  player.stop();
+  stopPlayback();
   $("draft-audio").pause();
   try {
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -425,6 +493,7 @@ $("save-recording").onclick = run(async () => {
     busy = false;
     $("save-recording").disabled = false;
     update();
+    refreshPrayer();
   }
 });
 $("discard").onclick = () => {
@@ -433,28 +502,52 @@ $("discard").onclick = () => {
   refreshPrayer();
   showReadingView();
 };
-$("draft-audio").onplay = () => player.stop();
-function selectedItems() {
-  const missing = required(settings).filter((id) => !get(id));
+$("draft-audio").onplay = () => stopPlayback();
+async function selectedItems() {
+  const missing = required(settings).filter((id) => !availableAudio(id));
   if (missing.length) throw Error("This audio session is not ready yet.");
-  return sequence(settings).map((item) => ({ ...item, ...get(item.id) }));
+  const version = settings.version;
+  return Promise.all(
+    sequence(settings).map(async (item) => ({
+      ...item,
+      ...(await audioResolver.resolve(version, item.id)),
+    })),
+  );
 }
 $("start").onclick = run(async () => {
   if (activeRecording() || busy) return;
-  sessionItems = selectedItems();
-  await player.start(sessionItems);
+  const request = ++playbackRequest;
+  busy = true;
+  update();
+  try {
+    sessionItems = await selectedItems();
+    if (request === playbackRequest) await player.start(sessionItems);
+  } finally {
+    busy = false;
+    update();
+  }
 });
 $("pause").onclick = () => player.pause();
 $("resume").onclick = () => player.resume();
-$("play-stop").onclick = () => player.stop();
-$("individual-stop").onclick = () => player.stop();
+$("play-stop").onclick = () => stopPlayback();
+$("individual-stop").onclick = () => stopPlayback();
 $("individual-play").onclick = run(async () => {
   if (activeRecording() || busy) return;
-  const r = currentRecord();
-  if (!r) return;
-  $("draft-audio").pause();
-  sessionItems = [{ ...r, decade: 0, hail: 0 }];
-  await player.start(sessionItems);
+  if (!activeAudio()) return;
+  const request = ++playbackRequest;
+  busy = true;
+  update();
+  refreshPrayer();
+  try {
+    const r = await audioResolver.resolve(active.version, active.id);
+    $("draft-audio").pause();
+    sessionItems = [{ ...r, decade: 0, hail: 0 }];
+    if (request === playbackRequest) await player.start(sessionItems);
+  } finally {
+    busy = false;
+    update();
+    refreshPrayer();
+  }
 });
 function download(blob, name) {
   const url = URL.createObjectURL(blob),
@@ -473,7 +566,7 @@ async function share(blob, name) {
       await navigator.share({
         files: [file],
         title: "Share My Prayer",
-        text: dedication() || "A prayer in my own voice, shared with love.",
+        text: dedication() || "A prayer shared with love.",
       });
       return;
     } catch (e) {
@@ -487,25 +580,36 @@ async function share(blob, name) {
 }
 for (const action of ["download", "share"])
   $("individual-" + action).onclick = run(async () => {
-    const r = currentRecord();
-    if (!r) throw Error("Record and save this prayer first.");
-    const name = filename(
-      `${title(r.id)} - ${versions[r.version]}`,
-      settings,
-      extension(r.blob.type),
-    );
-    if (action === "share") await share(r.blob, name);
-    else download(r.blob, name);
+    if (busy || activeRecording() || !activeAudio()) return;
+    busy = true;
+    update();
+    refreshPrayer();
+    try {
+      const r = await audioResolver.resolve(active.version, active.id);
+      const name = filename(
+        `${title(r.id)} - ${versions[r.version]}`,
+        settings,
+        r.source === "bella" && r.blob.type.includes("mpeg")
+          ? "mp3"
+          : extension(r.blob.type),
+      );
+      if (action === "share") await share(r.blob, name);
+      else download(r.blob, name);
+    } finally {
+      busy = false;
+      update();
+      refreshPrayer();
+    }
   });
 async function prepareExport(wantShare) {
   if (busy || activeRecording()) return;
-  const items = selectedItems();
   busy = true;
-  player.stop();
+  stopPlayback();
   invalidateExport();
   update();
   notice("Preparing your audio. Keep this page open…");
   try {
+    const items = await selectedItems();
     const blob = await assemble(items);
     sessionOutput = {
       blob,
@@ -552,7 +656,7 @@ for (const control of [
       $(control).value = settings[id];
       return notice("Finish the current recording or export first.");
     }
-    player.stop();
+    stopPlayback();
     settings[id] = id === "decade" ? +$(control).value : $(control).value;
     invalidateExport();
     preferences();
@@ -565,7 +669,7 @@ $("rosary-open").onclick = () => {
 };
 function closeRosary() {
   if (busy) return notice("Wait for the current export to finish.");
-  player.stop();
+  stopPlayback();
   $("rosary-dialog").close();
 }
 $("rosary-close").onclick = closeRosary;
@@ -581,7 +685,11 @@ $("settings-open").onclick = () => {
 for (const id of ["settings-close", "settings-done"])
   $(id).onclick = () => $("settings-dialog").close();
 $("wording").onchange = () => {
-  player.stop();
+  if (busy || activeRecording()) {
+    $("wording").value = settings.version;
+    return notice("Finish the current audio operation first.");
+  }
+  stopPlayback();
   settings.version = preferredVersion($("wording").value);
   invalidateExport();
   preferences();
@@ -677,7 +785,7 @@ $("restore-confirm").onclick = run(async () => {
   if (!restoreData || busy) return;
   busy = true;
   $("restore-confirm").disabled = true;
-  player.stop();
+  stopPlayback();
   try {
     const incoming = restoreData.recordings.map((r) => {
       const bytes = Uint8Array.from(atob(r.data), (c) => c.charCodeAt(0));
@@ -728,7 +836,7 @@ $("restore-confirm").onclick = run(async () => {
   }
 });
 window.addEventListener("pagehide", () => {
-  player.stop();
+  stopPlayback();
   if (recorder?.state === "recording") recorder.stop();
 });
 window.addEventListener("beforeunload", (e) => {
@@ -748,6 +856,7 @@ document.addEventListener("visibilitychange", () => {
 update();
 try {
   for (const r of await allRecordings()) records.set(r.key, r);
+  settings.version = initialWording(storedVersion, [...records.values()]);
   storageReady = true;
   update();
 } catch {
