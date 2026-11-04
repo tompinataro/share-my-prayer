@@ -898,7 +898,7 @@ header > .cross {
 
 .prayer-instructions {
   text-align: center;
-  font-size: clamp(0.75rem, 3.2vw, 0.875rem);
+  font-size: clamp(0.6875rem, 3.2vw, 0.875rem);
   line-height: 1.6;
   margin: 18px 0;
 }

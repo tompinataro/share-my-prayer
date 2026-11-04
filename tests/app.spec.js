@@ -951,7 +951,7 @@ test("release bypasses stale cached stylesheet URLs for the cog", async ({
   await page.goto("/");
   await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
     "href",
-    "./style.css?v=prayer-instructions-1",
+    "./style.css?v=prayer-instructions-2",
   );
   const settings = page.getByRole("button", { name: "Settings", exact: true });
   await expect(settings.locator("svg")).toHaveCSS("width", "28px");

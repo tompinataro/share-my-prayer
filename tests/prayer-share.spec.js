@@ -111,7 +111,7 @@ test("prayer instructions keep the exact lines and reading view has Share withou
   await expect(page.locator("#save-recording")).toHaveCount(1);
   await expect(page.locator("#export")).toHaveCount(1);
   const original = page.viewportSize();
-  for (const width of [1280, 390, 320]) {
+  for (const width of [1280, 390, 375, 320]) {
     await page.setViewportSize({ width, height: 900 });
     await instructions.scrollIntoViewIfNeeded();
     const shareBox = await page.locator("#individual-share").boundingBox();
@@ -144,7 +144,7 @@ test("prayer instructions keep the exact lines and reading view has Share withou
     });
     expect(layout.overflow).toBe(false);
     expect(layout.separate).toBe(true);
-    if (width >= 390) expect(layout.lineCounts).toEqual([1, 1]);
+    expect(layout.lineCounts).toEqual([1, 1]);
     await page.screenshot({
       path: `test-results/${test.info().project.name}-instructions-${width}.png`,
     });
