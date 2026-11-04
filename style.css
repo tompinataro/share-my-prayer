@@ -664,7 +664,7 @@ h1.brand {
   font-size: clamp(23px, 5.5vw, 30px);
   line-height: 1.2;
 }
-#settings-open {
+.settings-button {
   width: 48px;
   height: 48px;
   flex-shrink: 0;
@@ -836,7 +836,7 @@ header > .cross {
   justify-self: end;
   color: var(--ink);
 }
-#settings-open .settings-cog {
+.settings-cog {
   display: block;
   width: 28px;
   height: 28px;
@@ -913,4 +913,24 @@ header > .cross {
 .prayer-tools .export-buttons > button {
   flex: 0 1 auto;
   min-width: 120px;
+}
+
+.rosary-menu-heading {
+  min-height: 48px;
+  margin-bottom: 24px;
+}
+#rosary-config-open {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: var(--ink);
+}
+
+.personal-share-help {
+  width: 75%;
+  margin: 18px auto 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
 }

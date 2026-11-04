@@ -19,6 +19,7 @@ import {
   createAudioResolver,
   sessionReadinessMessage,
 } from "./narrator.js?v=mp3-sharing-1";
+import { personalPrayerBatch } from "./personal-share.js?v=1";
 const $ = (id) => document.getElementById(id);
 const defaults = {
   version: "classic",
@@ -55,6 +56,7 @@ try {
 } catch {
   settings = { ...defaults };
 }
+let prayerReturn;
 const notice = (message) => {
   $("notice").textContent = message;
   const dialog = [
@@ -62,6 +64,7 @@ const notice = (message) => {
     "prayer-dialog",
     "settings-dialog",
     "rosary-dialog",
+    "rosary-menu",
   ]
     .map($)
     .find((dialog) => dialog.open);
@@ -129,7 +132,12 @@ function invalidateExport() {
   sessionURL = null;
   $("export-result").hidden = true;
 }
+function updatePersonalShare() {
+  $("home-share-four").hidden = !personalPrayerBatch(records, settings.version);
+  $("home-share-four").disabled = busy || activeRecording() || !!draft;
+}
 function update() {
+  updatePersonalShare();
   $("wording").value = settings.version;
   $("wording-help").textContent =
     settings.version === "classic"
@@ -177,10 +185,11 @@ function update() {
         : "○ Record";
     if (p.set) b.append(name, badge);
     else b.append(name);
-    b.onclick = () => openPrayer(p.id);
+    b.onclick = () => openPrayer(p.id, b);
     return b;
   };
-  $("prayers").replaceChildren(...prayers.map(button));
+  $("prayers").replaceChildren(...prayers.slice(0, 4).map(button));
+  $("rosary-prayers").replaceChildren(...prayers.slice(4).map(button));
   $("mystery-list").replaceChildren(
     ...Object.entries(mysteries).map(([set]) => {
       const wrap = document.createElement("div");
@@ -247,6 +256,7 @@ function clearDraft() {
   if (draftURL) URL.revokeObjectURL(draftURL);
   draftURL = null;
   draft = null;
+  updatePersonalShare();
   $("draft-audio").pause();
   $("draft-audio").removeAttribute("src");
   $("draft-audio").load();
@@ -255,6 +265,7 @@ function clearDraft() {
 function showDraft(blob) {
   clearDraft();
   draft = blob;
+  updatePersonalShare();
   draftURL = URL.createObjectURL(blob);
   $("draft-audio").src = draftURL;
   $("draft").hidden = false;
@@ -307,13 +318,17 @@ function refreshPrayer() {
   for (const id of ["individual-play", "individual-share"])
     $(id).disabled = !activeAudio() || busy;
 }
-function openPrayer(id) {
+function openPrayer(id, opener = document.activeElement) {
   if (!storageReady)
     return notice("Recordings are still loading. Try again in a moment.");
   if (busy || activeRecording())
     return notice("Finish the current recording or export first.");
   if (draft) return notice("Save or discard your new take first.");
   stopPlayback();
+  prayerReturn = {
+    container: opener?.closest("#prayers, #rosary-prayers, #mystery-list")?.id,
+    id,
+  };
   active = { id, version: settings.version };
   refreshPrayer();
   $("reading-view").hidden = false;
@@ -333,6 +348,10 @@ function closePrayer() {
   stopPlayback();
   $("prayer-dialog").close();
   active = null;
+  if (prayerReturn?.container)
+    $(prayerReturn.container)
+      ?.querySelector(`[data-prayer="${prayerReturn.id}"]`)
+      ?.focus();
 }
 $("prayer-close").onclick = closePrayer;
 $("prayer-dialog").addEventListener("cancel", (e) => {
@@ -373,6 +392,7 @@ $("record").onclick = run(async () => {
   $("prayer-dialog").scrollTop = 0;
   $("recording-title").focus({ preventScroll: true });
   starting = true;
+  updatePersonalShare();
   $("record").disabled = true;
   stopPlayback();
   $("draft-audio").pause();
@@ -572,6 +592,29 @@ async function share(blob, name) {
     "File sharing is unavailable here. Your download is ready; share it from Files or Downloads.",
   );
 }
+$("home-share-four").onclick = run(async () => {
+  if (busy || activeRecording() || draft) return;
+  const version = settings.version;
+  const items = personalPrayerBatch(records, version);
+  if (!items) return;
+  busy = true;
+  stopPlayback();
+  update();
+  notice("Preparing your four saved prayers…");
+  try {
+    const blob = await assemble(items);
+    const name = filename(
+      `Four prayers - ${versions[version]}`,
+      settings,
+      "wav",
+    );
+    $("notice").textContent = "";
+    await share(blob, name);
+  } finally {
+    busy = false;
+    update();
+  }
+});
 $("individual-share").onclick = run(async () => {
   if (busy || activeRecording() || !activeAudio()) return;
   busy = true;
@@ -657,12 +700,32 @@ for (const control of [
 $("rosary-open").onclick = () => {
   if (busy || activeRecording() || draft)
     return notice("Finish your current take or export first.");
+  stopPlayback();
+  $("rosary-menu").showModal();
+  $("rosary-menu-close").focus();
+};
+function closeRosaryMenu() {
+  if (busy || activeRecording() || draft)
+    return notice("Finish your current take or export first.");
+  stopPlayback();
+  $("rosary-menu").close();
+  $("rosary-open").focus();
+}
+$("rosary-menu-close").onclick = closeRosaryMenu;
+$("rosary-menu").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeRosaryMenu();
+});
+$("rosary-config-open").onclick = () => {
+  if (busy || activeRecording() || draft)
+    return notice("Finish your current take or export first.");
   $("rosary-dialog").showModal();
 };
 function closeRosary() {
   if (busy) return notice("Wait for the current export to finish.");
   stopPlayback();
   $("rosary-dialog").close();
+  $("rosary-config-open").focus();
 }
 $("rosary-close").onclick = closeRosary;
 $("rosary-dialog").addEventListener("cancel", (event) => {
@@ -674,6 +737,9 @@ $("settings-open").onclick = () => {
     return notice("Finish your current take or export first.");
   $("settings-dialog").showModal();
 };
+$("settings-dialog").addEventListener("close", () =>
+  $("settings-open").focus(),
+);
 for (const id of ["settings-close", "settings-done"])
   $(id).onclick = () => $("settings-dialog").close();
 $("wording").onchange = () => {

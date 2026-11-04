@@ -9,6 +9,7 @@ const files = [
   "index.html",
   "style.css",
   "app.js",
+  "personal-share.js",
   "core.js",
   "texts.js",
   "storage.js",

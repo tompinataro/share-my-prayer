@@ -19,14 +19,19 @@
       sizes="180x180"
       href="./apple-touch-icon.png?v=12"
     />
-    <link rel="stylesheet" href="./style.css?v=prayer-instructions-2" />
+    <link rel="stylesheet" href="./style.css?v=rosary-menu-1" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
     <header>
       <span class="cross" aria-hidden="true">✝</span>
       <h1 class="brand">Share My Prayer</h1>
-      <button id="settings-open" aria-label="Settings" title="Settings">
+      <button
+        id="settings-open"
+        class="settings-button"
+        aria-label="Settings"
+        title="Settings"
+      >
         <svg
           class="settings-cog"
           viewBox="0 0 24 24"
@@ -46,10 +51,52 @@
       <p id="dedication" class="dedication" hidden></p>
       <nav aria-label="Prayers">
         <div id="prayers" class="prayer-list"></div>
+        <p id="personal-share-help" class="personal-share-help">
+          Share appears after you record and save all four prayers.
+        </p>
+        <button id="home-share-four" class="rosary-button" hidden>
+          Share these four prayers together
+        </button>
         <button id="rosary-open" class="rosary-button">Rosary</button>
       </nav>
     </main>
     <div id="notice" role="status" aria-live="polite"></div>
+    <dialog id="rosary-menu" aria-labelledby="rosary-menu-title">
+      <div class="dialog-top rosary-menu-heading">
+        <h2 id="rosary-menu-title">Rosary</h2>
+        <button
+          id="rosary-menu-close"
+          class="back-button"
+          aria-label="Back"
+          autofocus
+        >
+          &lt;
+        </button>
+        <button
+          id="rosary-config-open"
+          class="settings-button"
+          aria-label="Rosary settings"
+          title="Rosary settings"
+        >
+          <svg
+            class="settings-cog"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              fill="currentColor"
+              fill-rule="evenodd"
+              d="M10 2h4l.6 2.7 1.7.7 2.3-1.5 2.8 2.8-1.5 2.3.7 1.7L23 11v4l-2.7.6-.7 1.7 1.5 2.3-2.8 2.8-2.3-1.5-1.7.7L14 24h-4l-.6-2.7-1.7-.7-2.3 1.5-2.8-2.8 1.5-2.3-.7-1.7L1 15v-4l2.7-.6.7-1.7-1.5-2.3 2.8-2.8L8 5.1l1.7-.7L10 2Zm2 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
+              transform="translate(0 -1)"
+            />
+          </svg>
+        </button>
+      </div>
+      <nav aria-label="Rosary prayers">
+        <div id="rosary-prayers" class="prayer-list"></div>
+      </nav>
+    </dialog>
     <dialog id="rosary-dialog" aria-labelledby="rosary-title">
       <section class="session">
         <div class="dialog-top">
@@ -310,6 +357,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=quiet-prayer-reading-1"></script>
+    <script type="module" src="./app.js?v=rosary-menu-1"></script>
   </body>
 </html>

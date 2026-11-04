@@ -126,6 +126,16 @@ async function seed(page, { legacyOnly = false, samples = 2400 } = {}) {
   await page.reload();
   await expect(page.locator("#saved-count")).toContainText("28 / 28");
 }
+async function openRosarySession(page) {
+  if (!(await page.locator("#rosary-menu").evaluate((el) => el.open)))
+    await page.locator("#rosary-open").click();
+  await page.locator("#rosary-config-open").click();
+}
+async function openGlobalSettings(page) {
+  if (await page.locator("#rosary-menu").evaluate((el) => el.open))
+    await page.locator("#rosary-menu-close").click();
+  await page.locator("#settings-open").click();
+}
 test("responsive layout, mystery selection, settings and quiet reading view", async ({
   page,
 }) => {
@@ -133,7 +143,7 @@ test("responsive layout, mystery selection, settings and quiet reading view", as
   await expect(page.locator("h1")).toContainText("Share My Prayer");
   await expect(page.locator("#start")).toBeDisabled();
   await expect(page.locator("#missing")).toHaveCount(0);
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   await page.locator("#mysteries-details summary").click();
   await expect(page.locator("#mystery-list button")).toHaveCount(20);
   await page.locator('#mystery-list [data-prayer="Joyful-0"]').click();
@@ -156,7 +166,7 @@ test("responsive layout, mystery selection, settings and quiet reading view", as
   );
   await expect(page.locator("#record-state")).toBeHidden();
   await page.locator("#prayer-close").click();
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   for (const set of ["Joyful", "Luminous", "Sorrowful", "Glorious"]) {
     await page.locator("#set").selectOption(set);
     await expect(page.locator("#decade option")).toHaveCount(5);
@@ -215,7 +225,7 @@ test("record, save, reload, replay and separate versions; draft preserves previo
   await page.locator("#discard").click();
   await expect(page.locator("#record-state")).toContainText("Saved");
   await page.locator("#prayer-close").click();
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   await page.locator("#wording").selectOption("contemporary");
   await page.locator("#settings-done").click();
   await page.locator('#prayers [data-prayer="hail"]').click();
@@ -226,7 +236,7 @@ test("sequence export is real combined WAV; share fallback; backup restore", asy
 }) => {
   await page.goto("/");
   await seed(page);
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   await page.locator("#export").click();
   await expect(page.locator("#export-result")).toBeVisible();
   const bytes = await page
@@ -256,7 +266,7 @@ test("sequence export is real combined WAV; share fallback; backup restore", asy
   await page.locator("#export-share").click();
   expect((await shareDownload).suggestedFilename()).toContain("Whole Rosary");
   await page.locator("#rosary-close").click();
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   const backup = page.waitForEvent("download");
   await page.locator("#backup").click();
   const file = await backup;
@@ -286,7 +296,7 @@ test("pause/resume stop do not overlap and reject incomplete sessions", async ({
 }) => {
   await page.goto("/");
   await seed(page);
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   await page.locator("#start").click();
   await page.locator("#pause").click();
   await expect(page.locator("#play-status")).toContainText("Paused");
@@ -369,7 +379,7 @@ test("export failure and malformed backup are actionable", async ({ page }) => {
       throw Error("Unsupported codec");
     };
   });
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   await page.locator("#export").click();
   await expect(page.locator("#notice")).toContainText("Export failed");
   await expect(page.locator("#export-result")).toBeHidden();
@@ -381,7 +391,7 @@ test("export failure and malformed backup are actionable", async ({ page }) => {
   });
   await expect(page.locator("#notice")).toContainText("not a supported");
   await page.locator("#rosary-close").click();
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   await page.locator("#settings-mode").selectOption("whole");
   await page.locator("#settings-set").selectOption("Glorious");
   await page.locator("#settings-done").click();
@@ -409,7 +419,7 @@ test("native share branch receives a genuine audio file, cancellation is respect
       },
     });
   });
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   await page.locator("#share-session").click();
   await expect(page.locator("#export-result")).toBeVisible();
   await page.locator("#export-share").click();
@@ -532,16 +542,12 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator("#main button")).toHaveCount(9);
+  await expect(page.locator("#main").getByRole("button")).toHaveCount(5);
   await expect(page.locator("#prayers button")).toHaveText([
     "Sign of the Cross",
     "Glory Be",
     "Hail Mary",
     "Our Father",
-    "Apostles’ Creed",
-    "O my Jesus",
-    "Hail Holy Queen",
-    "Rosary Closing Prayer",
   ]);
   await expect(
     page.getByRole("button", { name: "Settings", exact: true }),
@@ -549,7 +555,7 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
   await expect(page.locator("#main")).not.toContainText("Record once");
   await expect(page.locator("#rosary-dialog")).not.toBeVisible();
   await expect(page.locator("#settings-dialog")).not.toBeVisible();
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   await page.locator("#mysteries-details summary").click();
   await page.locator('#mystery-list [data-prayer="Glorious-4"]').click();
   await expect(page.locator("#prayer-title")).toHaveText(
@@ -572,7 +578,7 @@ test("simple home has prayer-name buttons and a gear; secondary controls open on
   const { default: AxeBuilder } = await import("@axe-core/playwright");
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.locator("#settings-done").click();
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   await expect(page.locator("#session-summary")).toBeVisible();
   await page.locator("#rosary-close").click();
   expect(
@@ -602,7 +608,13 @@ test("prayers open directly with complete current Catholic wording and controls 
     queen: "Hail, holy Queen",
     closing: "O God, whose Only Begotten Son",
   })) {
-    await page.locator(`#prayers [data-prayer="${id}"]`).click();
+    if (["cross", "glory", "hail", "father"].includes(id))
+      await page.locator(`#prayers [data-prayer="${id}"]`).click();
+    else {
+      if (!(await page.locator("#rosary-menu").evaluate((el) => el.open)))
+        await page.locator("#rosary-open").click();
+      await page.locator(`#rosary-prayers [data-prayer="${id}"]`).click();
+    }
     await expect(page.locator("#prayer-text")).toContainText(words);
     expect(
       await page.locator("#prayer-dialog").evaluate((d) => d.scrollTop),
@@ -628,7 +640,7 @@ test("prayers open directly with complete current Catholic wording and controls 
     await expect(page.locator(".prayer-source")).toHaveCount(0);
     await page.locator("#prayer-close").click();
   }
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   await page.locator("#wording").selectOption("contemporary");
   await page.locator("#settings-done").click();
   await page.locator('#prayers [data-prayer="father"]').click();
@@ -765,7 +777,7 @@ test("incomplete Current rosary identifies required personal recordings; ready s
     ),
   );
   await page.goto("/");
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   for (const id of ["start", "export", "share-session"])
     await expect(page.locator(`#${id}`)).toBeDisabled();
   const status = page.locator("#play-status");
@@ -781,15 +793,15 @@ test("incomplete Current rosary identifies required personal recordings; ready s
   await expect(status).toContainText("Record and Save");
   await expect(status).not.toContainText("Ready when you are");
   await page.locator("#rosary-close").click();
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   await page.locator("#wording").selectOption("contemporary");
   await page.locator("#settings-done").click();
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   await expect(status).toHaveText("Ready when you are.");
   await expect(page.locator("#start")).toBeEnabled();
   await page.locator("#rosary-close").click();
   await seed(page);
-  await page.locator("#rosary-open").click();
+  await openRosarySession(page);
   await expect(status).toHaveText("Ready when you are.");
   await expect(page.locator("#start")).toBeEnabled();
 });
@@ -800,7 +812,7 @@ test("Classic wording is explicit and old Current recording stays in its own sel
   // Override the historical-regression fixture: this test starts as a new user.
   await page.addInitScript(() => localStorage.removeItem("smp-settings"));
   await page.goto("/");
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   await expect(page.locator("#wording")).toHaveValue("classic");
   await expect(page.locator("#wording-help")).toContainText("adapted Fatima");
   await page.locator("#settings-done").click();
@@ -827,7 +839,7 @@ test("Classic wording is explicit and old Current recording stays in its own sel
     "Your saved recording",
   );
   await page.locator("#prayer-close").click();
-  await page.locator("#settings-open").click();
+  await openGlobalSettings(page);
   await page.locator("#wording").selectOption("classic");
   await page.locator("#settings-done").click();
   await page.locator('#prayers [data-prayer="hail"]').click();
@@ -952,7 +964,7 @@ test("release bypasses stale cached stylesheet URLs for the cog", async ({
   await page.goto("/");
   await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
     "href",
-    "./style.css?v=prayer-instructions-2",
+    "./style.css?v=rosary-menu-1",
   );
   const settings = page.getByRole("button", { name: "Settings", exact: true });
   await expect(settings.locator("svg")).toHaveCSS("width", "28px");
