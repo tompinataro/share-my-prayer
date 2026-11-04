@@ -9,16 +9,16 @@ The ordinary app retains Sign of the Cross, Glory Be, Hail Mary and Our Father; 
 - Keep the existing IndexedDB database `share-my-prayer`, schema version 1, with `version:id` recording keys and ArrayBuffer audio bytes. Existing `smp-settings` and `smp-prompt:*` preferences stay in place.
 - Removing Rosary navigation does **not** delete any recording or prompt. Full backups still include all older prayers, all 20 mystery announcements and all wording versions, including legacy Traditional records.
 - Use Settings → Back up recordings to export a private `share-my-prayer` version-1 JSON backup. Restore continues to accept full older backups. No data is sent to a server.
-- The separate local **Share My Rosary** project uses its own database and preference namespace. It can copy/import legacy recordings with explicit preview and confirmation. Existing destination recordings take precedence during repeated legacy migration; the source is never deleted.
+- The separate local **Pray My Rosary** project uses its own database and preference namespace. It can copy/import legacy recordings with explicit preview and confirmation. Existing destination recordings take precedence during repeated legacy migration; the source is never deleted.
 - Copies are independent after migration. Re-recording in one app does not update the other. Keep a private backup before changing devices, clearing browser data, or migrating.
 
-The standalone local project is at `/Users/tompinataro/Documents/Codex/2026-11-03/can/outputs/share-my-rosary`. See its `MIGRATION.md` for the supported paths and limitations.
+The standalone local project is at `/Users/tompinataro/Documents/Codex/2026-11-03/can/outputs/pray-my-rosary`. See its `MIGRATION.md` for the supported paths and limitations.
 
-## Release gate — do not publish this cleanup yet
+## Release gate — keep this cleanup local
 
-A new public repository and destination are awaiting approval. Suggested name: `tompinataro/share-my-rosary`; suggested Pages URL: `https://tompinataro.github.io/share-my-rosary/` (proposed, not published).
+Tom approved publication of the separate public `tompinataro/pray-my-rosary` repository and Pages app at `https://tompinataro.github.io/pray-my-rosary/`. That approval does not cover publishing this ordinary-app cleanup.
 
-Publish the standalone app only after destination approval. Verify its live assets and migration interface before publishing this ordinary-app cleanup. The manual Pages workflow is retained; no workflow was dispatched for this branch.
+Keep this branch local until Tom separately authorizes publishing the original cleanup. The manual Pages workflow is retained; no workflow was dispatched for this branch.
 
 ## Development and checks
 

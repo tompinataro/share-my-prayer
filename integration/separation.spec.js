@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 const ordinary = "http://127.0.0.1:4175/work/share-my-prayer-cog/";
-const rosary = "http://127.0.0.1:4175/outputs/share-my-rosary/";
+const rosary = "http://127.0.0.1:4175/outputs/pray-my-rosary/";
 async function snapshot(page) {
   return page.evaluate(async () => {
     const { allRecordings } = await import("./storage.js");
@@ -63,7 +63,7 @@ test("real apps sharing one origin keep source data and preferences isolated thr
     ),
   ).toBe(0);
   expect(
-    await destination.evaluate(() => localStorage.getItem("smr-settings")),
+    await destination.evaluate(() => localStorage.getItem("pmr-settings")),
   ).toBe(null);
   expect(await snapshot(source)).toEqual(before);
   await destination.locator("#settings-open").click();
@@ -93,11 +93,11 @@ test("real apps sharing one origin keep source data and preferences isolated thr
       },
     ]);
     localStorage.setItem(
-      "smr-settings",
+      "pmr-settings",
       JSON.stringify({ version: "classic", sender: "Destination only" }),
     );
     localStorage.setItem(
-      "smr-prompt:traditional:Joyful-0",
+      "pmr-prompt:traditional:Joyful-0",
       "Newer destination prompt",
     );
   });
@@ -111,8 +111,8 @@ test("real apps sharing one origin keep source data and preferences isolated thr
       r.blob.size,
       r.savedAt,
     ]),
-    settings: JSON.parse(localStorage.getItem("smr-settings")),
-    prompt: localStorage.getItem("smr-prompt:traditional:Joyful-0"),
+    settings: JSON.parse(localStorage.getItem("pmr-settings")),
+    prompt: localStorage.getItem("pmr-prompt:traditional:Joyful-0"),
   }));
   expect(copied.rows).toContainEqual(["current:creed", 5, "2030-destination"]);
   expect(copied.rows).toHaveLength(3);

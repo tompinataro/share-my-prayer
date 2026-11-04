@@ -29,7 +29,7 @@ test("ordinary app removes Rosary navigation while preserving exact instructions
   page.on("pageerror", (e) => errors.push(e.message));
   await page.addInitScript(() =>
     localStorage.setItem(
-      "smr-settings",
+      "pmr-settings",
       JSON.stringify({ version: "contemporary", sender: "Rosary sentinel" }),
     ),
   );
@@ -64,7 +64,7 @@ test("ordinary app removes Rosary navigation while preserving exact instructions
   await page.keyboard.press("Escape");
   await expect(page.locator("#settings-open")).toBeFocused();
   expect(
-    await page.evaluate(() => JSON.parse(localStorage.getItem("smr-settings"))),
+    await page.evaluate(() => JSON.parse(localStorage.getItem("pmr-settings"))),
   ).toEqual({ version: "contemporary", sender: "Rosary sentinel" });
   await page.locator('#prayers [data-prayer="hail"]').click();
   await expect(page.locator(".prayer-instructions span")).toHaveText([
