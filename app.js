@@ -18,7 +18,7 @@ import { Player, assemble } from "./audio.js?v=playback-toggle";
 import {
   createAudioResolver,
   sessionReadinessMessage,
-} from "./narrator.js?v=bella-classic";
+} from "./narrator.js?v=mp3-sharing-1";
 const $ = (id) => document.getElementById(id);
 const defaults = {
   version: "classic",
@@ -304,11 +304,7 @@ function refreshPrayer() {
       ? "Bella · AI-generated default. Save your own recording to use your voice instead."
       : "Your saved recording is used instead of the default voice.";
   $("record-label").textContent = currentRecord() ? "Re-record" : "Record";
-  for (const id of [
-    "individual-play",
-    "individual-download",
-    "individual-share",
-  ])
+  for (const id of ["individual-play", "individual-share"])
     $(id).disabled = !activeAudio() || busy;
 }
 function openPrayer(id) {
@@ -576,29 +572,27 @@ async function share(blob, name) {
     "File sharing is unavailable here. Your download is ready; share it from Files or Downloads.",
   );
 }
-for (const action of ["download", "share"])
-  $("individual-" + action).onclick = run(async () => {
-    if (busy || activeRecording() || !activeAudio()) return;
-    busy = true;
+$("individual-share").onclick = run(async () => {
+  if (busy || activeRecording() || !activeAudio()) return;
+  busy = true;
+  update();
+  refreshPrayer();
+  try {
+    const r = await audioResolver.resolve(active.version, active.id);
+    const name = filename(
+      `${title(r.id)} - ${versions[r.version]}`,
+      settings,
+      r.source === "bella" && r.blob.type.includes("mpeg")
+        ? "mp3"
+        : extension(r.blob.type),
+    );
+    await share(r.blob, name);
+  } finally {
+    busy = false;
     update();
     refreshPrayer();
-    try {
-      const r = await audioResolver.resolve(active.version, active.id);
-      const name = filename(
-        `${title(r.id)} - ${versions[r.version]}`,
-        settings,
-        r.source === "bella" && r.blob.type.includes("mpeg")
-          ? "mp3"
-          : extension(r.blob.type),
-      );
-      if (action === "share") await share(r.blob, name);
-      else download(r.blob, name);
-    } finally {
-      busy = false;
-      update();
-      refreshPrayer();
-    }
-  });
+  }
+});
 async function prepareExport(wantShare) {
   if (busy || activeRecording()) return;
   busy = true;

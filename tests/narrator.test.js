@@ -123,3 +123,35 @@ test("readiness explains missing personal recordings without claiming ready", ()
     /needs 1 personal recording:/,
   );
 });
+
+test("packaged Bella MP3 aliases normalize MIME without changing bytes or personal formats", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const bytes = await readFile(
+    new URL("../narration/bella/classic-hail.mp3", import.meta.url),
+  );
+  for (const type of ["audio/mp3", "audio/x-mp3", "audio/mpeg"]) {
+    const resolver = createAudioResolver(
+      new Map(),
+      { "classic:hail": narratorClips["classic:hail"] },
+      async () => ({
+        ok: true,
+        blob: async () => new Blob([bytes], { type }),
+      }),
+    );
+    const item = await resolver.resolve("classic", "hail");
+    assert.equal(item.blob.type, "audio/mpeg");
+    assert.deepEqual(Buffer.from(await item.blob.arrayBuffer()), bytes);
+  }
+  for (const type of [
+    "audio/wav",
+    "audio/mp4",
+    "audio/webm;codecs=opus",
+    "audio/ogg",
+  ]) {
+    const own = new Blob([bytes], { type });
+    const saved = { key: "classic:hail", blob: own };
+    const resolver = createAudioResolver(new Map([[saved.key, saved]]));
+    assert.equal((await resolver.resolve("classic", "hail")).blob, own);
+    assert.equal(own.type, type);
+  }
+});

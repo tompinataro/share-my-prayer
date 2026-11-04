@@ -19,7 +19,7 @@
       sizes="180x180"
       href="./apple-touch-icon.png?v=12"
     />
-    <link rel="stylesheet" href="./style.css?v=settings-playback-1" />
+    <link rel="stylesheet" href="./style.css?v=prayer-instructions-1" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
@@ -118,6 +118,10 @@
         <p id="prayer-text" class="prayer-text"></p>
         <p id="reading-credit" class="small" hidden></p>
         <p id="audio-source" class="small" hidden></p>
+        <p class="prayer-instructions">
+          <span>Record, then save and share your own voice or</span>
+          <span>Play the default voice already provided.</span>
+        </p>
         <div class="prayer-tools">
           <div class="record-controls">
             <button id="record" class="icon-control">
@@ -130,8 +134,7 @@
             </button>
           </div>
           <div class="export-buttons">
-            <button id="individual-download">↓ Save</button
-            ><button id="individual-share">↗ Share</button>
+            <button id="individual-share">↗ Share</button>
           </div>
         </div>
       </section>
@@ -307,6 +310,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=playback-toggle"></script>
+    <script type="module" src="./app.js?v=prayer-instructions-1"></script>
   </body>
 </html>

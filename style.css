@@ -895,3 +895,22 @@ header > .cross {
 #recording-view {
   padding-bottom: 52px;
 }
+
+.prayer-instructions {
+  text-align: center;
+  font-size: clamp(0.75rem, 3.2vw, 0.875rem);
+  line-height: 1.6;
+  margin: 18px 0;
+}
+.prayer-instructions span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.prayer-tools .export-buttons {
+  justify-content: center;
+}
+.prayer-tools .export-buttons > button {
+  flex: 0 1 auto;
+  min-width: 120px;
+}

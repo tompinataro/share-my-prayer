@@ -43,6 +43,13 @@ export function createAudioResolver(
             throw Error(
               "Bella audio is unavailable or has an unsupported format.",
             );
+          // Pages may label MP3s audio/mp3; Web Share expects audio/mpeg.
+          // Retag only bundled MP3 aliases, preserving every audio byte.
+          if (
+            url.pathname.endsWith(".mp3") &&
+            ["audio/mp3", "audio/x-mp3"].includes(blob.type)
+          )
+            return blob.slice(0, blob.size, "audio/mpeg");
           return blob;
         } finally {
           clearTimeout(timeout);

@@ -2,6 +2,13 @@ import { test, expect } from "@playwright/test";
 // Keep existing personal-recording regression tests independent of staged defaults.
 // Narrator-specific tests register their own route later, overriding this fixture.
 test.beforeEach(async ({ page }, testInfo) => {
+  // Download tests avoid native OS dialogs; native-share tests opt in explicitly.
+  await page.addInitScript(() =>
+    Object.defineProperty(navigator, "canShare", {
+      configurable: true,
+      value: () => false,
+    }),
+  );
   // Existing regression suite exercises the unchanged Current wording explicitly.
   if (!testInfo.title.startsWith("Classic wording is explicit"))
     await page.addInitScript(() => {
@@ -193,7 +200,7 @@ test("record, save, reload, replay and separate versions; draft preserves previo
   await expect(page.locator("#record-state")).toContainText("Saved");
   // Regression: controls work immediately after saving, without reopening.
   await expect(page.locator("#individual-play")).toBeEnabled();
-  await expect(page.locator("#individual-download")).toBeEnabled();
+  await expect(page.locator("#individual-download")).toHaveCount(0);
   await expect(page.locator("#individual-share")).toBeEnabled();
   await page.reload();
   await page.locator('#prayers [data-prayer="hail"]').click();
@@ -201,7 +208,7 @@ test("record, save, reload, replay and separate versions; draft preserves previo
   await expect(page.locator("#record-state")).toContainText("Playing");
   await page.locator("#individual-play").click();
   const download = page.waitForEvent("download");
-  await page.locator("#individual-download").click();
+  await page.locator("#individual-share").click();
   expect((await download).suggestedFilename()).toMatch(/\.wav$/);
   await recordTake(page);
   await expect(page.locator("#draft")).toBeVisible();
@@ -687,7 +694,7 @@ test("Bella defaults are available without saving narrator assets into personal 
   await expect(page.locator("#audio-source")).toContainText("AI-generated");
   await expect(page.locator("#individual-play")).toBeEnabled();
   const downloaded = page.waitForEvent("download");
-  await page.locator("#individual-download").click();
+  await page.locator("#individual-share").click();
   expect((await downloaded).suggestedFilename()).toMatch(/\.wav$/);
   expect(
     await page.evaluate(
@@ -726,7 +733,7 @@ test("failed Bella fetch leaves personal storage untouched and can retry", async
   await expect(page.locator("#individual-play")).toBeEnabled();
   fail = false;
   const downloaded = page.waitForEvent("download");
-  await page.locator("#individual-download").click();
+  await page.locator("#individual-share").click();
   await downloaded;
   expect(
     await page.evaluate(
@@ -944,7 +951,7 @@ test("release bypasses stale cached stylesheet URLs for the cog", async ({
   await page.goto("/");
   await expect(page.locator('link[rel="stylesheet"]')).toHaveAttribute(
     "href",
-    "./style.css?v=settings-playback-1",
+    "./style.css?v=prayer-instructions-1",
   );
   const settings = page.getByRole("button", { name: "Settings", exact: true });
   await expect(settings.locator("svg")).toHaveCSS("width", "28px");
