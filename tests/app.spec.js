@@ -691,7 +691,8 @@ test("Bella defaults are available without saving narrator assets into personal 
   await page.goto("/");
   await page.locator('#prayers [data-prayer="hail"]').click();
   await expect(page.locator("#play-label")).toHaveText("Play Bella");
-  await expect(page.locator("#audio-source")).toContainText("AI-generated");
+  await expect(page.locator("#audio-source")).toBeHidden();
+  await expect(page.locator("#audio-source")).toHaveText("");
   await expect(page.locator("#individual-play")).toBeEnabled();
   const downloaded = page.waitForEvent("download");
   await page.locator("#individual-share").click();

@@ -54,7 +54,8 @@ for (const mime of ["audio/mp3", "audio/mpeg"]) {
       const downloads = [];
       page.on("download", (download) => downloads.push(download));
       await page.locator('#prayers [data-prayer="hail"]').click();
-      await expect(page.locator("#audio-source")).toContainText("Bella");
+      await expect(page.locator("#audio-source")).toBeHidden();
+      await expect(page.locator("#audio-source")).toHaveText("");
       await page.locator("#individual-share").click();
       await expect(page.locator("#individual-share")).toBeEnabled();
       await expect(
@@ -99,6 +100,11 @@ test("prayer instructions keep the exact lines and reading view has Share withou
   await page.goto("/");
   await page.locator('#prayers [data-prayer="cross"]').click();
   const instructions = page.locator(".prayer-instructions");
+  await expect(page.locator("#audio-source")).toBeHidden();
+  await expect(page.locator("#audio-source")).toHaveText("");
+  await expect(page.locator("#reading-view")).not.toContainText(
+    "AI-generated default",
+  );
   await expect(instructions.locator("span")).toHaveText([
     "Record, then save and share your own voice or",
     "Play the default voice already provided.",

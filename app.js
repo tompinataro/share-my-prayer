@@ -298,11 +298,11 @@ function refreshPrayer() {
             ? "Bella · AI-generated default"
             : "";
   updatePlayControl(player.state);
-  $("audio-source").hidden = !activeAudio();
-  $("audio-source").textContent =
-    activeAudio()?.source === "bella"
-      ? "Bella · AI-generated default. Save your own recording to use your voice instead."
-      : "Your saved recording is used instead of the default voice.";
+  const personalAudio = activeAudio()?.source === "personal";
+  $("audio-source").hidden = !personalAudio;
+  $("audio-source").textContent = personalAudio
+    ? "Your saved recording is used instead of the default voice."
+    : "";
   $("record-label").textContent = currentRecord() ? "Re-record" : "Record";
   for (const id of ["individual-play", "individual-share"])
     $(id).disabled = !activeAudio() || busy;
