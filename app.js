@@ -14,7 +14,7 @@ import {
 } from "./core.js?v=bella-classic";
 import { prayerText } from "./texts.js?v=bella-classic";
 import { allRecordings, saveMany } from "./storage.js?v=11";
-import { Player, assemble } from "./audio.js?v=11";
+import { Player, assemble } from "./audio.js?v=playback-toggle";
 import {
   createAudioResolver,
   sessionReadinessMessage,
@@ -200,19 +200,23 @@ function update() {
   if (player.state === "stopped")
     $("play-status").textContent = readinessMessage();
 }
+function updatePlayControl(state) {
+  $("play-label").textContent =
+    state === "playing"
+      ? "Pause"
+      : state === "paused"
+        ? "Resume"
+        : activeAudio()?.source === "bella"
+          ? "Play Bella"
+          : "Play saved";
+  $("individual-play").querySelector(".circle").textContent =
+    state === "playing" ? "Ⅱ" : "▶";
+}
 const player = new Player((state, index, total) => {
   $("transport").hidden = state === "stopped";
   $("pause").disabled = state !== "playing";
   $("resume").disabled = state !== "paused";
-  $("individual-stop").hidden = state === "stopped";
-  $("play-label").textContent =
-    state === "playing"
-      ? "Playing"
-      : state === "paused"
-        ? "Paused"
-        : activeAudio()?.source === "bella"
-          ? "Play Bella"
-          : "Play saved";
+  updatePlayControl(state);
   const item = sessionItems[index];
   if (state === "completed") {
     $("play-status").textContent = "Prayer complete. Peace be with you.";
@@ -293,14 +297,7 @@ function refreshPrayer() {
           : activeAudio()
             ? "Bella · AI-generated default"
             : "";
-  $("play-label").textContent =
-    player.state === "playing"
-      ? "Playing"
-      : player.state === "paused"
-        ? "Paused"
-        : activeAudio()?.source === "bella"
-          ? "Play Bella"
-          : "Play saved";
+  updatePlayControl(player.state);
   $("audio-source").hidden = !activeAudio();
   $("audio-source").textContent =
     activeAudio()?.source === "bella"
@@ -530,9 +527,10 @@ $("start").onclick = run(async () => {
 $("pause").onclick = () => player.pause();
 $("resume").onclick = () => player.resume();
 $("play-stop").onclick = () => stopPlayback();
-$("individual-stop").onclick = () => stopPlayback();
 $("individual-play").onclick = run(async () => {
   if (activeRecording() || busy) return;
+  if (player.state === "playing") return player.pause();
+  if (player.state === "paused") return player.resume();
   if (!activeAudio()) return;
   const request = ++playbackRequest;
   busy = true;

@@ -770,6 +770,7 @@ h1.brand {
   padding-top: 8px;
 }
 .prayer-tools .record-controls {
+  justify-content: center;
   position: static;
   border-bottom: 0;
   padding: 12px 0 22px;
@@ -833,6 +834,12 @@ header > .cross {
 }
 #settings-open {
   justify-self: end;
+  color: var(--ink);
+}
+#settings-open .settings-cog {
+  display: block;
+  width: 28px;
+  height: 28px;
 }
 .simple-home .prayer-list {
   width: 75%;

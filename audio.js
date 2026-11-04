@@ -55,6 +55,7 @@ export class Player {
   }
   pause() {
     if (this.state === "playing") {
+      this.token++;
       this.audio.pause();
       this.state = "paused";
       this.onchange(this.state, this.index, this.items.length);
@@ -62,11 +63,13 @@ export class Player {
   }
   async resume() {
     if (this.state !== "paused") return;
+    const token = ++this.token;
     this.state = "playing";
     this.onchange(this.state, this.index, this.items.length);
     try {
       await this.audio.play();
     } catch {
+      if (token !== this.token) return;
       this.state = "paused";
       this.onchange(this.state, this.index, this.items.length);
       this.onerror(

@@ -19,7 +19,7 @@
       sizes="180x180"
       href="./apple-touch-icon.png?v=12"
     />
-    <link rel="stylesheet" href="./style.css?v=11" />
+    <link rel="stylesheet" href="./style.css?v=12" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to prayers</a>
@@ -27,7 +27,19 @@
       <span class="cross" aria-hidden="true">✝</span>
       <h1 class="brand">Share My Prayer</h1>
       <button id="settings-open" aria-label="Settings" title="Settings">
-        <span aria-hidden="true">⚙</span>
+        <svg
+          class="settings-cog"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            fill="currentColor"
+            fill-rule="evenodd"
+            d="M10 2h4l.6 2.7 1.7.7 2.3-1.5 2.8 2.8-1.5 2.3.7 1.7L23 11v4l-2.7.6-.7 1.7 1.5 2.3-2.8 2.8-2.3-1.5-1.7.7L14 24h-4l-.6-2.7-1.7-.7-2.3 1.5-2.8-2.8 1.5-2.3-.7-1.7L1 15v-4l2.7-.6.7-1.7-1.5-2.3 2.8-2.8L8 5.1l1.7-.7L10 2Zm2 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
+            transform="translate(0 -1)"
+          />
+        </svg>
       </button>
     </header>
     <main id="main" class="simple-home">
@@ -116,7 +128,6 @@
               <span class="circle green" aria-hidden="true">▶</span
               ><span id="play-label">Play saved</span>
             </button>
-            <button id="individual-stop" hidden>■ Stop audio</button>
           </div>
           <div class="export-buttons">
             <button id="individual-download">↓ Save</button
@@ -296,6 +307,6 @@
         Restore these recordings</button
       ><button id="restore-cancel">Cancel</button>
     </dialog>
-    <script type="module" src="./app.js?v=bella-classic"></script>
+    <script type="module" src="./app.js?v=playback-toggle"></script>
   </body>
 </html>

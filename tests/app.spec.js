@@ -18,8 +18,8 @@ test.beforeEach(async ({ page }, testInfo) => {
     }),
   );
 });
-const tone = () => {
-  const a = new Uint8Array(44 + 4800);
+const tone = (samples = 2400) => {
+  const a = new Uint8Array(44 + samples * 2);
   const d = new DataView(a.buffer);
   const str = (i, s) =>
     [...s].forEach((c, j) => d.setUint8(i + j, c.charCodeAt(0)));
@@ -35,8 +35,8 @@ const tone = () => {
   d.setUint16(32, 2, true);
   d.setUint16(34, 16, true);
   str(36, "data");
-  d.setUint32(40, 4800, true);
-  for (let i = 0; i < 2400; i++)
+  d.setUint32(40, samples * 2, true);
+  for (let i = 0; i < samples; i++)
     d.setInt16(
       44 + i * 2,
       Math.sin((i / 24000) * 440 * 2 * Math.PI) * 5000,
@@ -90,7 +90,7 @@ async function recordTake(page) {
   await page.locator("#record-stop").click();
   await expect(page.locator("#draft")).toBeVisible();
 }
-async function seed(page, { legacyOnly = false } = {}) {
+async function seed(page, { legacyOnly = false, samples = 2400 } = {}) {
   const count = await page.evaluate(
     async ({ bytes, legacyOnly }) => {
       const { library, versions, keyFor } = await import("./core.js");
@@ -113,7 +113,7 @@ async function seed(page, { legacyOnly = false } = {}) {
       const { allRecordings } = await import("./storage.js");
       return (await allRecordings()).length;
     },
-    { bytes: [...tone()], legacyOnly },
+    { bytes: [...tone(samples)], legacyOnly },
   );
   expect(count).toBe(legacyOnly ? 84 : 112);
   await page.reload();
@@ -199,7 +199,7 @@ test("record, save, reload, replay and separate versions; draft preserves previo
   await page.locator('#prayers [data-prayer="hail"]').click();
   await page.locator("#individual-play").click();
   await expect(page.locator("#record-state")).toContainText("Playing");
-  await page.locator("#individual-stop").click();
+  await page.locator("#individual-play").click();
   const download = page.waitForEvent("download");
   await page.locator("#individual-download").click();
   expect((await download).suggestedFilename()).toMatch(/\.wav$/);
@@ -835,4 +835,99 @@ test("Classic wording is explicit and old Current recording stays in its own sel
     })),
   );
   expect(records).toEqual([{ key: "current:hail", version: "current" }]);
+});
+
+test("prayer playback toggles pause and resume without restarting and stays centered", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const NativeAudio = window.Audio;
+    window.playbackAudio = [];
+    window.Audio = function (...args) {
+      const audio = new NativeAudio(...args);
+      window.playbackAudio.push(audio);
+      return audio;
+    };
+  });
+  await page.goto("/");
+  await expect(
+    page.getByRole("button", { name: "Settings", exact: true }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: `test-results/${test.info().project.name}-settings-cog.png`,
+  });
+  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await expect(page.locator("#settings-dialog")).toBeVisible();
+  await page.locator("#settings-close").click();
+  await seed(page, { samples: 24000 * 5 });
+  await page.locator('#prayers [data-prayer="hail"]').click();
+  const play = page.locator("#individual-play");
+  await expect(page.locator("#individual-stop")).toHaveCount(0);
+  await expect(play).toHaveAccessibleName("Play saved");
+  const recordBox = await page.locator("#record").boundingBox();
+  const playBox = await play.boundingBox();
+  const groupBox = await page
+    .locator(".prayer-tools .record-controls")
+    .boundingBox();
+  expect(
+    Math.abs(
+      (recordBox.x + playBox.x + playBox.width) / 2 -
+        (groupBox.x + groupBox.width / 2),
+    ),
+  ).toBeLessThan(2);
+  expect(playBox.width).toBeGreaterThanOrEqual(44);
+  await play.click();
+  await expect(play).toHaveAccessibleName("Pause");
+  await expect
+    .poll(() => page.evaluate(() => window.playbackAudio[0].currentTime))
+    .toBeGreaterThan(0.15);
+  await play.click();
+  await expect(play).toHaveAccessibleName("Resume");
+  // WebKit settles its media clock asynchronously after pause.
+  await page.waitForTimeout(150);
+  const paused = await page.evaluate(() => ({
+    time: window.playbackAudio[0].currentTime,
+    src: window.playbackAudio[0].src,
+  }));
+  expect(paused.time).toBeGreaterThan(0);
+  await page.waitForTimeout(150);
+  expect(
+    await page.evaluate(() => window.playbackAudio[0].currentTime),
+  ).toBeCloseTo(paused.time, 1);
+  await play.click();
+  await expect(play).toHaveAccessibleName("Pause");
+  await expect
+    .poll(() => page.evaluate(() => window.playbackAudio[0].currentTime))
+    .toBeGreaterThan(paused.time);
+  expect(await page.evaluate(() => window.playbackAudio[0].src)).toBe(
+    paused.src,
+  );
+  await play.evaluate((button) => {
+    button.click();
+    button.click();
+    button.click();
+  });
+  await expect(play).toHaveAccessibleName("Resume");
+  await play.click();
+  await page.evaluate(() => {
+    const audio = window.playbackAudio[0];
+    audio.currentTime = audio.duration - 0.1;
+  });
+  await expect(play).toHaveAccessibleName("Play saved");
+  await play.click();
+  await expect(play).toHaveAccessibleName("Pause");
+  await page.locator("#prayer-close").click();
+  expect(
+    await page.evaluate(() =>
+      window.playbackAudio.every(
+        (audio) => audio.paused && !audio.getAttribute("src"),
+      ),
+    ),
+  ).toBe(true);
+  await page.locator('#prayers [data-prayer="father"]').click();
+  await expect(play).toHaveAccessibleName("Play saved");
+  await play.scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: `test-results/${test.info().project.name}-centered-playback.png`,
+  });
 });
