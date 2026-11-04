@@ -115,7 +115,7 @@ test("prayer instructions keep the exact lines and reading view has Share withou
   ).toHaveCount(0);
   await expect(page.locator("#individual-share")).toBeVisible();
   await expect(page.locator("#save-recording")).toHaveCount(1);
-  await expect(page.locator("#export")).toHaveCount(1);
+  await expect(page.locator("#export")).toHaveCount(0);
   const original = page.viewportSize();
   for (const width of [1280, 390, 375, 320]) {
     await page.setViewportSize({ width, height: 900 });

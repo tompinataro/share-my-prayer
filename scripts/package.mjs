@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { narratorClips } from "../narrator-manifest.js";
 import { library, selectableVersions, keyFor } from "../core.js";
-import { mkdir, copyFile, rm, readFile } from "node:fs/promises";
+import { mkdir, copyFile, rm, readFile, writeFile } from "node:fs/promises";
 // Explicit allowlist: only approved narrator manifest audio can enter Pages.
 // Private recordings, backups, node_modules and test artifacts remain excluded.
 const files = [
@@ -34,8 +34,14 @@ const blockedDefaults = new Set([
   "current:closing",
   "current:creed",
 ]);
+const ordinaryIds = new Set(["cross", "glory", "hail", "father"]);
+const publicClips = Object.fromEntries(
+  Object.entries(narratorClips).filter(([key]) =>
+    ordinaryIds.has(key.split(":")[1]),
+  ),
+);
 const publicAudio = new Set();
-for (const [key, clip] of Object.entries(narratorClips)) {
+for (const [key, clip] of Object.entries(publicClips)) {
   if (
     !allowedKeys.has(key) ||
     blockedDefaults.has(key) ||
@@ -56,6 +62,12 @@ for (const [key, clip] of Object.entries(narratorClips)) {
 await rm("dist", { recursive: true, force: true });
 await mkdir("dist");
 for (const file of files) await copyFile(file, `dist/${file}`);
+await writeFile(
+  "dist/narrator-manifest.js",
+  `// Public ordinary-prayer defaults only.
+export const narratorClips = Object.freeze(${JSON.stringify(publicClips, null, 2)});
+`,
+);
 console.log(
   `Static app packaged in dist/ (${files.length} allowlisted files).`,
 );

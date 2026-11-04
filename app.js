@@ -2,12 +2,9 @@ import {
   versions,
   preferredVersion,
   initialWording,
-  mysteries,
   prayers,
   library,
   keyFor,
-  sequence,
-  required,
   extension,
   filename,
   validateBackup,
@@ -15,10 +12,7 @@ import {
 import { prayerText } from "./texts.js?v=bella-classic";
 import { allRecordings, saveMany } from "./storage.js?v=11";
 import { Player, assemble } from "./audio.js?v=playback-toggle";
-import {
-  createAudioResolver,
-  sessionReadinessMessage,
-} from "./narrator.js?v=mp3-sharing-1";
+import { createAudioResolver } from "./narrator.js?v=ordinary-split-1";
 import { personalPrayerBatch } from "./personal-share.js?v=1";
 const $ = (id) => document.getElementById(id);
 const defaults = {
@@ -41,16 +35,12 @@ let settings = { ...defaults },
   stream = null,
   starting = false,
   busy = false,
-  restoreData = null,
-  sessionItems = [],
-  sessionOutput = null,
-  sessionURL = null;
+  restoreData = null;
 try {
   const s = JSON.parse(localStorage.getItem("smp-settings") || "{}");
   storedVersion = s.version;
   settings = { ...defaults, ...s };
   settings.version = preferredVersion(settings.version);
-  sequence(settings);
   settings.sender = String(settings.sender || "").slice(0, 60);
   settings.subtitle = !!settings.subtitle;
 } catch {
@@ -59,13 +49,7 @@ try {
 let prayerReturn;
 const notice = (message) => {
   $("notice").textContent = message;
-  const dialog = [
-    "restore-dialog",
-    "prayer-dialog",
-    "settings-dialog",
-    "rosary-dialog",
-    "rosary-menu",
-  ]
+  const dialog = ["restore-dialog", "prayer-dialog", "settings-dialog"]
     .map($)
     .find((dialog) => dialog.open);
   if (dialog) {
@@ -108,14 +92,6 @@ const activeAudio = () =>
   active && audioResolver.descriptor(active.version, active.id);
 const get = (id) => records.get(keyFor(settings.version, id));
 const title = (id) => library.find((p) => p.id === id)?.name || id;
-const readinessMessage = () =>
-  sessionReadinessMessage(
-    required(settings)
-      .filter((id) => !availableAudio(id))
-      .map((id) =>
-        id === "fatima" ? "Fatima Prayer (O my Jesus)" : title(id),
-      ),
-  );
 const currentRecord = () =>
   active && records.get(keyFor(active.version, active.id));
 function activeRecording() {
@@ -126,12 +102,6 @@ function dedication() {
     ? `Made just for you. From ${settings.sender || "_____"}, with Love`
     : "";
 }
-function invalidateExport() {
-  sessionOutput = null;
-  if (sessionURL) URL.revokeObjectURL(sessionURL);
-  sessionURL = null;
-  $("export-result").hidden = true;
-}
 function updatePersonalShare() {
   $("home-share-four").hidden = !personalPrayerBatch(records, settings.version);
   $("home-share-four").disabled = busy || activeRecording() || !!draft;
@@ -140,74 +110,27 @@ function update() {
   updatePersonalShare();
   $("wording").value = settings.version;
   $("wording-help").textContent =
-    settings.version === "classic"
-      ? "Classic prayers uses historical wording for the Creed, Hail Mary, Hail Holy Queen and closing, plus an original adapted Fatima prayer. Your older recordings remain under their original wording selection."
-      : "Your recordings and displayed words stay separate for each wording. Choose Classic prayers for the historical alternatives and adapted Fatima prayer.";
-  $("mode").value = settings.mode;
-  $("set").value = settings.set;
+    "Displayed wording and recordings stay separate for each selection. Classic prayers uses historical Hail Mary wording.";
   $("subtitle").checked = settings.subtitle;
   $("sender").value = settings.sender;
   $("dedication").hidden = !settings.subtitle;
   $("dedication").textContent = dedication();
   $("dedication-preview").textContent = dedication();
   $("version-label").textContent = versions[settings.version];
+  const ordinary = prayers.slice(0, 4);
   $("saved-count").textContent =
-    `${library.filter((p) => get(p.id)).length} / ${library.length} saved · ${library.filter((p) => availableAudio(p.id)?.source === "bella").length} Bella defaults`;
-  $("decade").replaceChildren(
-    ...mysteries[settings.set].map(
-      (name, i) => new Option(`${i + 1}. ${name}`, i),
-    ),
-  );
-  $("decade").value = settings.decade;
-  $("settings-mode").value = settings.mode;
-  $("settings-set").value = settings.set;
-  $("settings-decade").replaceChildren(
-    ...mysteries[settings.set].map(
-      (name, i) => new Option(`${i + 1}. ${name}`, i),
-    ),
-  );
-  $("settings-decade").value = settings.decade;
-  $("settings-decade-field").hidden = settings.mode === "whole";
-  $("decade-field").hidden = settings.mode === "whole";
-  const button = (p) => {
-    const b = document.createElement("button");
-    b.className = "mystery-button";
-    b.dataset.prayer = p.id;
-    b.disabled = !storageReady;
-    const name = document.createElement("span");
-    name.textContent = p.buttonLabel || p.name;
-    const badge = document.createElement("span");
-    badge.className = `record-badge ${get(p.id) ? "saved" : ""}`;
-    badge.textContent = get(p.id)
-      ? "✓ Saved"
-      : availableAudio(p.id)
-        ? "Bella"
-        : "○ Record";
-    if (p.set) b.append(name, badge);
-    else b.append(name);
-    b.onclick = () => openPrayer(p.id, b);
-    return b;
-  };
-  $("prayers").replaceChildren(...prayers.slice(0, 4).map(button));
-  $("rosary-prayers").replaceChildren(...prayers.slice(4).map(button));
-  $("mystery-list").replaceChildren(
-    ...Object.entries(mysteries).map(([set]) => {
-      const wrap = document.createElement("div");
-      const h = document.createElement("h3");
-      h.textContent = set;
-      wrap.append(h, ...library.filter((p) => p.set === set).map(button));
-      return wrap;
+    `${ordinary.filter((p) => get(p.id)).length} / 4 saved · ${ordinary.filter((p) => availableAudio(p.id)?.source === "bella").length} Bella defaults`;
+  $("prayers").replaceChildren(
+    ...ordinary.map((p) => {
+      const button = document.createElement("button");
+      button.className = "mystery-button";
+      button.dataset.prayer = p.id;
+      button.disabled = !storageReady;
+      button.textContent = p.buttonLabel || p.name;
+      button.onclick = () => openPrayer(p.id, button);
+      return button;
     }),
   );
-  const seq = sequence(settings),
-    missing = required(settings).filter((id) => !availableAudio(id));
-  $("session-summary").textContent =
-    `${settings.mode === "whole" ? "Five decades" : "One decade"} · ${seq.length} prayer steps · ${versions[settings.version]}${seq.some((item) => availableAudio(item.id)?.source === "bella") ? " · Includes Bella AI narration" : ""}`;
-  $("start").disabled = missing.length > 0 || busy || activeRecording();
-  $("export").disabled = missing.length > 0 || busy || activeRecording();
-  $("share-session").disabled = $("export").disabled;
-  if (player.state === "stopped")
-    $("play-status").textContent = readinessMessage();
 }
 function updatePlayControl(state) {
   $("play-label").textContent =
@@ -221,23 +144,8 @@ function updatePlayControl(state) {
   $("individual-play").querySelector(".circle").textContent =
     state === "playing" ? "Ⅱ" : "▶";
 }
-const player = new Player((state, index, total) => {
-  $("transport").hidden = state === "stopped";
-  $("pause").disabled = state !== "playing";
-  $("resume").disabled = state !== "paused";
+const player = new Player((state) => {
   updatePlayControl(state);
-  const item = sessionItems[index];
-  if (state === "completed") {
-    $("play-status").textContent = "Prayer complete. Peace be with you.";
-    $("progress").value = 1;
-  } else if (state === "stopped") {
-    $("play-status").textContent = readinessMessage();
-    $("progress").value = 0;
-  } else if (item) {
-    $("play-status").textContent =
-      `${state === "paused" ? "Paused" : "Playing"} · ${title(item.id)}${item.decade ? ` · Decade ${item.decade} of 5` : " · Opening / closing"}${item.hail ? ` · Hail Mary ${item.hail} of ${item.decade ? 10 : 3}` : ""} · Step ${index + 1} of ${total}`;
-    $("progress").value = (index + 1) / total;
-  }
   if (active && !activeRecording())
     $("record-state").textContent =
       state === "playing"
@@ -326,7 +234,7 @@ function openPrayer(id, opener = document.activeElement) {
   if (draft) return notice("Save or discard your new take first.");
   stopPlayback();
   prayerReturn = {
-    container: opener?.closest("#prayers, #rosary-prayers, #mystery-list")?.id,
+    container: opener?.closest("#prayers")?.id,
     id,
   };
   active = { id, version: settings.version };
@@ -494,7 +402,6 @@ $("save-recording").onclick = run(async () => {
     await saveMany([record]);
     records.set(record.key, record);
     clearDraft();
-    invalidateExport();
     refreshPrayer();
     notice("Recording saved on this device.");
     showReadingView();
@@ -516,33 +423,6 @@ $("discard").onclick = () => {
   showReadingView();
 };
 $("draft-audio").onplay = () => stopPlayback();
-async function selectedItems() {
-  const missing = required(settings).filter((id) => !availableAudio(id));
-  if (missing.length) throw Error("This audio session is not ready yet.");
-  const version = settings.version;
-  return Promise.all(
-    sequence(settings).map(async (item) => ({
-      ...item,
-      ...(await audioResolver.resolve(version, item.id)),
-    })),
-  );
-}
-$("start").onclick = run(async () => {
-  if (activeRecording() || busy) return;
-  const request = ++playbackRequest;
-  busy = true;
-  update();
-  try {
-    sessionItems = await selectedItems();
-    if (request === playbackRequest) await player.start(sessionItems);
-  } finally {
-    busy = false;
-    update();
-  }
-});
-$("pause").onclick = () => player.pause();
-$("resume").onclick = () => player.resume();
-$("play-stop").onclick = () => stopPlayback();
 $("individual-play").onclick = run(async () => {
   if (activeRecording() || busy) return;
   if (player.state === "playing") return player.pause();
@@ -555,8 +435,7 @@ $("individual-play").onclick = run(async () => {
   try {
     const r = await audioResolver.resolve(active.version, active.id);
     $("draft-audio").pause();
-    sessionItems = [{ ...r, decade: 0, hail: 0 }];
-    if (request === playbackRequest) await player.start(sessionItems);
+    if (request === playbackRequest) await player.start([r]);
   } finally {
     busy = false;
     update();
@@ -636,102 +515,6 @@ $("individual-share").onclick = run(async () => {
     refreshPrayer();
   }
 });
-async function prepareExport(wantShare) {
-  if (busy || activeRecording()) return;
-  busy = true;
-  stopPlayback();
-  invalidateExport();
-  update();
-  notice("Preparing your audio. Keep this page open…");
-  try {
-    const items = await selectedItems();
-    const blob = await assemble(items);
-    sessionOutput = {
-      blob,
-      name: filename(
-        `${settings.set} ${settings.mode === "whole" ? "Whole Rosary" : `Decade ${+settings.decade + 1}`} - ${versions[settings.version]}`,
-        settings,
-        "wav",
-      ),
-    };
-    sessionURL = URL.createObjectURL(blob);
-    $("export-download").href = sessionURL;
-    $("export-download").download = sessionOutput.name;
-    $("export-result").hidden = false;
-    notice(
-      wantShare
-        ? "Audio ready. Tap “Share prepared audio” to open your device’s share sheet."
-        : "Audio ready. Tap “Save” to save your session.",
-    );
-  } catch (e) {
-    throw Error(
-      `Export failed: ${e.message} Try a shorter decade, re-record unsupported audio, or use a desktop browser.`,
-    );
-  } finally {
-    busy = false;
-    update();
-  }
-}
-$("export").onclick = run(() => prepareExport(false));
-$("share-session").onclick = run(() => prepareExport(true));
-$("export-share").onclick = run(async () => {
-  if (sessionOutput) await share(sessionOutput.blob, sessionOutput.name);
-});
-for (const control of [
-  "mode",
-  "set",
-  "decade",
-  "settings-mode",
-  "settings-set",
-  "settings-decade",
-])
-  $(control).onchange = () => {
-    const id = control.replace("settings-", "");
-    if (busy || activeRecording()) {
-      $(control).value = settings[id];
-      return notice("Finish the current recording or export first.");
-    }
-    stopPlayback();
-    settings[id] = id === "decade" ? +$(control).value : $(control).value;
-    invalidateExport();
-    preferences();
-    update();
-  };
-$("rosary-open").onclick = () => {
-  if (busy || activeRecording() || draft)
-    return notice("Finish your current take or export first.");
-  stopPlayback();
-  $("rosary-menu").showModal();
-  $("rosary-menu-close").focus();
-};
-function closeRosaryMenu() {
-  if (busy || activeRecording() || draft)
-    return notice("Finish your current take or export first.");
-  stopPlayback();
-  $("rosary-menu").close();
-  $("rosary-open").focus();
-}
-$("rosary-menu-close").onclick = closeRosaryMenu;
-$("rosary-menu").addEventListener("cancel", (event) => {
-  event.preventDefault();
-  closeRosaryMenu();
-});
-$("rosary-config-open").onclick = () => {
-  if (busy || activeRecording() || draft)
-    return notice("Finish your current take or export first.");
-  $("rosary-dialog").showModal();
-};
-function closeRosary() {
-  if (busy) return notice("Wait for the current export to finish.");
-  stopPlayback();
-  $("rosary-dialog").close();
-  $("rosary-config-open").focus();
-}
-$("rosary-close").onclick = closeRosary;
-$("rosary-dialog").addEventListener("cancel", (event) => {
-  event.preventDefault();
-  closeRosary();
-});
 $("settings-open").onclick = () => {
   if (busy || activeRecording() || draft)
     return notice("Finish your current take or export first.");
@@ -740,8 +523,19 @@ $("settings-open").onclick = () => {
 $("settings-dialog").addEventListener("close", () =>
   $("settings-open").focus(),
 );
+function closeSettings() {
+  if (busy || activeRecording() || draft)
+    return notice(
+      "Wait for the current recording, audio or import operation to finish.",
+    );
+  $("settings-dialog").close();
+}
 for (const id of ["settings-close", "settings-done"])
-  $(id).onclick = () => $("settings-dialog").close();
+  $(id).onclick = closeSettings;
+$("settings-dialog").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeSettings();
+});
 $("wording").onchange = () => {
   if (busy || activeRecording()) {
     $("wording").value = settings.version;
@@ -749,13 +543,11 @@ $("wording").onchange = () => {
   }
   stopPlayback();
   settings.version = preferredVersion($("wording").value);
-  invalidateExport();
   preferences();
   update();
 };
 $("subtitle").onchange = () => {
   settings.subtitle = $("subtitle").checked;
-  invalidateExport();
   preferences();
   update();
 };
@@ -765,7 +557,6 @@ $("sender").oninput = () => {
   $("dedication-preview").textContent = dedication();
   $("dedication").hidden = !settings.subtitle;
   $("dedication").textContent = dedication();
-  invalidateExport();
 };
 async function base64(blob) {
   return new Promise((resolve, reject) => {
@@ -830,22 +621,36 @@ $("restore").onchange = run(async () => {
     throw Error(
       "Backup exceeds the 150 MB restore limit. Choose a smaller backup.",
     );
-  restoreData = validateBackup(JSON.parse(await file.text()));
-  $("restore-summary").textContent =
-    `This backup contains ${restoreData.recordings.length} recordings across ${new Set(restoreData.recordings.map((r) => r.version)).size} wording versions.`;
-  $("restore-dialog").showModal();
+  busy = true;
+  update();
+  try {
+    restoreData = validateBackup(JSON.parse(await file.text()));
+    $("restore-summary").textContent =
+      `This backup contains ${restoreData.recordings.length} recordings across ${new Set(restoreData.recordings.map((r) => r.version)).size} wording versions.`;
+    $("restore-dialog").showModal();
+  } finally {
+    busy = false;
+    update();
+  }
 });
-$("restore-cancel").onclick = () => {
+function cancelRestore() {
+  if (busy) return notice("Wait for the current restore to finish.");
   restoreData = null;
   $("restore-dialog").close();
-};
+}
+$("restore-cancel").onclick = cancelRestore;
+$("restore-dialog").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  cancelRestore();
+});
 $("restore-confirm").onclick = run(async () => {
   if (!restoreData || busy) return;
+  const confirmedRestore = restoreData;
   busy = true;
   $("restore-confirm").disabled = true;
   stopPlayback();
   try {
-    const incoming = restoreData.recordings.map((r) => {
+    const incoming = confirmedRestore.recordings.map((r) => {
       const bytes = Uint8Array.from(atob(r.data), (c) => c.charCodeAt(0));
       if (!bytes.length) throw Error("Empty audio in backup.");
       return {
@@ -860,7 +665,7 @@ $("restore-confirm").onclick = run(async () => {
     await saveMany(incoming);
     incoming.forEach((r) => records.set(r.key, r));
     let promptFailure = false;
-    for (const [key, text] of Object.entries(restoreData.prompts || {})) {
+    for (const [key, text] of Object.entries(confirmedRestore.prompts || {})) {
       if (
         typeof text !== "string" ||
         text.length > 100000 ||
@@ -876,7 +681,6 @@ $("restore-confirm").onclick = run(async () => {
       }
     }
     restoreData = null;
-    invalidateExport();
     $("restore-dialog").close();
     notice(
       promptFailure
