@@ -21,6 +21,7 @@ const files = [
   "favicon.svg",
   "favicon.png",
   "apple-touch-icon.png",
+  "mary-untier-of-knots.png",
 ];
 const allowedKeys = new Set(
   Object.keys(selectableVersions).flatMap((v) =>

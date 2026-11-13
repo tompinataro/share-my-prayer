@@ -351,3 +351,19 @@ test("Mary prayer is separate from the four-prayer bundle and has cleaned comple
   await page.keyboard.press("Escape");
   await expect(page.locator("#additional-prayers button")).toBeFocused();
 });
+
+test("Mary artwork appears only on its prayer", async ({ page }) => {
+  await page.goto("/");
+  await page
+    .getByRole("button", { name: "Mary Undoer of Knots", exact: true })
+    .click();
+  await expect(page.locator("#prayer-art")).toBeVisible();
+  expect(
+    await page
+      .locator("#prayer-art")
+      .evaluate((img) => img.complete && img.naturalWidth > 0),
+  ).toBe(true);
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Hail Mary", exact: true }).click();
+  await expect(page.locator("#prayer-art")).toBeHidden();
+});

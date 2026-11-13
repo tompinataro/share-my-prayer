@@ -935,3 +935,15 @@ header > .cross {
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
+
+/* Owner-supplied devotional image, shown only with the Mary prayer. */
+.prayer-art {
+  display: block;
+  width: min(100%, 15rem);
+  height: auto;
+  margin: 0 auto 1rem;
+  border-radius: 0.5rem;
+}
+.prayer-art[hidden] {
+  display: none;
+}

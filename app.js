@@ -209,6 +209,7 @@ function refreshPrayer() {
   $("recording-title").textContent = p.name;
   $("recording-prayer-text").textContent = text.text;
   $("prayer-text").textContent = text.text;
+  $("prayer-art").hidden = active.id !== "mary-undoer";
   $("reading-wording").textContent =
     versions[active.version] +
     (active.version === "classic"
