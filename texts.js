@@ -55,7 +55,43 @@ const contemporary = {
   closing:
     "Leader: Holy Mother of God, pray for us.\nResponse: Help us become worthy of what Christ has promised.\nLet us pray.\nGod, your only Son won eternal life for us through his life, death, and resurrection. As we reflect on these mysteries with Mary, help us live what they teach and receive what they promise. We ask this through Christ our Lord. Amen.",
 };
+export const maryUndoerText = `In the name of the Father, and of the Son, and of the Holy Spirit. Amen.
+
+Act of Contrition: O my God, I am heartily sorry for having offended you. I detest all my sins because I dread the loss of Heaven and the pains of Hell. But most of all, because I offended you, O my God, who are all good and deserving of all my love. I firmly resolve, with the help of your grace, to confess my sins, to do penance, and to amend my life. Amen.
+
+Mention your request here.
+
+Say the first 3 decades of the Rosary.
+
+Dearest Holy Mother, Most Holy Mary, you undo the knots that suffocate your children. Extend your merciful hands to me. I entrust to you today this knot and all the negative consequences that it provokes in my life. I give you this knot that torments me and makes me unhappy and so impedes me from uniting myself to you and your Son Jesus, my Savior. I run to you, Mary, Undoer of Knots, because I trust you and I know that you never despise a sinning child who comes to ask you for help. I believe that you can undo this knot because Jesus grants you everything. I believe that you want to undo this knot because you are my Mother. I believe that you will do this because you love me with eternal love. Thank you, dear Mother. Mary, Undoer of Knots, pray for me. The one who seeks grace finds it in Mary's hands.
+
+Say the last 2 decades of the Rosary.
+
+Virgin Mary, Mother of fair love, Mother who never refuses to come to the aid of a child in need, Mother whose hands never cease to serve your beloved children because they are moved by the divine love and immense mercy that exists in your heart, cast your compassionate eyes upon me and see the snarl of knots that exist in my life.
+
+You know very well how desperate I am, my pain and how I am bound by these knots.
+
+Mary, Mother to whom God entrusted the undoing of the knots in the lives of his children, I entrust into your hands the ribbon of my life.
+
+No one, not even the evil one himself, can take it away from your precious care. In your hands there is no knot that cannot be undone.
+
+Powerful Mother, by your grace and intercessory power with your Son and my Liberator, Jesus, take into your hands today this knot. I beg you to undo it for the glory of God, once for all. You are my hope.
+
+O my Lady, you are the only consolation God gives me, the fortification of my feeble strength, the enrichment of my destitution and, with Christ, the freedom from my chains.
+
+Hear my plea. Keep me, guide me, protect me, O safe refuge!
+
+Mary, Undoer of Knots, pray for me.
+
+In the name of the Father, and of the Son, and of the Holy Spirit. Amen.`;
+
 export function prayerText(prayer, version) {
+  if (prayer.id === "mary-undoer")
+    return {
+      text: maryUndoerText,
+      note: "Text supplied by the app owner; punctuation and typographical errors normalized.",
+      url: "./SOURCES.md",
+    };
   if (prayer.set)
     return {
       text: `The ${["first", "second", "third", "fourth", "fifth"][prayer.index]} ${prayer.set.toLowerCase()} mystery: ${prayer.name}.`,

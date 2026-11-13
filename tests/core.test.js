@@ -52,12 +52,12 @@ for (const set of Object.keys(mysteries)) {
   });
 }
 test("library keys isolate versions and include all mystery prompts", () => {
-  assert.equal(library.length, 28);
+  assert.equal(library.length, 29);
   assert.equal(
     new Set(
       Object.keys(versions).flatMap((v) => library.map((p) => keyFor(v, p.id))),
     ).size,
-    112,
+    116,
   );
 });
 test("accurate types and safe dedication filenames", () => {

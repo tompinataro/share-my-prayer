@@ -3,13 +3,14 @@ import {
   preferredVersion,
   initialWording,
   prayers,
+  additionalPrayers,
   library,
   keyFor,
   extension,
   filename,
   validateBackup,
-} from "./core.js?v=bella-classic";
-import { prayerText } from "./texts.js?v=bella-classic";
+} from "./core.js?v=mary-undoer-1";
+import { prayerText } from "./texts.js?v=mary-undoer-1";
 import { allRecordings, saveMany } from "./storage.js?v=11";
 import { Player, assemble } from "./audio.js?v=playback-toggle";
 import { createAudioResolver } from "./narrator.js?v=ordinary-split-1";
@@ -131,6 +132,17 @@ function update() {
       return button;
     }),
   );
+  $("additional-prayers").replaceChildren(
+    ...additionalPrayers.map((p) => {
+      const button = document.createElement("button");
+      button.className = "mystery-button";
+      button.dataset.prayer = p.id;
+      button.disabled = !storageReady;
+      button.textContent = p.name;
+      button.onclick = () => openPrayer(p.id, button);
+      return button;
+    }),
+  );
 }
 function updatePlayControl(state) {
   $("play-label").textContent =
@@ -216,6 +228,15 @@ function refreshPrayer() {
           : activeAudio()
             ? "Bella · AI-generated default"
             : "";
+  const instructions = document.querySelector(".prayer-instructions");
+  instructions.children[0].textContent =
+    active.id === "mary-undoer"
+      ? "Record, then save and share your own voice."
+      : "Record, then save and share your own voice or";
+  instructions.children[1].textContent =
+    active.id === "mary-undoer"
+      ? "Default voice is not available for this prayer yet."
+      : "Play the default voice already provided.";
   updatePlayControl(player.state);
   const personalAudio = activeAudio()?.source === "personal";
   $("audio-source").hidden = !personalAudio;
@@ -234,7 +255,7 @@ function openPrayer(id, opener = document.activeElement) {
   if (draft) return notice("Save or discard your new take first.");
   stopPlayback();
   prayerReturn = {
-    container: opener?.closest("#prayers")?.id,
+    container: opener?.closest("#prayers, #additional-prayers")?.id,
     id,
   };
   active = { id, version: settings.version };

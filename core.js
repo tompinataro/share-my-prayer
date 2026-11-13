@@ -63,7 +63,11 @@ export const prayers = [
   ["queen", "Hail Holy Queen"],
   ["closing", "Rosary Closing Prayer"],
 ].map(([id, name, buttonLabel]) => ({ id, name, buttonLabel }));
+export const additionalPrayers = [
+  { id: "mary-undoer", name: "Mary Undoer of Knots" },
+];
 export const library = [
+  ...additionalPrayers,
   ...prayers,
   ...Object.entries(mysteries).flatMap(([set, names]) =>
     names.map((name, i) => ({ id: `${set}-${i}`, name, set, index: i })),

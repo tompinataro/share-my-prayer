@@ -71,11 +71,11 @@ test("backup validation accepts all separate classic/current/contemporary/legacy
       data: "YQ==",
     })),
   );
-  assert.equal(recordings.length, 112);
+  assert.equal(recordings.length, 116);
   assert.equal(
     validateBackup({ format: "share-my-prayer", version: 1, recordings })
       .recordings.length,
-    112,
+    116,
   );
   const legacy = recordings.filter((r) => r.version !== "classic");
   assert.equal(
@@ -84,16 +84,16 @@ test("backup validation accepts all separate classic/current/contemporary/legacy
       version: 1,
       recordings: legacy,
     }).recordings.length,
-    84,
+    87,
   );
   assert.equal(
     new Set(recordings.map((r) => keyFor(r.version, r.id))).size,
-    112,
+    116,
   );
 });
 
 test("Classic has default audio for every prayer and all four complete rosary sets", () => {
   const resolver = createAudioResolver(new Map());
-  for (const p of library)
+  for (const p of library.filter((p) => p.id !== "mary-undoer"))
     assert.equal(resolver.descriptor("classic", p.id)?.source, "bella", p.id);
 });

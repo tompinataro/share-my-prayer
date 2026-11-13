@@ -331,3 +331,23 @@ test("slow backup parsing holds Settings open and cannot overlap another import"
   await expect(page.locator("#restore-dialog")).toBeHidden();
   await expect(page.locator("#saved-count")).toContainText("1 / 4 saved");
 });
+
+test("Mary prayer is separate from the four-prayer bundle and has cleaned complete text", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#prayers button")).toHaveCount(4);
+  await page
+    .getByRole("button", { name: "Mary Undoer of Knots", exact: true })
+    .click();
+  await expect(page.locator("#prayer-text")).toContainText(
+    "Say the first 3 decades of the Rosary.",
+  );
+  await expect(page.locator("#prayer-text")).toContainText(
+    "Say the last 2 decades of the Rosary.",
+  );
+  await expect(page.locator("#prayer-text")).toContainText("You are my hope.");
+  expect(await page.locator("#prayer-text").textContent()).not.toMatch(/[\\…]/);
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#additional-prayers button")).toBeFocused();
+});
