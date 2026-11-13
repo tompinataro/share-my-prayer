@@ -8,11 +8,21 @@
     "test": "node --test tests/*.test.js",
     "test:browser": "playwright test",
     "build": "node scripts/package.mjs",
-    "test:separation": "playwright test --config playwright.separation.config.js"
+    "test:separation": "playwright test --config playwright.separation.config.js",
+    "mobile:sync": "npm run build && cap sync",
+    "mobile:ios": "cap open ios",
+    "mobile:android": "cap open android",
+    "mobile:prepare": "npm run build && node scripts/prepare-mobile.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@capacitor/cli": "^8.6.0",
     "@playwright/test": "^1.56.1",
     "prettier": "^3.9.10"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/ios": "^8.6.0"
   }
 }

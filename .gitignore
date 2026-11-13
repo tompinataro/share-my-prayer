@@ -10,3 +10,13 @@ playwright-report/
 *backup*.json
 
 dist/
+
+# Native build outputs and signing material
+android/.gradle/
+android/local.properties
+android/**/build/
+ios/DerivedData/
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
