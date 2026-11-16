@@ -270,7 +270,7 @@ test("ordinary mobile layouts and enlarged instructions remain readable", async 
   }
 });
 
-test("packaged ordinary app contains only four-prayer public defaults and still plays", async ({
+test("packaged ordinary app contains only ordinary-prayer public defaults and still plays", async ({
   page,
 }) => {
   await page.goto("/dist/");
@@ -281,7 +281,9 @@ test("packaged ordinary app contains only four-prayer public defaults and still 
   );
   expect(ids.length).toBeGreaterThan(0);
   expect(
-    ids.every((id) => ["cross", "glory", "hail", "father"].includes(id)),
+    ids.every((id) =>
+      ["cross", "glory", "hail", "father", "mary-undoer"].includes(id),
+    ),
   ).toBe(true);
   await page.locator('#prayers [data-prayer="father"]').click();
   await page.locator("#individual-play").click();

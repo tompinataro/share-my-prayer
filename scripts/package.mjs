@@ -35,7 +35,13 @@ const blockedDefaults = new Set([
   "current:closing",
   "current:creed",
 ]);
-const ordinaryIds = new Set(["cross", "glory", "hail", "father"]);
+const ordinaryIds = new Set([
+  "cross",
+  "glory",
+  "hail",
+  "father",
+  "mary-undoer",
+]);
 const publicClips = Object.fromEntries(
   Object.entries(narratorClips).filter(([key]) =>
     ordinaryIds.has(key.split(":")[1]),
@@ -50,6 +56,7 @@ for (const [key, clip] of Object.entries(publicClips)) {
       "historical-standard-form-basis",
       "historical-us-public-domain-reviewed",
       "documented-CC0-or-ELLC-permission",
+      "owner-supplied-text-authorized",
     ].includes(clip.releaseReview) ||
     typeof clip.path !== "string" ||
     !/^\.\/narration\/bella\/[a-zA-Z0-9_/-]+\.(mp3|m4a|wav)$/.test(clip.path)

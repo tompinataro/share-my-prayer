@@ -2,7 +2,7 @@
 
 This is the ordinary-prayer app. Rosary recording and playback now live in the separate [Pray My Rosary app](https://tompinataro.github.io/pray-my-rosary/).
 
-The ordinary app retains Sign of the Cross, Glory Be, Hail Mary and Our Father; private recording/review/save, individual Play/Pause/Resume and Share; the personal-only four-prayer WAV; exact home and reading instructions; wording selections, dedication, copyright notices and private backup/restore.
+The ordinary app retains Sign of the Cross, Glory Be, Hail Mary and Our Father, plus Mary Undoer of Knots as a separate prayer; private recording/review/save, individual Play/Pause/Resume and Share; the personal-only four-prayer WAV; exact home and reading instructions; wording selections, dedication, copyright notices and private backup/restore.
 
 ## Recording safety and migration
 
@@ -33,4 +33,4 @@ node --check app.js
 
 No separate lint or typecheck command is configured. Browser coverage includes ordinary recording/reload/playback, sharing, old full-backup preservation, preferences, mobile layout and text enlargement. The remaining sequence/text unit tests retain coverage for legacy backup data and shared historical source tables, not a Rosary route in this app.
 
-The packaging script uses an explicit public-file allowlist. Test recordings, backups, test output and dependencies are excluded. All approved source narrator assets and copyright metadata are retained unchanged in the checkout. The ordinary build packages only the defaults used by its four prayers; the standalone Rosary build retains the full narrator set. Physical-device microphone, background audio and native sharing still require device QA.
+The packaging script uses an explicit public-file allowlist. Test recordings, backups, test output and dependencies are excluded. All approved source narrator assets and copyright metadata are retained unchanged in the checkout. The ordinary build packages only the defaults used by its four core prayers and Mary Undoer of Knots; the standalone Rosary build retains the full narrator set. Physical-device microphone, background audio and native sharing still require device QA.

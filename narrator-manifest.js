@@ -637,4 +637,34 @@ export const narratorClips = Object.freeze({
     spokenContentVerified: false,
     voiceId: "dsigZNN9uZvzbZVKvb6a",
   },
+  "classic:mary-undoer": {
+    path: "./narration/bella/mary-undoer.mp3",
+    sha256: "1cd155e2982f796f9eb26907948319f38f064e9113418a3e1685efde416b9375",
+    textSha256:
+      "546d8e060eec78a21254cbbd21907a10ee470c363c49e9db72b5a70a38ff8855",
+    releaseReview: "owner-supplied-text-authorized",
+    spokenContentVerified: false,
+    voiceId: "dsigZNN9uZvzbZVKvb6a",
+    modelId: "eleven_multilingual_v2",
+  },
+  "current:mary-undoer": {
+    path: "./narration/bella/mary-undoer.mp3",
+    sha256: "1cd155e2982f796f9eb26907948319f38f064e9113418a3e1685efde416b9375",
+    textSha256:
+      "546d8e060eec78a21254cbbd21907a10ee470c363c49e9db72b5a70a38ff8855",
+    releaseReview: "owner-supplied-text-authorized",
+    spokenContentVerified: false,
+    voiceId: "dsigZNN9uZvzbZVKvb6a",
+    modelId: "eleven_multilingual_v2",
+  },
+  "contemporary:mary-undoer": {
+    path: "./narration/bella/mary-undoer.mp3",
+    sha256: "1cd155e2982f796f9eb26907948319f38f064e9113418a3e1685efde416b9375",
+    textSha256:
+      "546d8e060eec78a21254cbbd21907a10ee470c363c49e9db72b5a70a38ff8855",
+    releaseReview: "owner-supplied-text-authorized",
+    spokenContentVerified: false,
+    voiceId: "dsigZNN9uZvzbZVKvb6a",
+    modelId: "eleven_multilingual_v2",
+  },
 });

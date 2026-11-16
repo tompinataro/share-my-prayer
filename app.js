@@ -13,7 +13,7 @@ import {
 import { prayerText } from "./texts.js?v=mary-undoer-1";
 import { allRecordings, saveMany } from "./storage.js?v=11";
 import { Player, assemble } from "./audio.js?v=playback-toggle";
-import { createAudioResolver } from "./narrator.js?v=ordinary-split-1";
+import { createAudioResolver } from "./narrator.js?v=mary-bella-1";
 import { personalPrayerBatch } from "./personal-share.js?v=1";
 const $ = (id) => document.getElementById(id);
 const defaults = {
@@ -231,13 +231,9 @@ function refreshPrayer() {
             : "";
   const instructions = document.querySelector(".prayer-instructions");
   instructions.children[0].textContent =
-    active.id === "mary-undoer"
-      ? "Record, then save and share your own voice."
-      : "Record, then save and share your own voice or";
+    "Record, then save and share your own voice or";
   instructions.children[1].textContent =
-    active.id === "mary-undoer"
-      ? "Default voice is not available for this prayer yet."
-      : "Play the default voice already provided.";
+    "Play the default voice already provided.";
   updatePlayControl(player.state);
   const personalAudio = activeAudio()?.source === "personal";
   $("audio-source").hidden = !personalAudio;

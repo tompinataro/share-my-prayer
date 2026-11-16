@@ -6,13 +6,13 @@ const path = "./narration/bella/current/hail.mp3";
 const audio = () =>
   new Blob(["test fixture, not speech"], { type: "audio/mpeg" });
 const response = () => ({ ok: true, blob: async () => audio() });
-test("preview contains 79 mappings and excludes every held or excluded Current default", () => {
-  assert.equal(Object.keys(narratorClips).length, 79);
+test("preview contains 82 mappings and excludes every held or excluded Current default", () => {
+  assert.equal(Object.keys(narratorClips).length, 82);
   for (const id of ["hail", "queen", "fatima", "closing", "creed"])
     assert.equal(narratorClips[`current:${id}`], undefined);
   assert.equal(
     new Set(Object.values(narratorClips).map((c) => c.path)).size,
-    35,
+    36,
   );
 });
 test("personal recordings always override Bella without fetching or mutation", async () => {

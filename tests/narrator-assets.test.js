@@ -64,6 +64,6 @@ test("all real bundled assets resolve without writing to personal records", asyn
     const [v, id] = key.split(":");
     assert.ok((await resolver.resolve(v, id)).blob.size > 0);
   }
-  assert.equal(fetches, 35);
+  assert.equal(fetches, 36);
   assert.equal(records.size, 0);
 });

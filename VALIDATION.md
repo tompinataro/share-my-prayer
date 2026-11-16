@@ -75,3 +75,11 @@ The former top-right close buttons are now plain `<` back controls at the upper 
 ## Separate recording view
 
 The reading view has no instructional/review paragraphs after Record/Play. Record opens a separate in-dialog recording view with the prayer text, recording status, Stop, draft review/save/discard, instructions and detailed text attribution. Save or Discard returns to reading. The back button prevents abandoning an active/unsaved take. Concise required licensed-text attribution sits before controls on applicable reading views; it is not an instructional footer. Browser recording flows verify view transitions, clean reading text, retained draft safety, returning after save, playback and version separation.
+
+## November 16, 2026 — Mary Undoer of Knots Bella default
+
+- Added the exact 2,603-character owner-supplied Mary text as one Bella MP3 shared across Classic, Current and Contemporary modes. The asset is 184.450563 seconds, mono 44.1 kHz, 128 kbps; SHA-256 `1cd155e2982f796f9eb26907948319f38f064e9113418a3e1685efde416b9375`.
+- Updated the public packaging allowlist and visible instructions; preserved version-specific personal overrides, private database/backup formats, four-prayer personal bundle, and held Current defaults.
+- Passed 31 unit tests, all 58 browser tests (Chromium and mobile-sized WebKit), build, JavaScript syntax, formatting and git whitespace checks. Browser checks include Mary playback/pause and simulated native share across all three wording modes. MP3 decodes without ffmpeg errors.
+- Browser launch initially failed within the command sandbox; approved isolated test run outside it passed. Cross-app migration suite was not rerun because this temporary checkout lacks the separate Pray My Rosary fixture; neither app's storage or migration code was changed.
+- Full human listening, physical iPhone microphone/background/native share verification remain unperformed. The manifest retains `spokenContentVerified: false`; no claim of pronunciation or complete audible-content QA is made.
