@@ -83,3 +83,13 @@ The reading view has no instructional/review paragraphs after Record/Play. Recor
 - Passed 31 unit tests, all 58 browser tests (Chromium and mobile-sized WebKit), build, JavaScript syntax, formatting and git whitespace checks. Browser checks include Mary playback/pause and simulated native share across all three wording modes. MP3 decodes without ffmpeg errors.
 - Browser launch initially failed within the command sandbox; approved isolated test run outside it passed. Cross-app migration suite was not rerun because this temporary checkout lacks the separate Pray My Rosary fixture; neither app's storage or migration code was changed.
 - Full human listening, physical iPhone microphone/background/native share verification remain unperformed. The manifest retains `spokenContentVerified: false`; no claim of pronunciation or complete audible-content QA is made.
+
+## November 16, 2026 — revised Mary prompts and silent request interval
+
+- Replaced the first-three and last-two decade directions with Tom's literal short phrase repeated three times and twice. Canonical text: 2,702 characters; SHA-256 `56de43386012062e906aabdb647351ab900d619e80573e7a205fde638c0aaaec`.
+- Regenerated Bella in two segments, split immediately after “Mention your request here.” Inserted 220,500 zero-valued mono PCM samples at 44.1 kHz: exactly five seconds, from 34.115918 to 39.115918 seconds. Natural neighboring sentence-end/start quiet is retained; decoded MP3 silence detection measures 5.308 seconds including that natural quiet. No pause directive was submitted as speech.
+- Revised MP3: 197.522449 seconds, 3,161,487 bytes; SHA-256 `e8209852eb19967ca49b44111ae9dbc55f31e6f04b900b1099cea45e3ebfc66d`. New filename and module versions avoid stale cached audio. Prior MP3 retained, but excluded from the public package.
+- Verified segment text concatenation equals canonical text, zero-valued insertion samples, error-free MP3 decoding, 32 passing unit tests and nine checksum-verified packaged assets. Browser regression results recorded below. Personal recordings, storage, and four-prayer bundle unchanged.
+- Full subjective listening and physical iPhone QA remain unperformed; `spokenContentVerified` remains false.
+
+- Final revised-asset browser suite: all 58 passed (Chromium and mobile-sized WebKit), including playback/pause/share in all wording modes.

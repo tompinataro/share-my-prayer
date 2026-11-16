@@ -58,3 +58,7 @@ The four Classic historical MP3s are now integrated after verifying exact source
 ## Mary Undoer of Knots
 
 Text supplied by the app owner on November 13, 2026, with requested punctuation and typo cleanup. Rosary directions remain reading prompts, not additional recorded decades. No public-domain claim is made for this supplied text. Bella default narration was generated November 16, 2026 from the exact owner-supplied text (2,603 characters) using voice dsigZNN9uZvzbZVKvb6a and Eleven Multilingual v2. Settings: speed 1, stability 0.5, similarity 0.75, style 0, speaker boost on. The 184.45-second mono 44.1 kHz/128 kbps MP3 is shared by Classic, Current and Contemporary wording modes because the Mary text is identical. File and text checksums are recorded in the manifest. Personal recordings still override the default per wording. No human listening verification is claimed. The original four-prayer sharing bundle is unchanged.
+
+### November 16 owner-requested narration revision
+
+The owner replaced the first-three and last-two decade directions with literal repetitions of “An Our Father and ten Hail Marys” (three times, then twice). These remain short spoken prompts, not full recitations of the five decades. He confirmed a five-second silent interval immediately after “Mention your request here.” No spoken “Pause for 5 seconds” instruction is added. The revised canonical text is 2,702 characters. Earlier text/audio remain preserved in repository history.

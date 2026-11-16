@@ -61,11 +61,11 @@ Act of Contrition: O my God, I am heartily sorry for having offended you. I dete
 
 Mention your request here.
 
-Say the first 3 decades of the Rosary.
+An Our Father and ten Hail Marys, an Our Father and ten Hail Marys and an Our Father and ten Hail Marys.
 
 Dearest Holy Mother, Most Holy Mary, you undo the knots that suffocate your children. Extend your merciful hands to me. I entrust to you today this knot and all the negative consequences that it provokes in my life. I give you this knot that torments me and makes me unhappy and so impedes me from uniting myself to you and your Son Jesus, my Savior. I run to you, Mary, Undoer of Knots, because I trust you and I know that you never despise a sinning child who comes to ask you for help. I believe that you can undo this knot because Jesus grants you everything. I believe that you want to undo this knot because you are my Mother. I believe that you will do this because you love me with eternal love. Thank you, dear Mother. Mary, Undoer of Knots, pray for me. The one who seeks grace finds it in Mary's hands.
 
-Say the last 2 decades of the Rosary.
+An Our Father and ten Hail Marys and an Our Father and ten Hail Marys.
 
 Virgin Mary, Mother of fair love, Mother who never refuses to come to the aid of a child in need, Mother whose hands never cease to serve your beloved children because they are moved by the divine love and immense mercy that exists in your heart, cast your compassionate eyes upon me and see the snarl of knots that exist in my life.
 

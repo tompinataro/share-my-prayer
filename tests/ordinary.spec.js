@@ -343,10 +343,10 @@ test("Mary prayer is separate from the four-prayer bundle and has cleaned comple
     .getByRole("button", { name: "Mary Undoer of Knots", exact: true })
     .click();
   await expect(page.locator("#prayer-text")).toContainText(
-    "Say the first 3 decades of the Rosary.",
+    "An Our Father and ten Hail Marys, an Our Father and ten Hail Marys and an Our Father and ten Hail Marys.",
   );
   await expect(page.locator("#prayer-text")).toContainText(
-    "Say the last 2 decades of the Rosary.",
+    "An Our Father and ten Hail Marys and an Our Father and ten Hail Marys.",
   );
   await expect(page.locator("#prayer-text")).toContainText("You are my hope.");
   expect(await page.locator("#prayer-text").textContent()).not.toMatch(/[\\…]/);

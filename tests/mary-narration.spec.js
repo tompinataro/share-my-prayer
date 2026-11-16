@@ -15,6 +15,9 @@ for (const version of ["classic", "current", "contemporary"]) {
     await expect(page.locator(".prayer-instructions")).toContainText(
       "Play the default voice already provided.",
     );
+    await expect(page.locator("#prayer-dialog")).toContainText(
+      "An Our Father and ten Hail Marys, an Our Father and ten Hail Marys and an Our Father and ten Hail Marys.",
+    );
     await expect(page.locator("#individual-play")).toBeEnabled();
     await expect(page.locator("#individual-share")).toBeEnabled();
     await page.locator("#individual-play").click();
