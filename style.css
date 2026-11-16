@@ -947,3 +947,7 @@ header > .cross {
 .prayer-art[hidden] {
   display: none;
 }
+
+.simple-home #additional-prayers {
+  margin-top: 10px;
+}

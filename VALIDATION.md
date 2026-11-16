@@ -109,3 +109,9 @@ Final corrected full-prayer verification: 32 unit tests and all 58 Chromium/mobi
 Moved the existing Mary Record, Play/Pause and Share controls immediately below its title and above its artwork/text. Other prayer views retain bottom controls; the same DOM buttons and event handlers are moved, not duplicated. Moved the landing-page sharing instruction below Mary, and removed “four” from that instruction and the home share-button label. The underlying personal-only four-prayer bundle remains unchanged.
 
 Passed 32 unit tests, all 60 Chromium/mobile-sized WebKit browser tests, build and git whitespace checks. Added regression coverage for DOM/visual ordering, restored bottom controls after switching to another prayer, bottom landing instruction and labels. Existing recording, personal overrides, playback/share and bundle-content tests pass.
+
+## November 16 — home-screen standalone configuration
+
+Added a web app manifest with relative id/start URL/scope restricted to `/share-my-prayer/`, standalone display, existing icons and lavender theme. Added Apple home-screen web-app metadata. Normal Safari/browser address chrome cannot be removed by the page; the configuration requests a standalone experience when installed/launched from the home screen. No service worker or offline guarantee was added, and no recordings, storage keys or origin were changed. Users should back up existing recordings before switching browser/install contexts; physical iPhone installation and storage continuity remain unverified. A unit test verifies scope, metadata and existing icon files. Restored a consistent gap before the Mary landing button after moving its explanatory paragraph.
+
+Final standalone/layout regression:33 unit tests and60 browser tests passed; public build passed.

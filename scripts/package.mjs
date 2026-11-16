@@ -7,6 +7,7 @@ import { mkdir, copyFile, rm, readFile, writeFile } from "node:fs/promises";
 // Private recordings, backups, node_modules and test artifacts remain excluded.
 const files = [
   "index.html",
+  "manifest.webmanifest",
   "style.css",
   "app.js",
   "personal-share.js",
