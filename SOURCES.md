@@ -62,3 +62,7 @@ Text supplied by the app owner on November 13, 2026, with requested punctuation 
 ### November 16 owner-requested narration revision
 
 The owner replaced the first-three and last-two decade directions with literal repetitions of “An Our Father and ten Hail Marys” (three times, then twice). These remain short spoken prompts, not full recitations of the five decades. He confirmed a five-second silent interval immediately after “Mention your request here.” No spoken “Pause for 5 seconds” instruction is added. The revised canonical text is 2,702 characters. Earlier text/audio remain preserved in repository history.
+
+### Superseding correction: full decades
+
+Tom clarified that “an Our Father and ten Hail Marys” means the complete prayers, not spoken titles. The Mary script now includes five complete Our Fathers and fifty complete Hail Marys, grouped as three decades before the central Mary prayer and two after it. The exact approved Current/Classic Our Father and Classic historical Hail Mary texts and Bella clips are reused. The Mary devotion remains identical across its wording modes; it does not silently substitute Contemporary prayer wording. The five-second silent request interval is retained. The title-only interim revision was committed but its deployment was cancelled before any deploy steps ran; it did not replace the live app.

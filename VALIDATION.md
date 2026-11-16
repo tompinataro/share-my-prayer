@@ -93,3 +93,13 @@ The reading view has no instructional/review paragraphs after Record/Play. Recor
 - Full subjective listening and physical iPhone QA remain unperformed; `spokenContentVerified` remains false.
 
 - Final revised-asset browser suite: all 58 passed (Chromium and mobile-sized WebKit), including playback/pause/share in all wording modes.
+
+## Superseding November 16 clarification — full prayers, not titles
+
+The owner clarified that each decade must contain a complete Our Father followed by ten complete Hail Marys. The title-only revision's Pages run `43966660446` was cancelled before deployment steps. Live HTML remained `mary-bella-1` immediately afterward. The interim commit is preserved as history but is not the intended release.
+
+The full revised canonical text is 14,694 characters, SHA-256 `14cdc118a4ebb7cbb6e91a4a87f0f321b8d3a6932fa72a9bc7a29511816a01bd`. A unit regression verifies five exact Our Father texts, fifty exact Hail Mary texts, three-then-two decade placement, no title-only prompts, and no spoken pause instruction. The approved `current-father.mp3` and `classic-hail.mp3` narrator assets supply the complete prayers; no wording/version-specific personal recordings are changed.
+
+Corrected assembled MP3: 18:24 (1,104.10694 seconds PCM), 17,666,760 bytes, SHA-256 `e073d63d77129ab0b0d9273318f70ffd6e975e778a1badd800c510efb1965e08`. Independently verified every assembled PCM span equals its decoded source clip, all source MP3 hashes match the assembly ledger, the complete sequence contains exactly 5 Our Fathers and 50 Hail Marys grouped 3/2, and the request pause is exactly 220,500 zero-valued samples at 44.1 kHz. Full MP3 decoding succeeds. New Mary filename and module versions prevent using cached title-only audio. Prior audio versions retained in Git but excluded from the current public package. Full subjective listening remains unverified.
+
+Final corrected full-prayer verification: 32 unit tests and all 58 Chromium/mobile-sized WebKit browser tests passed; build contains nine checksum-verified narrator assets. Personal override, four-prayer bundle and recording/storage regressions passed. Physical iPhone and full human listening checks remain outstanding.

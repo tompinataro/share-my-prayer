@@ -1,5 +1,5 @@
 import { keyFor } from "./core.js?v=bella-classic";
-import { narratorClips } from "./narrator-manifest.js?v=mary-bella-2";
+import { narratorClips } from "./narrator-manifest.js?v=mary-bella-3";
 
 // Public narrator assets never enter the private recordings database or backups.
 export function createAudioResolver(

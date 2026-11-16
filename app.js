@@ -10,10 +10,10 @@ import {
   filename,
   validateBackup,
 } from "./core.js?v=mary-undoer-1";
-import { prayerText } from "./texts.js?v=mary-undoer-2";
+import { prayerText } from "./texts.js?v=mary-undoer-3";
 import { allRecordings, saveMany } from "./storage.js?v=11";
 import { Player, assemble } from "./audio.js?v=playback-toggle";
-import { createAudioResolver } from "./narrator.js?v=mary-bella-2";
+import { createAudioResolver } from "./narrator.js?v=mary-bella-3";
 import { personalPrayerBatch } from "./personal-share.js?v=1";
 const $ = (id) => document.getElementById(id);
 const defaults = {

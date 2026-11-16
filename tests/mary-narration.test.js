@@ -1,6 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { maryUndoerText } from "../texts.js";
+import {
+  maryUndoerText,
+  maryDecadeText,
+  currentCatholic,
+  prayerText,
+} from "../texts.js";
 import { narratorClips } from "../narrator-manifest.js";
 import { createAudioResolver } from "../narrator.js";
 import { selectableVersions } from "../core.js";
@@ -32,20 +37,23 @@ test("Mary default is shared across all selectable wording modes, never added to
   assert.equal(narratorClips["current:creed"], undefined);
 });
 
-test("Mary uses Tom's literal decade prompts, not full rosary recitations", () => {
-  assert.equal(
-    (maryUndoerText.match(/an Our Father and ten Hail Marys/gi) || []).length,
-    5,
-  );
+test("Mary includes five full decades in three-then-two groups", () => {
+  const hail = prayerText({ id: "hail" }, "classic").text;
+  assert.equal(maryUndoerText.split(currentCatholic.father).length - 1, 5);
+  assert.equal(maryUndoerText.split(hail).length - 1, 50);
+  assert.equal(maryUndoerText.split(maryDecadeText).length - 1, 5);
   assert.ok(
     maryUndoerText.includes(
-      "An Our Father and ten Hail Marys, an Our Father and ten Hail Marys and an Our Father and ten Hail Marys.",
+      Array(3).fill(maryDecadeText).join("\n\n") + "\n\nDearest Holy Mother",
     ),
   );
   assert.ok(
     maryUndoerText.includes(
-      "An Our Father and ten Hail Marys and an Our Father and ten Hail Marys.",
+      Array(2).fill(maryDecadeText).join("\n\n") + "\n\nVirgin Mary",
     ),
   );
-  assert.doesNotMatch(maryUndoerText, /Say the (first 3|last 2) decades/);
+  assert.doesNotMatch(
+    maryUndoerText,
+    /Say the (first 3|last 2) decades|An Our Father and ten Hail Marys|Pause for 5 seconds/,
+  );
 });
