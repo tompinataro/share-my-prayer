@@ -128,7 +128,7 @@ test("four-prayer Share requires all four personal recordings in the selected wo
   await page.goto("/");
   await expect(page.locator("#home-share-four")).toBeHidden();
   await expect(page.locator("#personal-share-help")).toContainText(
-    "After you record the four prayers above,",
+    "After you record the prayers above,",
   );
   await save(page, ids.slice(0, 3));
   await expect(page.locator("#home-share-four")).toBeHidden();
@@ -258,9 +258,7 @@ test("personal four-prayer Share fits the phone and is accessible", async ({
   for (const width of [1280, 390, 320]) {
     await page.setViewportSize({ width, height: 900 });
     const button = page.locator("#home-share-four");
-    await expect(button).toHaveAccessibleName(
-      "Share these four prayers together",
-    );
+    await expect(button).toHaveAccessibleName("Share these prayers together");
     expect((await button.boundingBox()).height).toBeGreaterThanOrEqual(44);
     expect(
       await page.evaluate(
@@ -318,7 +316,7 @@ test("home sharing instruction has the exact three centered lines and safe text 
   await page.goto("/");
   const note = page.locator("#personal-share-help");
   await expect(note.locator("span")).toHaveText([
-    "After you record the four prayers above,",
+    "After you record the prayers above,",
     "in your own voice, you can share them.",
     "🙏",
   ]);

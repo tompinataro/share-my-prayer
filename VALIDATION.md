@@ -103,3 +103,9 @@ The full revised canonical text is 14,694 characters, SHA-256 `14cdc118a4ebb7cbb
 Corrected assembled MP3: 18:24 (1,104.10694 seconds PCM), 17,666,760 bytes, SHA-256 `e073d63d77129ab0b0d9273318f70ffd6e975e778a1badd800c510efb1965e08`. Independently verified every assembled PCM span equals its decoded source clip, all source MP3 hashes match the assembly ledger, the complete sequence contains exactly 5 Our Fathers and 50 Hail Marys grouped 3/2, and the request pause is exactly 220,500 zero-valued samples at 44.1 kHz. Full MP3 decoding succeeds. New Mary filename and module versions prevent using cached title-only audio. Prior audio versions retained in Git but excluded from the current public package. Full subjective listening remains unverified.
 
 Final corrected full-prayer verification: 32 unit tests and all 58 Chromium/mobile-sized WebKit browser tests passed; build contains nine checksum-verified narrator assets. Personal override, four-prayer bundle and recording/storage regressions passed. Physical iPhone and full human listening checks remain outstanding.
+
+## November 16 — Mary top controls and bottom landing text
+
+Moved the existing Mary Record, Play/Pause and Share controls immediately below its title and above its artwork/text. Other prayer views retain bottom controls; the same DOM buttons and event handlers are moved, not duplicated. Moved the landing-page sharing instruction below Mary, and removed “four” from that instruction and the home share-button label. The underlying personal-only four-prayer bundle remains unchanged.
+
+Passed 32 unit tests, all 60 Chromium/mobile-sized WebKit browser tests, build and git whitespace checks. Added regression coverage for DOM/visual ordering, restored bottom controls after switching to another prayer, bottom landing instruction and labels. Existing recording, personal overrides, playback/share and bundle-content tests pass.

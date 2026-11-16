@@ -210,6 +210,12 @@ function refreshPrayer() {
   $("recording-prayer-text").textContent = text.text;
   $("prayer-text").textContent = text.text;
   $("prayer-art").hidden = active.id !== "mary-undoer";
+  // Move the existing controls, preserving handlers and keyboard order.
+  const tools = document.querySelector(".prayer-tools");
+  if (active.id === "mary-undoer")
+    document.querySelector("#reading-view .prayer-heading").after(tools);
+  else $("reading-view").append(tools);
+
   $("reading-wording").textContent =
     versions[active.version] +
     (active.version === "classic"

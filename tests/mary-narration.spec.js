@@ -55,3 +55,31 @@ for (const version of ["classic", "current", "contemporary"]) {
     ).toBe(0);
   });
 }
+
+test("Mary controls are immediately below the title, ordinary prayers retain bottom controls", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("button", { name: "Mary Undoer of Knots", exact: true })
+    .click();
+  await expect(
+    page.locator("#reading-view .prayer-heading + .prayer-tools"),
+  ).toHaveCount(1);
+  const tools = await page.locator(".prayer-tools").boundingBox();
+  const art = await page.locator("#prayer-art").boundingBox();
+  expect(tools.y + tools.height).toBeLessThanOrEqual(art.y);
+  await page.locator("#prayer-close").click();
+  await page.locator('#prayers [data-prayer="father"]').click();
+  await expect(
+    page.locator("#reading-view > .prayer-tools:last-child"),
+  ).toHaveCount(1);
+  await page.locator("#prayer-close").click();
+  await expect(
+    page.locator("nav > #personal-share-help:last-child"),
+  ).toHaveCount(1);
+  await expect(page.locator("#personal-share-help")).not.toContainText("four");
+  await expect(page.locator("#home-share-four")).toHaveText(
+    "Share these prayers together",
+  );
+});

@@ -49,7 +49,7 @@ test("ordinary app removes Rosary navigation while preserving exact instructions
   ])
     await expect(page.locator(`#${id}`)).toHaveCount(0);
   await expect(page.locator("#personal-share-help span")).toHaveText([
-    "After you record the four prayers above,",
+    "After you record the prayers above,",
     "in your own voice, you can share them.",
     "🙏",
   ]);
