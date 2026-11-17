@@ -1,0 +1,57 @@
+import { test, expect } from "@playwright/test";
+import { maryTiming } from "../mary-timing.js";
+test("Mary real playback follows word clock through seeking, silence, pause and resume", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const Native = window.Audio;
+    window.Audio = function (...args) {
+      const a = new Native(...args);
+      window.testPlayerAudio = a;
+      return a;
+    };
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: /Mary.*Knots/ }).click();
+  await expect(page.locator("#prayer-text span")).toHaveCount(2870);
+  await page.locator("#individual-play").click();
+  await expect
+    .poll(() => page.evaluate(() => window.testPlayerAudio.currentTime))
+    .toBeGreaterThan(0.1);
+  for (const i of [0, 15, 94, 151, 500, 1600, 2869]) {
+    const word = maryTiming.words[i];
+    await page.evaluate(
+      (t) => {
+        window.testPlayerAudio.playbackRate = 0.1;
+        window.testPlayerAudio.currentTime = t;
+      },
+      (word.start + word.end) / 2,
+    );
+    await expect(page.locator("#prayer-text .spoken-word")).toHaveText(
+      word.word,
+    );
+  }
+  for (const [start, end] of [
+    maryTiming.pauses[0],
+    maryTiming.pauses.find((p) => p[2] === "request"),
+    maryTiming.pauses[30],
+  ]) {
+    await page.evaluate(
+      (t) => (window.testPlayerAudio.currentTime = t),
+      (start + end) / 2,
+    );
+    await expect(page.locator(".spoken-word")).toHaveCount(0);
+  }
+  await page.locator("#individual-play").click();
+  await expect(page.locator(".spoken-word")).toHaveCount(0);
+  await page.evaluate(
+    (t) => (window.testPlayerAudio.currentTime = t),
+    maryTiming.words[500].start + 0.03,
+  );
+  await page.locator("#individual-play").click();
+  await expect(page.locator(".spoken-word")).toHaveText(
+    maryTiming.words[500].word,
+  );
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".spoken-word")).toHaveCount(0);
+});

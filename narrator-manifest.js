@@ -638,8 +638,8 @@ export const narratorClips = Object.freeze({
     voiceId: "dsigZNN9uZvzbZVKvb6a",
   },
   "classic:mary-undoer": {
-    path: "./narration/bella/mary-undoer-full-prayers-20261116.mp3",
-    sha256: "e073d63d77129ab0b0d9273318f70ffd6e975e778a1badd800c510efb1965e08",
+    path: "./narration/bella/mary-undoer-timed-20261116.mp3",
+    sha256: "c0d5ac92745f7b2b478e29218b8a4be3428acafd380d575dc5480deaa13e14fe",
     textSha256:
       "14cdc118a4ebb7cbb6e91a4a87f0f321b8d3a6932fa72a9bc7a29511816a01bd",
     releaseReview: "owner-supplied-text-authorized",
@@ -648,8 +648,8 @@ export const narratorClips = Object.freeze({
     modelId: "eleven_multilingual_v2",
   },
   "current:mary-undoer": {
-    path: "./narration/bella/mary-undoer-full-prayers-20261116.mp3",
-    sha256: "e073d63d77129ab0b0d9273318f70ffd6e975e778a1badd800c510efb1965e08",
+    path: "./narration/bella/mary-undoer-timed-20261116.mp3",
+    sha256: "c0d5ac92745f7b2b478e29218b8a4be3428acafd380d575dc5480deaa13e14fe",
     textSha256:
       "14cdc118a4ebb7cbb6e91a4a87f0f321b8d3a6932fa72a9bc7a29511816a01bd",
     releaseReview: "owner-supplied-text-authorized",
@@ -658,8 +658,8 @@ export const narratorClips = Object.freeze({
     modelId: "eleven_multilingual_v2",
   },
   "contemporary:mary-undoer": {
-    path: "./narration/bella/mary-undoer-full-prayers-20261116.mp3",
-    sha256: "e073d63d77129ab0b0d9273318f70ffd6e975e778a1badd800c510efb1965e08",
+    path: "./narration/bella/mary-undoer-timed-20261116.mp3",
+    sha256: "c0d5ac92745f7b2b478e29218b8a4be3428acafd380d575dc5480deaa13e14fe",
     textSha256:
       "14cdc118a4ebb7cbb6e91a4a87f0f321b8d3a6932fa72a9bc7a29511816a01bd",
     releaseReview: "owner-supplied-text-authorized",

@@ -10,6 +10,8 @@ const files = [
   "manifest.webmanifest",
   "style.css",
   "app.js",
+  "word-follow.js",
+  "mary-timing.js",
   "personal-share.js",
   "core.js",
   "texts.js",

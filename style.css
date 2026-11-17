@@ -951,3 +951,9 @@ header > .cross {
 .simple-home #additional-prayers {
   margin-top: 10px;
 }
+
+.spoken-word {
+  text-decoration: underline;
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.18em;
+}
