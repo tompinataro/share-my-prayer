@@ -42,3 +42,40 @@ test("58 one-second Amen inserts and preserved five-second request silence have 
     assert.equal(wordAtTime(maryTiming.words, (start + end) / 2), -1);
   }
 });
+
+import { ordinaryTiming } from "../ordinary-timing.js";
+import { narratorClips } from "../narrator-manifest.js";
+import { prayerText } from "../texts.js";
+import { library } from "../core.js";
+import { timingFor } from "../word-follow.js";
+test("all eleven ordinary Bella wording entries match canonical text, media and timing", () => {
+  assert.equal(Object.keys(ordinaryTiming).length, 11);
+  for (const [key, timing] of Object.entries(ordinaryTiming)) {
+    const [version, id] = key.split(":");
+    const text = prayerText(
+      library.find((p) => p.id === id),
+      version,
+    ).text;
+    assert.equal(
+      timing.words.map((w) => w.word).join(" "),
+      text.split(/\s+/).join(" "),
+    );
+    assert.equal(timing.audioSha256, narratorClips[key].sha256);
+    assert.equal(
+      createHash("sha256")
+        .update(
+          readFileSync(
+            new URL("../" + narratorClips[key].path, import.meta.url),
+          ),
+        )
+        .digest("hex"),
+      timing.audioSha256,
+    );
+    timing.words.forEach((w, i) => {
+      assert.ok(w.end > w.start);
+      if (i) assert.ok(w.start >= timing.words[i - 1].end);
+      assert.equal(wordAtTime(timing.words, (w.start + w.end) / 2), i);
+    });
+    assert.equal(timingFor({ version, id, source: "personal" }), null);
+  }
+});

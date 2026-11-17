@@ -1,4 +1,4 @@
-import { followMaryWords } from "./word-follow.js?v=mary-timed-1";
+import { followPrayerWords } from "./word-follow.js?v=all-prayers-follow-1";
 import {
   versions,
   preferredVersion,
@@ -14,7 +14,7 @@ import {
 import { prayerText } from "./texts.js?v=mary-undoer-3";
 import { allRecordings, saveMany } from "./storage.js?v=11";
 import { Player, assemble } from "./audio.js?v=playback-toggle";
-import { createAudioResolver } from "./narrator.js?v=mary-timed-1";
+import { createAudioResolver } from "./narrator.js?v=all-prayers-follow-1";
 import { personalPrayerBatch } from "./personal-share.js?v=1";
 const $ = (id) => document.getElementById(id);
 const defaults = {
@@ -169,10 +169,10 @@ const player = new Player((state) => {
             ? "Saved on this device"
             : "";
 }, fail);
-const renderFollowWords = followMaryWords(
+const renderFollowWords = followPrayerWords(
   $("prayer-text"),
   player,
-  () => active?.id === "mary-undoer" && activeAudio()?.source === "bella",
+  activeAudio,
 );
 function stopPlayback() {
   playbackRequest++;
@@ -214,10 +214,7 @@ function refreshPrayer() {
   $("reading-credit").hidden = !text.note.includes("©");
   $("recording-title").textContent = p.name;
   $("recording-prayer-text").textContent = text.text;
-  renderFollowWords(
-    text.text,
-    active.id === "mary-undoer" && activeAudio()?.source === "bella",
-  );
+  renderFollowWords(text.text, activeAudio());
   $("prayer-art").hidden = active.id !== "mary-undoer";
   // Move the existing controls, preserving handlers and keyboard order.
   const tools = document.querySelector(".prayer-tools");

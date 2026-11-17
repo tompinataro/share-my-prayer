@@ -12,6 +12,7 @@ const files = [
   "app.js",
   "word-follow.js",
   "mary-timing.js",
+  "ordinary-timing.js",
   "personal-share.js",
   "core.js",
   "texts.js",
